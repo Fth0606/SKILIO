@@ -32,6 +32,7 @@ class SessionController extends Controller
             'skill' => ['name' => $s->skill_name],
             'teacher' => ['name' => $s->teacher_name],
             'learner' => ['name' => $s->learner_name],
+            'notes' => $s->notes,
             'meeting_place' => [
                 'title' => $s->meeting_place_title,
                 'address' => $s->meeting_place_address,
@@ -213,10 +214,24 @@ class SessionController extends Controller
     {
         $session = SessionRequest::findOrFail($id);
         $session->update(['status' => 'rejected']);
-        
+
         // Refund credit
         $learner = User::find($session->requester_id);
-        if ($learner) $learner->increment('credits_balance');
+        if ($learner) {
+            $learner->increment('credits_balance');
+        }
+
+        $skillName = \App\Models\Skill::find($session->skill_id)?->name ?? 'a skill';
+        $teacher = User::find($session->teacher_id);
+        $teacherName = $teacher->name ?? 'The teacher';
+
+        $this->notifyUser(
+            $session->requester_id,
+            'session_rejected',
+            'Session request rejected',
+            "{$teacherName} has rejected your booking request for {$skillName}. Your credit has been refunded.",
+            ['session_id' => $session->id]
+        );
 
         return response()->json(['message' => 'Session rejected']);
     }

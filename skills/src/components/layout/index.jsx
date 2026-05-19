@@ -61,10 +61,9 @@ export function AppShell({ children }) {
   const unreadCount = (notifications || []).filter(n => !n.is_read).length
 
   useEffect(() => {
-    if (notifOpen && unreadCount > 0) {
-      markAllRead.mutate()
-    }
-  }, [notifOpen, unreadCount])
+    if (!notifOpen) return
+    markAllRead.mutate()
+  }, [notifOpen, markAllRead])
 
   const studentLinks = [
     { to: '/dashboard',          icon: '🏠', label: 'Dashboard' },

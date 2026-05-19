@@ -60,11 +60,6 @@ export function AppShell({ children }) {
 
   const unreadCount = (notifications || []).filter(n => !n.is_read).length
 
-  useEffect(() => {
-    if (!notifOpen) return
-    markAllRead.mutate()
-  }, [notifOpen, markAllRead])
-
   const studentLinks = [
     { to: '/dashboard',          icon: '🏠', label: 'Dashboard' },
     { to: '/dashboard/search',   icon: '🔍', label: 'Find Skills' },
@@ -132,7 +127,10 @@ export function AppShell({ children }) {
         {/* User info */}
         <div style={{ padding: 16, borderTop: '1px solid #1e2b24' }}>
           <button
-            onClick={() => setNotifOpen(true)}
+            onClick={() => {
+              setNotifOpen(true)
+              if (unreadCount > 0) markAllRead.mutate()
+            }}
             className="btn-secondary"
             style={{ width: '100%', padding: '8px 0', fontSize: 13, marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
           >

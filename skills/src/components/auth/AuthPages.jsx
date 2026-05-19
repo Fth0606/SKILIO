@@ -15,7 +15,7 @@ function AuthLayout({ children, title, sub }) {
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg,#1D9E75,#EF9F27)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>⇄</div>
-            <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>SkillSwap</span>
+            <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>SKILIO</span>
           </div>
           <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 700, marginBottom: 6 }}>{title}</h1>
           <p style={{ color: '#5a7a6a', fontSize: 14 }}>{sub}</p>
@@ -26,7 +26,7 @@ function AuthLayout({ children, title, sub }) {
         </div>
 
         <p style={{ color: '#5a7a6a', textAlign: 'center', marginTop: 16, fontSize: 13 }}>
-          © 2026 SkillSwap Inc. · <Link to="/" style={{ color: '#1D9E75' }}>Back to home</Link>
+          © 2026 SKILIO Inc. · <Link to="/" style={{ color: '#1D9E75' }}>Back to home</Link>
         </p>
       </div>
     </div>
@@ -118,7 +118,7 @@ export function RegisterPage() {
   const set = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }))
 
   return (
-    <AuthLayout title="Create your account" sub="Join your university's SkillSwap community">
+    <AuthLayout title="Create your account" sub="Join your university's SKILIO community">
       <form onSubmit={handleSubmit}>
         {[
           { key: 'name',                  label: 'Full Name',        type: 'text',     ph: 'Your Name' },

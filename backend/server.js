@@ -15,7 +15,7 @@ let currentUser = null;
 
 const ACCOUNTS = [
     {
-        email: 'superadmin@skillswap.com',
+        email: 'superadmin@skilio.com',
         role: 'super_admin',
         name: 'Global Admin',
         tenant: null

@@ -115,7 +115,7 @@ export function SuperTenants() {
 
   const columns = [
     { key: 'name',       label: 'Institution' },
-    { key: 'subdomain',  label: 'Subdomain',  render: v => <span style={{ color: '#1D9E75', fontSize: 13 }}>{v}.skillswap.com</span> },
+    { key: 'subdomain',  label: 'Subdomain',  render: v => <span style={{ color: '#1D9E75', fontSize: 13 }}>{v}.skilio.com</span> },
     { key: 'plan',       label: 'Plan',       render: v => <Badge variant="purple">{v?.name}</Badge> },
     { key: 'users_count',label: 'Users',      muted: true },
     { key: 'sessions_count', label: 'Sessions', muted: true },
@@ -160,7 +160,7 @@ export function SuperTenants() {
         <form onSubmit={handleCreate}>
           {[
             { key: 'name',        label: 'Institution Name',  ph: 'Harvard University' },
-            { key: 'subdomain',   label: 'Subdomain',         ph: 'harvard  →  harvard.skillswap.com' },
+            { key: 'subdomain',   label: 'Subdomain',         ph: 'harvard  →  harvard.skilio.com' },
             { key: 'admin_name',  label: 'Admin Name',        ph: 'John Smith' },
             { key: 'admin_email', label: 'Admin Email',       ph: 'admin@university.edu' },
           ].map(f => (

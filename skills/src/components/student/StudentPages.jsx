@@ -34,7 +34,7 @@ export function StudentDashboard() {
     <div>
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Welcome back, {user?.name?.split(' ')[0]} 👋</h1>
-        <p style={{ color: '#5a7a6a' }}>{user?.tenant?.name || 'SkillSwap'} · Student</p>
+        <p style={{ color: '#5a7a6a' }}>{user?.tenant?.name || 'SKILIO'} · Student</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 16, marginBottom: 28 }}>

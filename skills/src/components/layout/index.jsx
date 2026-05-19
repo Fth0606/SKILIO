@@ -28,7 +28,7 @@ export function Navbar() {
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
         <div onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
           <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#1D9E75,#EF9F27)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>⇄</div>
-          <span style={{ color: '#fff', fontWeight: 700, fontSize: 18, letterSpacing: '-0.5px' }}>SkillSwap</span>
+          <span style={{ color: '#fff', fontWeight: 700, fontSize: 18, letterSpacing: '-0.5px' }}>SKILIO</span>
           <span style={{ background: '#0F6E56', color: '#fff', fontSize: 10, padding: '2px 7px', borderRadius: 20, fontWeight: 600 }}>SaaS</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -96,7 +96,7 @@ export function AppShell({ children }) {
         <div style={{ padding: '20px 16px', borderBottom: '1px solid #1e2b24' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => navigate('/')}>
             <div style={{ width: 28, height: 28, borderRadius: 6, background: 'linear-gradient(135deg,#1D9E75,#EF9F27)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>⇄</div>
-            <span style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>SkillSwap</span>
+            <span style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>SKILIO</span>
           </div>
         </div>
 

@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'tenant_id' => $firstTenantId,
             'name' => 'Global Admin',
-            'email' => 'superadmin@skillswap.com',
+            'email' => 'superadmin@skilio.com',
             'password' => Hash::make('password'),
             'role' => 'super_admin',
             'created_at' => now(),

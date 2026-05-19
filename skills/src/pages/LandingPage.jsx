@@ -305,7 +305,7 @@ export default function LandingPage() {
       {/* ── CTA ── */}
       <section style={{ background:'#0F6E56', padding:'80px 2rem', textAlign:'center' }}>
         <h2 style={{ color:'#fff', fontSize:'clamp(1.6rem,4vw,2.4rem)', fontWeight:800, fontFamily:'Georgia,serif', marginBottom:12 }}>Ready to launch your platform?</h2>
-        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:16, marginBottom:32 }}>Join 47+ institutions already using SkillSwap.</p>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:16, marginBottom:32 }}>Join 47+ institutions already using SKILIO.</p>
         <button onClick={goToDash} className="btn-primary" style={{ padding:'14px 32px', fontSize:16, background:'#fff', color:'#0F6E56', boxShadow:'0 6px 30px rgba(0,0,0,0.3)' }}>
           Get Started Free →
         </button>
@@ -318,7 +318,7 @@ export default function LandingPage() {
             <div style={{ maxWidth:260 }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
                 <div style={{ width:26, height:26, borderRadius:6, background:'linear-gradient(135deg,#1D9E75,#EF9F27)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13 }}>⇄</div>
-                <span style={{ color:'#fff', fontWeight:700, fontSize:16 }}>SkillSwap</span>
+                <span style={{ color:'#fff', fontWeight:700, fontSize:16 }}>SKILIO</span>
               </div>
               <p style={{ color:'#5a7a6a', fontSize:13, lineHeight:1.7 }}>The peer-to-peer skill exchange platform built for universities and enterprises.</p>
             </div>
@@ -334,7 +334,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ borderTop:'1px solid #1e2b24', paddingTop:20, display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:8 }}>
-            <span style={{ color:'#5a7a6a', fontSize:12 }}>© 2026 SkillSwap Inc. All rights reserved.</span>
+            <span style={{ color:'#5a7a6a', fontSize:12 }}>© 2026 SKILIO Inc. All rights reserved.</span>
             <span style={{ color:'#5a7a6a', fontSize:12 }}>Made for learners, by learners. 🌍</span>
           </div>
         </div>

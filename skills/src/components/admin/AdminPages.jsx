@@ -79,7 +79,7 @@ export function AdminAnalytics() {
       <button className="btn-secondary" onClick={async () => {
         const res = await adminApi.exportReport()
         const url = URL.createObjectURL(new Blob([res.data]))
-        const a = document.createElement('a'); a.href = url; a.download = 'skillswap-report.csv'; a.click()
+        const a = document.createElement('a'); a.href = url; a.download = 'skilio-report.csv'; a.click()
         toast.success('Report exported!')
       }}>
         ↓ Export CSV Report
@@ -283,7 +283,7 @@ export function AdminBranding() {
 
             <div style={{ marginBottom: 20 }}>
               <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Welcome Message</label>
-              <textarea className="input-dark" rows={3} value={form.welcome_message} onChange={e => setForm(f => ({ ...f, welcome_message: e.target.value }))} placeholder="Welcome to SkillSwap! Exchange knowledge with your peers." style={{ resize: 'vertical' }} />
+              <textarea className="input-dark" rows={3} value={form.welcome_message} onChange={e => setForm(f => ({ ...f, welcome_message: e.target.value }))} placeholder="Welcome to SKILIO! Exchange knowledge with your peers." style={{ resize: 'vertical' }} />
             </div>
 
             <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={saveBranding.isLoading}>
@@ -307,7 +307,7 @@ export function AdminBranding() {
             {/* Preview hero */}
             <div style={{ padding: 24, textAlign: 'center' }}>
               <div style={{ color: '#fff', fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
-                {form.institution_name || 'Your Institution'} SkillSwap
+                {form.institution_name || 'Your Institution'} SKILIO
               </div>
               <p style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 16 }}>{form.welcome_message || 'Welcome message will appear here'}</p>
               <button style={{ background: form.primary_color, color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'default', fontWeight: 600, fontSize: 13 }}>

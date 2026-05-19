@@ -114,6 +114,11 @@ function SessionRow({ session, onRate, hasMeetingPlaceAlert = false }) {
       <div style={{ flex: 1 }}>
         <div style={{ fontWeight: 600, fontSize: 14 }}>{session.skill?.name}</div>
         <div style={{ color: '#5a7a6a', fontSize: 12 }}>{relation} {otherName} · {session.scheduled_at}</div>
+        {session.notes && (
+          <div style={{ marginTop: 4, padding: '4px 8px', background: 'rgba(29,158,117,0.05)', borderLeft: '2px solid #1D9E75', color: '#5a7a6a', fontSize: 12, fontStyle: 'italic' }}>
+            "{session.notes}"
+          </div>
+        )}
         <div style={{ marginTop: 4 }}><StatusBadge status={session.status} /></div>
         {session.meeting_place?.title && (
           <div style={{ marginTop: 6, fontSize: 12, color: '#5a7a6a' }}>
@@ -184,6 +189,11 @@ function RequestRow({ session, hasMeetingPlaceAlert = false }) {
       <div>
         <div style={{ fontWeight: 600, fontSize: 14 }}>{session.skill?.name}</div>
         <div style={{ color: '#5a7a6a', fontSize: 12 }}>from {session.learner?.name} · {session.scheduled_at}</div>
+        {session.notes && (
+          <div style={{ marginTop: 4, padding: '4px 8px', background: 'rgba(29,158,117,0.05)', borderLeft: '2px solid #1D9E75', color: '#5a7a6a', fontSize: 12, fontStyle: 'italic' }}>
+            "{session.notes}"
+          </div>
+        )}
       </div>
       <div style={{ display: 'flex', gap: 6 }}>
         <button

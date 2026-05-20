@@ -31,14 +31,14 @@ export function SuperDashboard() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard label="Total Tenants"  value={data?.total_tenants  || 47}      icon="🏫" color="#7F77DD" />
-        <StatCard label="Total Users"    value={data?.total_users?.toLocaleString() || '28,431'} icon="👥" />
-        <StatCard label="Sessions"       value={data?.total_sessions?.toLocaleString() || '124,567'} icon="📅" color="#EF9F27" />
-        <StatCard label="MRR"            value={`$${(data?.mrr || 51200).toLocaleString()}`}    icon="💰" color="#1D9E75" />
-        <StatCard label="Churn Rate"     value={`${data?.churn_rate || 4.2}%`}    icon="📉" color="#E24B4A" />
-        <StatCard label="LTV"            value={`$${data?.ltv || 3200}`}           icon="📈" color="#1D9E75" />
-        <StatCard label="CAC"            value={`$${data?.cac || 450}`}            icon="🎯" color="#EF9F27" />
-        <StatCard label="Credits Total"  value={(data?.credits_total || 89234).toLocaleString()} icon="💳" color="#7F77DD" />
+        <StatCard label="Total Tenants"  value={data?.total_tenants ?? 0}      icon="🏫" color="#7F77DD" />
+        <StatCard label="Total Users"    value={(data?.total_users ?? 0).toLocaleString()} icon="👥" />
+        <StatCard label="Sessions"       value={(data?.total_sessions ?? 0).toLocaleString()} icon="📅" color="#EF9F27" />
+        <StatCard label="MRR"            value={`$${(data?.mrr ?? 0).toLocaleString()}`}    icon="💰" color="#1D9E75" />
+        <StatCard label="Churn Rate"     value={`${data?.churn_rate ?? 0}%`}    icon="📉" color="#E24B4A" />
+        <StatCard label="LTV"            value={`$${(data?.ltv ?? 0).toLocaleString()}`}           icon="📈" color="#1D9E75" />
+        <StatCard label="CAC"            value={`$${(data?.cac ?? 0).toLocaleString()}`}            icon="🎯" color="#EF9F27" />
+        <StatCard label="Credits Total"  value={(data?.credits_total ?? 0).toLocaleString()} icon="💳" color="#7F77DD" />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
@@ -263,11 +263,11 @@ export function SuperRevenue() {
     <div>
       <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Revenue</h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard label="MRR"         value={`$${(data?.mrr || 51200).toLocaleString()}`}    icon="💰" color="#1D9E75" />
-        <StatCard label="ARR"         value={`$${((data?.mrr||51200)*12/1000).toFixed(0)}k`}  icon="📈" color="#1D9E75" />
-        <StatCard label="Churn Rate"  value={`${data?.churn_rate || 4.2}%`}                   icon="📉" color="#E24B4A" />
-        <StatCard label="LTV"         value={`$${(data?.ltv || 3200).toLocaleString()}`}       icon="🏆" color="#EF9F27" />
-        <StatCard label="CAC"         value={`$${(data?.cac || 450).toLocaleString()}`}        icon="🎯" color="#7F77DD" />
+        <StatCard label="MRR"         value={`$${(data?.mrr ?? 0).toLocaleString()}`}    icon="💰" color="#1D9E75" />
+        <StatCard label="ARR"         value={`$${((data?.mrr ?? 0) * 12 / 1000).toFixed(0)}k`}  icon="📈" color="#1D9E75" />
+        <StatCard label="Churn Rate"  value={`${data?.churn_rate ?? 0}%`}                   icon="📉" color="#E24B4A" />
+        <StatCard label="LTV"         value={`$${(data?.ltv ?? 0).toLocaleString()}`}       icon="🏆" color="#EF9F27" />
+        <StatCard label="CAC"         value={`$${(data?.cac ?? 0).toLocaleString()}`}        icon="🎯" color="#7F77DD" />
       </div>
 
       <Card>

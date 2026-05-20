@@ -7,15 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE session_requests MODIFY COLUMN status ENUM(
-            'pending', 'accepted', 'rejected', 'completed', 'cancelled', 'no_show', 'pending_ratings'
-        ) NOT NULL DEFAULT 'pending'");
+        // Handled in 2024_01_01_000006_create_session_requests_table.php for SQLite compatibility
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE session_requests MODIFY COLUMN status ENUM(
-            'pending', 'accepted', 'rejected', 'completed', 'cancelled', 'no_show'
-        ) NOT NULL DEFAULT 'pending'");
+        //
     }
 };

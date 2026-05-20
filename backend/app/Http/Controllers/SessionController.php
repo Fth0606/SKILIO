@@ -174,17 +174,17 @@ class SessionController extends Controller
         // Resolve skill name before creating session
         $skillName = \App\Models\Skill::find($request->skill_id)?->name ?? 'a skill';
 
-        $session = SessionRequest::create([
-            'requester_id' => $user->id,
-            'teacher_id' => $request->teacher_id,
-            'skill_id' => $request->skill_id,
-            'status' => 'pending',
-            'scheduled_at' => $scheduledAt,
-            'notes' => $request->message,
-            'credits_held' => 1.00,
-        ]);
+        $session = DB::transaction(function() use ($user, $request, $scheduledAt, $skillName) {
+            $session = SessionRequest::create([
+                'requester_id' => $user->id,
+                'teacher_id' => $request->teacher_id,
+                'skill_id' => $request->skill_id,
+                'status' => 'pending',
+                'scheduled_at' => $scheduledAt,
+                'notes' => $request->message,
+                'credits_held' => 1.00,
+            ]);
 
-        DB::transaction(function() use ($user, $session, $skillName) {
             // Deduct credit
             $user->decrement('credits_balance');
             $user->increment('total_credits_spent', $session->credits_held);
@@ -198,6 +198,8 @@ class SessionController extends Controller
                 'type' => 'spend',
                 'description' => "Reserved credit for learning {$skillName}",
             ]);
+
+            return $session;
         });
 
         return response()->json(['message' => 'Session requested successfully', 'data' => $session]);
@@ -213,15 +215,28 @@ class SessionController extends Controller
     public function reject(Request $request, $id)
     {
         $session = SessionRequest::findOrFail($id);
-        $session->update(['status' => 'rejected']);
-
-        // Refund credit
-        $learner = User::find($session->requester_id);
-        if ($learner) {
-            $learner->increment('credits_balance');
-        }
-
         $skillName = \App\Models\Skill::find($session->skill_id)?->name ?? 'a skill';
+        $learner = User::find($session->requester_id);
+
+        DB::transaction(function() use ($learner, $session, $skillName) {
+            $session->update(['status' => 'rejected']);
+
+            // Refund credit
+            if ($learner) {
+                $learner->increment('credits_balance', $session->credits_held);
+                $learner->decrement('total_credits_spent', $session->credits_held);
+
+                \App\Models\CreditTransaction::create([
+                    'user_id' => $learner->id,
+                    'session_request_id' => $session->id,
+                    'amount' => $session->credits_held,
+                    'balance_after' => $learner->fresh()->credits_balance,
+                    'type' => 'refund',
+                    'description' => "Refund for rejected session on {$skillName}",
+                ]);
+            }
+        });
+
         $teacher = User::find($session->teacher_id);
         $teacherName = $teacher->name ?? 'The teacher';
 
@@ -259,6 +274,7 @@ class SessionController extends Controller
         // Both parties confirmed → ready for ratings (not fully closed yet)
         if ($session->requester_confirmed && $session->teacher_confirmed) {
             $session->status = 'pending_ratings';
+            $this->finalizeSession($session);
         }
 
         $session->save();
@@ -322,23 +338,7 @@ class SessionController extends Controller
 
             if ($isRequester) {
                 $session->requester_rated = true;
-
-                $teacher = User::find($session->teacher_id);
-                if ($teacher) {
-                    $teacher->increment('credits_balance', $session->credits_held);
-                    $teacher->increment('total_credits_earned', $session->credits_held);
-                    $teacher->increment('total_hours_taught');
-
-                    \App\Models\CreditTransaction::create([
-                        'user_id' => $teacher->id,
-                        'session_request_id' => $session->id,
-                        'amount' => $session->credits_held,
-                        'balance_after' => $teacher->fresh()->credits_balance,
-                        'type' => 'earn',
-                        'description' => "Earned from teaching {$skillName}",
-                    ]);
-                }
-                $user->increment('total_hours_learned');
+                $this->finalizeSession($session);
             } else {
                 $session->teacher_rated = true;
             }
@@ -355,6 +355,42 @@ class SessionController extends Controller
         });
 
         return response()->json(['message' => 'Rating submitted successfully']);
+    }
+
+    private function finalizeSession(SessionRequest $session): void
+    {
+        $alreadyFinalized = \App\Models\CreditTransaction::where('session_request_id', $session->id)
+            ->where('type', 'earn')
+            ->exists();
+
+        if ($alreadyFinalized) {
+            return;
+        }
+
+        DB::transaction(function() use ($session) {
+            $skillName = \App\Models\Skill::find($session->skill_id)?->name ?? 'a skill';
+            $teacher = User::find($session->teacher_id);
+            $learner = User::find($session->requester_id);
+
+            if ($teacher) {
+                $teacher->increment('credits_balance', $session->credits_held);
+                $teacher->increment('total_credits_earned', $session->credits_held);
+                $teacher->increment('total_hours_taught');
+
+                \App\Models\CreditTransaction::create([
+                    'user_id' => $teacher->id,
+                    'session_request_id' => $session->id,
+                    'amount' => $session->credits_held,
+                    'balance_after' => $teacher->fresh()->credits_balance,
+                    'type' => 'earn',
+                    'description' => "Earned from teaching {$skillName}",
+                ]);
+            }
+
+            if ($learner) {
+                $learner->increment('total_hours_learned');
+            }
+        });
     }
 
     private function updateRatedUserStats(int $ratedId, string $role): void
@@ -430,16 +466,13 @@ class SessionController extends Controller
                 \App\Models\CreditTransaction::create([
                     'user_id' => $learner->id,
                     'session_request_id' => $session->id,
-                    'amount' => -$session->credits_held,
-                    'balance_after' => $learner->credits_balance,
+                    'amount' => 0,
+                    'balance_after' => $learner->fresh()->credits_balance,
                     'type' => 'penalty',
-                    'description' => "Late cancellation penalty for {$skillName} (less than 2 hours notice)",
+                    'description' => "Late cancellation penalty for {$skillName} (no refund)",
                 ]);
-
-                return;
-            }
-
-            $session->update([
+            } else {
+                $session->update([
                 'status' => 'cancelled',
                 'cancelled_by' => $isRequester ? 'requester' : 'teacher',
                 'cancellation_reason' => $reason,
@@ -449,19 +482,20 @@ class SessionController extends Controller
                 'teacher_rated' => false,
             ]);
 
-            if ($learner && $session->credits_held > 0) {
-                $learner->increment('credits_balance', $session->credits_held);
-                $learner->decrement('total_credits_spent', $session->credits_held);
-                $refunded = true;
+                if ($learner && $session->credits_held > 0) {
+                    $learner->increment('credits_balance', $session->credits_held);
+                    $learner->decrement('total_credits_spent', $session->credits_held);
+                    $refunded = true;
 
-                \App\Models\CreditTransaction::create([
-                    'user_id' => $learner->id,
-                    'session_request_id' => $session->id,
-                    'amount' => $session->credits_held,
-                    'balance_after' => $learner->fresh()->credits_balance,
-                    'type' => 'refund',
-                    'description' => "Refund for cancelled session on {$skillName}",
-                ]);
+                    \App\Models\CreditTransaction::create([
+                        'user_id' => $learner->id,
+                        'session_request_id' => $session->id,
+                        'amount' => $session->credits_held,
+                        'balance_after' => $learner->fresh()->credits_balance,
+                        'type' => 'refund',
+                        'description' => "Refund for cancelled session on {$skillName}",
+                    ]);
+                }
             }
         });
 

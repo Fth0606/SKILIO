@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('skill_id')->constrained('skills')->comment('The specific skill being traded');
             $table->dateTime('scheduled_at')->comment('Planned session time');
             $table->decimal('duration_hours', 3, 1)->default(1.0)->comment('Length of the session');
-            $table->enum('status', ['pending', 'accepted', 'rejected', 'completed', 'cancelled', 'no_show'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'completed', 'cancelled', 'no_show', 'pending_ratings', 'penalty_applied'])->default('pending');
             $table->boolean('requester_confirmed')->default(false)->comment('Student marked as done');
             $table->boolean('teacher_confirmed')->default(false)->comment('Teacher marked as done');
             $table->boolean('requester_rated')->default(false);

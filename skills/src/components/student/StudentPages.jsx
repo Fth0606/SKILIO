@@ -101,6 +101,7 @@ function SessionRow({ session, onRate, hasMeetingPlaceAlert = false }) {
   const handleDone = async () => {
     try {
       await markComplete.mutateAsync(session.id)
+      refreshUser?.()
       onRate(session)
     } catch { /* toast handled by mutation */ }
   }
@@ -289,6 +290,7 @@ function TeacherCard({ teacher, onBook }) {
 }
 
 function BookingModal({ teacher, onClose }) {
+  const { refreshUser } = useAuth()
   const [skillId, setSkillId]   = useState('')
   const [slotId, setSlotId]     = useState('')
   const [message, setMessage]   = useState('')
@@ -297,6 +299,7 @@ function BookingModal({ teacher, onClose }) {
   const handleBook = async () => {
     if (!skillId || !slotId) { toast.error('Please select a skill and a time slot'); return }
     await bookSession.mutateAsync({ teacher_id: teacher.id, skill_id: skillId, slot_id: slotId, message })
+    refreshUser?.()
     onClose()
   }
 
@@ -652,7 +655,7 @@ function RatingModal({ session, onClose }) {
       <div style={{ display: 'flex', gap: 10 }}>
         <button className="btn-secondary" style={{ flex: 1 }} onClick={onClose}>Skip</button>
         <button className="btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={handleSubmit} disabled={submitRating.isLoading}>
-          {submitRating.isLoading ? <Spinner size={16} /> : (isLearner ? 'Submit & Transfer Credit' : 'Submit Rating')}
+          {submitRating.isLoading ? <Spinner size={16} /> : 'Submit Rating'}
         </button>
       </div>
     </Modal>

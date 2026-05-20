@@ -13,24 +13,19 @@ Route::prefix('auth')->group(function () {
 // Admin Routes
 Route::prefix('admin')->group(function () {
     Route::get('/analytics', [App\Http\Controllers\AdminController::class, 'analytics']);
-    Route::get('/settings', function () {
-        return response()->json(['data' => ['institution_name' => 'Harvard University', 'primary_color' => '#0F6E56']]);
-    });
+    Route::get('/analytics/export', [App\Http\Controllers\AdminController::class, 'exportReport']);
+    Route::get('/settings', [App\Http\Controllers\AdminController::class, 'getSettings']);
     Route::put('/settings', [App\Http\Controllers\AdminController::class, 'updateSettings']);
+    Route::post('/settings/logo', [App\Http\Controllers\AdminController::class, 'uploadLogo']);
     Route::get('/users', [App\Http\Controllers\AdminController::class, 'users']);
+    Route::post('/users/invite', [App\Http\Controllers\AdminController::class, 'inviteUser']);
+    Route::post('/users/import', [App\Http\Controllers\AdminController::class, 'bulkImport']);
     Route::post('/users/{id}/activate', [App\Http\Controllers\AdminController::class, 'updateUserStatus']);
-    Route::post('/users/{id}/deactivate', [App\Http\Controllers\AdminController::class, 'updateUserStatus']);
-    Route::get('/billing', function () {
-        return response()->json(['data' => [
-            'current_plan' => 'Academy',
-            'next_invoice' => '2026-06-01',
-            'amount' => 99,
-            'payment_method' => '•••• 4242'
-        ]]);
-    });
-    Route::get('/skills', function () {
-        return response()->json(['data' => ['data' => [], 'last_page' => 1]]);
-    });
+    Route::post('/users/{id}/suspend', [App\Http\Controllers\AdminController::class, 'updateUserStatus']);
+    Route::get('/billing', [App\Http\Controllers\AdminController::class, 'billing']);
+    Route::get('/skills', [App\Http\Controllers\AdminController::class, 'skillsManagement']);
+    Route::post('/skills/{id}/approve', [App\Http\Controllers\AdminController::class, 'approveSkill']);
+    Route::post('/skills/{id}/hide', [App\Http\Controllers\AdminController::class, 'hideSkill']);
 });
 
 // Super Admin Routes

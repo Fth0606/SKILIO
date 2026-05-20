@@ -224,7 +224,7 @@ export function SuperPlans() {
             </div>
             <div style={{ fontSize: 28, fontWeight: 800, color: '#1D9E75', marginBottom: 4 }}>${plan.price}<span style={{ fontSize: 13, color: '#5a7a6a' }}>/mo</span></div>
             <div style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 16 }}>Up to {plan.max_users === -1 ? '∞' : plan.max_users} users</div>
-            {plan.features?.map(f => <div key={f} style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 6 }}>✓ {f}</div>)}
+            {Array.isArray(plan.features) && plan.features.map(f => <div key={f} style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 6 }}>✓ {f}</div>)}
             <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
               <button className="btn-secondary" style={{ flex: 1, fontSize: 12, padding: '7px 0' }} onClick={() => setEditing(plan)}>Edit</button>
               {!plan.published && <button className="btn-primary" style={{ flex: 1, fontSize: 12, padding: '7px 0', justifyContent: 'center' }} onClick={() => publish(plan.id)}>Publish</button>}

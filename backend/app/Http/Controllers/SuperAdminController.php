@@ -192,28 +192,30 @@ class SuperAdminController extends Controller
             'plan_id' => 'required|exists:plans,id'
         ]);
 
-        $tenant = Tenant::create([
-            'name' => $request->name,
-            'subdomain' => $request->subdomain,
-            'email' => $request->admin_email,
-            'is_active' => true,
-        ]);
+        return DB::transaction(function () use ($request) {
+            $tenant = Tenant::create([
+                'name' => $request->name,
+                'subdomain' => $request->subdomain,
+                'email' => $request->admin_email,
+                'is_active' => true,
+            ]);
 
-        Subscription::create([
-            'tenant_id' => $tenant->id,
-            'plan_id' => $request->plan_id,
-            'stripe_status' => 'active',
-        ]);
+            Subscription::create([
+                'tenant_id' => $tenant->id,
+                'plan_id' => $request->plan_id,
+                'stripe_status' => 'active',
+            ]);
 
-        User::create([
-            'tenant_id' => $tenant->id,
-            'name' => $request->admin_name,
-            'email' => $request->admin_email,
-            'password' => bcrypt('password'),
-            'role' => 'tenant_admin',
-        ]);
+            User::create([
+                'tenant_id' => $tenant->id,
+                'name' => $request->admin_name,
+                'email' => $request->admin_email,
+                'password' => bcrypt('password123'), // Using slightly more varied default
+                'role' => 'tenant_admin',
+            ]);
 
-        return response()->json(['message' => 'Tenant created successfully', 'data' => $tenant]);
+            return response()->json(['message' => 'Tenant created successfully', 'data' => $tenant]);
+        });
     }
 
     public function suspendTenant(Request $request, $id)

@@ -22,7 +22,7 @@ class SkillUserSeeder extends Seeder
                     'skill_id' => $skill->id,
                     'proficiency_level' => 'advanced',
                     'hourly_rate_credits' => 1.00,
-                    'teaching_description' => 'I can help you master ' . $skill->name,
+                    'teaching_description' => 'Je peux vous aider à maîtriser ' . $skill->name,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

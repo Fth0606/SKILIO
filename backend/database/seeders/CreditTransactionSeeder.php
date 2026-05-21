@@ -17,7 +17,7 @@ class CreditTransactionSeeder extends Seeder
                 'amount' => 5.00,
                 'balance_after' => $user->credits_balance,
                 'type' => 'bonus',
-                'description' => 'Welcome bonus credits',
+                'description' => 'Crédits de bienvenue offerts',
                 'created_at' => now()->subDays(10),
             ]);
         }

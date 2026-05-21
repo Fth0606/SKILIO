@@ -16,7 +16,7 @@ class PlanSeeder extends Seeder
             [
                 'name' => 'Starter',
                 'slug' => 'starter',
-                'price_monthly' => 0.00,
+                'price_monthly' => 0,
                 'price_yearly' => 0.00,
                 'max_users' => 50,
                 'max_skills_per_user' => 5,
@@ -29,7 +29,7 @@ class PlanSeeder extends Seeder
             [
                 'name' => 'Academy',
                 'slug' => 'academy',
-                'price_monthly' => 99.00,
+                'price_monthly' => 99,
                 'price_yearly' => 990.00,
                 'max_users' => 500,
                 'max_skills_per_user' => 20,
@@ -42,7 +42,7 @@ class PlanSeeder extends Seeder
             [
                 'name' => 'Enterprise',
                 'slug' => 'enterprise',
-                'price_monthly' => 299.00,
+                'price_monthly' => 299,
                 'price_yearly' => 2990.00,
                 'max_users' => 10000,
                 'max_skills_per_user' => 100,

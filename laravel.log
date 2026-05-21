@@ -1,0 +1,8 @@
+
+   INFO  Server running on [http://127.0.0.1:8000].
+
+  Press Ctrl+C to stop the server
+
+  2026-05-21 20:57:37 /api/admin/settings ........................ ~ 500.69ms
+  2026-05-21 20:58:41 /api/admin/settings .......................... ~ 0.18ms
+  2026-05-21 20:58:52 /api/admin/settings .......................... ~ 0.11ms

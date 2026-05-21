@@ -240,8 +240,9 @@ export function AdminBranding() {
 
   const handleLogoUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return
-    const res = await adminApi.uploadLogo(file)
-    setForm(f => ({ ...f, logo_url: res.data.data.url }))
+    const fd = new FormData(); fd.append('logo', file)
+    const res = await adminApi.uploadLogo(fd)
+    setForm(f => ({ ...f, logo_url: res.data.url }))
     toast.success('Logo uploaded!')
   }
 

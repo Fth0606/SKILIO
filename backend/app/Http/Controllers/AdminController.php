@@ -337,14 +337,15 @@ class AdminController extends Controller
 
         if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
 
+        $name = $request->input('institution_name') ?? $request->input('name');
+        
         $updateData = [
             'updated_at' => now()
         ];
 
-        if ($request->has('institution_name')) $updateData['name'] = $request->input('institution_name');
+        if ($name) $updateData['name'] = $name;
         if ($request->has('primary_color')) $updateData['primary_color'] = $request->input('primary_color');
         if ($request->has('welcome_message')) $updateData['welcome_message'] = $request->input('welcome_message');
-        if ($request->has('logo_url')) $updateData['logo_url'] = $request->input('logo_url');
 
         DB::table('tenants')->where('id', $admin->tenant_id)->update($updateData);
 

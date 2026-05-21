@@ -30,7 +30,12 @@ class User extends Authenticatable
         'bio',
     ];
 
-    protected $appends = ['credits', 'sessions_count', 'skills_taught_count', 'avg_rating', 'ratings_count'];
+    protected $appends = ['credits', 'sessions_count', 'skills_taught_count', 'avg_rating', 'ratings_count', 'status'];
+
+    public function getStatusAttribute()
+    {
+        return $this->is_active ? 'active' : 'suspended';
+    }
 
     public function getCreditsAttribute()
     {

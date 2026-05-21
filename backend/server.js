@@ -185,11 +185,51 @@ app.get('/api/admin/analytics', (req, res) => res.json({ data: {
 }}));
 app.get('/api/admin/settings', (req, res) => res.json({ data: { institution_name: 'Harvard University', primary_color: '#0F6E56' } }));
 app.put('/api/admin/settings', (req, res) => res.json({ message: 'Settings updated' }));
-app.get('/api/admin/users', (req, res) => res.json({ data: { data: ACCOUNTS.filter(a => a.role !== 'super_admin'), last_page: 1 } }));
+app.get('/api/admin/users', (req, res) => {
+    if (!currentUser) return res.status(401).json({ message: 'Unauthorized' });
+    const tenantName = currentUser.tenant?.name;
+    let filtered = ACCOUNTS.filter(a => a.role !== 'super_admin');
+    if (tenantName) {
+        filtered = filtered.filter(a => a.tenant?.name === tenantName);
+    }
+    const search = req.query.search;
+    if (search) {
+        const query = search.toLowerCase();
+        filtered = filtered.filter(a => 
+            (a.name && a.name.toLowerCase().includes(query)) || 
+            (a.email && a.email.toLowerCase().includes(query))
+        );
+    }
+    const mapped = filtered.map(a => {
+        const id = ACCOUNTS.indexOf(a) + 1;
+        return {
+            ...a,
+            id,
+            status: a.status || 'active',
+            credits: a.credits || 0,
+        };
+    });
+    res.json({ data: { data: mapped, last_page: 1 } });
+});
 app.post('/api/admin/users/invite', (req, res) => res.json({ message: 'Invitation sent' }));
 app.post('/api/admin/users/import', (req, res) => res.json({ message: 'Import successful' }));
-app.post('/api/admin/users/:id/suspend', (req, res) => res.json({ message: 'User suspended' }));
-app.post('/api/admin/users/:id/activate', (req, res) => res.json({ message: 'User activated' }));
+app.post('/api/admin/users/:id/suspend', (req, res) => {
+    const id = parseInt(req.params.id);
+    // id is 1-based index into ACCOUNTS array
+    const account = ACCOUNTS[id - 1];
+    if (account) {
+        account.status = 'suspended';
+    }
+    res.json({ message: 'User suspended', data: account });
+});
+app.post('/api/admin/users/:id/activate', (req, res) => {
+    const id = parseInt(req.params.id);
+    const account = ACCOUNTS[id - 1];
+    if (account) {
+        account.status = 'active';
+    }
+    res.json({ message: 'User activated', data: account });
+});
 
 app.get('/api/admin/skills', (req, res) => res.json({ data: { data: SKILLS, last_page: 1 } }));
 app.post('/api/admin/skills/:id/approve', (req, res) => res.json({ message: 'Skill approved' }));

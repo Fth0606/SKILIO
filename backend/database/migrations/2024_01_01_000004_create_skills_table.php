@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('category', 100)->comment('e.g., Programming, Language, Academic, Arts');
             $table->text('description')->nullable();
             $table->boolean('is_global')->default(false)->comment('If true, available to all tenants');
-            $table->boolean('is_approved')->default(true)->comment('Admin approval status');
+            $table->string('status', 50)->default('approved')->comment('Skill status (approved, pending, hidden)');
             $table->integer('popularity_score')->default(0)->comment('Rank based on usage');
             $table->timestamps();
 

@@ -15,6 +15,21 @@ export const useSaveBranding = () => {
 }
 export const useBilling = () => useQuery('billing', () => adminAPI.billing().then(res => res.data.data))
 
+export const useSuspendUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation(id => adminAPI.suspendUser(id), {
+    onSuccess: () => { toast.success('User suspended'); queryClient.invalidateQueries('adminUsers') },
+    onError: () => toast.error('Failed to suspend user')
+  })
+}
+export const useActivateUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation(id => adminAPI.activateUser(id), {
+    onSuccess: () => { toast.success('User activated'); queryClient.invalidateQueries('adminUsers') },
+    onError: () => toast.error('Failed to activate user')
+  })
+}
+
 // Super Admin Hooks
 export const usePlatformStats = () => useQuery('platformStats', () => superAdminAPI.analytics().then(res => res.data.data))
 export const useTenants = (params) => useQuery(['tenants', params], () => superAdminAPI.tenants(params).then(res => res.data.data))

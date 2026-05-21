@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, L
 import {
   useAdminAnalytics, useAdminUsers, useAdminSkills,
   useBranding, useSaveBranding, useBilling,
+  useSuspendUser, useActivateUser,
 } from '../../hooks/useApi'
 import { adminAPI as adminApi, adminAPI as usersApi, adminAPI as skillsApi } from '../../services/api'
 import {
@@ -97,6 +98,8 @@ export function AdminUsers() {
   const [inviteRole, setInviteRole]   = useState('student')
 
   const { data, isLoading, refetch } = useAdminUsers({ search, page, per_page: 15 })
+  const suspendUser  = useSuspendUser()
+  const activateUser = useActivateUser()
 
   const handleInvite = async (e) => {
     e.preventDefault()
@@ -115,8 +118,8 @@ export function AdminUsers() {
     refetch()
   }
 
-  const suspend  = (id) => usersApi.suspendUser(id).then(() => { toast.success('User suspended'); refetch() })
-  const activate = (id) => usersApi.activateUser(id).then(() => { toast.success('User activated'); refetch() })
+  const suspend  = (id) => suspendUser.mutate(id)
+  const activate = (id) => activateUser.mutate(id)
 
   const columns = [
     { key: 'name',       label: 'Name' },

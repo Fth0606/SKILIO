@@ -151,11 +151,13 @@ class AdminController extends Controller
         if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
 
         $tenantId = $user->tenant_id;
-        $query = User::where('tenant_id', $tenantId);
+        $query = User::where('tenant_id', $tenantId)->where('role', '!=', 'super_admin');
 
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
         }
 
         $users = $query->paginate($request->input('per_page', 10));
@@ -241,19 +243,42 @@ class AdminController extends Controller
 
         $tenantId = $user->tenant_id;
 
-        $skills = DB::table('skills')
-            ->join('users', 'skills.user_id', '=', 'users.id')
-            ->where('users.tenant_id', $tenantId)
-            ->select('skills.*', 'users.name as offered_by_name')
-            ->paginate($request->input('per_page', 10));
+        $perPage = $request->input('per_page', 10);
+        $currentPage = $request->input('page', 1);
+
+        $query = DB::table('skills')
+            ->leftJoin('skill_user', 'skills.id', '=', 'skill_user.skill_id')
+            ->leftJoin('users', function ($join) {
+                $join->on('skill_user.user_id', '=', 'users.id');
+            })
+            ->where('skills.tenant_id', $tenantId)
+            ->select(
+                'skills.id',
+                'skills.name',
+                'skills.category',
+                'skills.status',
+                'skill_user.proficiency_level as level',
+                'users.name as offered_by_name'
+            );
+
+        $total = DB::table('skills')->where('tenant_id', $tenantId)->count();
+        $items = $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get();
 
         // Format to match frontend expectation (row.offered_by.name)
-        $skills->getCollection()->transform(function($skill) {
+        $items = $items->map(function ($skill) {
             $skill->offered_by = ['name' => $skill->offered_by_name];
             return $skill;
         });
 
-        return response()->json(['data' => $skills]);
+        $lastPage = max(1, (int) ceil($total / $perPage));
+
+        return response()->json(['data' => [
+            'data'      => $items,
+            'total'     => $total,
+            'per_page'  => $perPage,
+            'current_page' => $currentPage,
+            'last_page' => $lastPage,
+        ]]);
     }
 
     public function approveSkill(Request $request, $id)

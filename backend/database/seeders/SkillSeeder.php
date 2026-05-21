@@ -29,7 +29,7 @@ class SkillSeeder extends Seeder
                     array_merge($skill, [
                         'tenant_id' => $tenant->id,
                         'is_global' => false,
-                        'is_approved' => true,
+                        'status' => 'approved',
                         'created_at' => now(),
                         'updated_at' => now(),
                     ])

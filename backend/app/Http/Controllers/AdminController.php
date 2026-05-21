@@ -17,7 +17,7 @@ class AdminController extends Controller
         $user = User::find($userId);
 
         if (!$user || !in_array($user->role, ['tenant_admin', 'super_admin'])) {
-            return response()->json(['message' => 'Forbidden: Admin access required'], 403);
+            return response()->json(['message' => 'Accès interdit : accès administrateur requis'], 403);
         }
 
         $tenantId = $user->tenant_id;
@@ -111,7 +111,7 @@ class AdminController extends Controller
         $user = User::find($userId);
 
         if (!$user || !in_array($user->role, ['tenant_admin', 'super_admin'])) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Interdit'], 403);
         }
 
         $headers = [
@@ -148,7 +148,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $user = User::find($userId);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         $tenantId = $user->tenant_id;
         $query = User::where('tenant_id', $tenantId)->where('role', '!=', 'super_admin');
@@ -175,7 +175,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $admin = User::find($userId);
 
-        if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$admin) return response()->json(['message' => 'Non autorisé'], 401);
 
         // Simple mock of invitation logic
         DB::table('invitations')->insert([
@@ -187,7 +187,7 @@ class AdminController extends Controller
             'updated_at' => now()
         ]);
 
-        return response()->json(['message' => 'Invitation sent successfully']);
+        return response()->json(['message' => 'Invitation envoyée avec succès']);
     }
 
     public function bulkImport(Request $request)
@@ -200,7 +200,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $admin = User::find($userId);
 
-        if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$admin) return response()->json(['message' => 'Non autorisé'], 401);
 
         $file = $request->file('file');
         $handle = fopen($file->getRealPath(), 'r');
@@ -230,7 +230,7 @@ class AdminController extends Controller
         }
         fclose($handle);
 
-        return response()->json(['message' => "$imported students imported successfully"]);
+        return response()->json(['message' => "$imported étudiants importés avec succès"]);
     }
 
     public function skillsManagement(Request $request)
@@ -239,7 +239,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $user = User::find($userId);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         $tenantId = $user->tenant_id;
 
@@ -284,13 +284,13 @@ class AdminController extends Controller
     public function approveSkill(Request $request, $id)
     {
         DB::table('skills')->where('id', $id)->update(['status' => 'approved', 'updated_at' => now()]);
-        return response()->json(['message' => 'Skill approved']);
+        return response()->json(['message' => 'Compétence approuvée']);
     }
 
     public function hideSkill(Request $request, $id)
     {
         DB::table('skills')->where('id', $id)->update(['status' => 'hidden', 'updated_at' => now()]);
-        return response()->json(['message' => 'Skill hidden']);
+        return response()->json(['message' => 'Compétence masquée']);
     }
 
     public function updateUserStatus(Request $request, $id)
@@ -308,7 +308,7 @@ class AdminController extends Controller
 
         $user->save();
 
-        return response()->json(['message' => 'User status updated', 'data' => $user]);
+        return response()->json(['message' => "Statut de l'utilisateur mis à jour", 'data' => $user]);
     }
 
     public function getSettings(Request $request)
@@ -317,7 +317,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $admin = User::find($userId);
 
-        if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$admin) return response()->json(['message' => 'Non autorisé'], 401);
 
         $tenant = DB::table('tenants')->where('id', $admin->tenant_id)->first();
 
@@ -325,7 +325,7 @@ class AdminController extends Controller
             'institution_name' => $tenant->name,
             'primary_color' => $tenant->primary_color ?? '#0F6E56',
             'logo_url' => $tenant->logo_url,
-            'welcome_message' => $tenant->welcome_message ?? 'Welcome to SKILIO!'
+            'welcome_message' => $tenant->welcome_message ?? 'Bienvenue sur SKILIO !'
         ]]);
     }
 
@@ -335,7 +335,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $admin = User::find($userId);
 
-        if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$admin) return response()->json(['message' => 'Non autorisé'], 401);
 
         $name = $request->input('institution_name') ?? $request->input('name');
         
@@ -349,7 +349,7 @@ class AdminController extends Controller
 
         DB::table('tenants')->where('id', $admin->tenant_id)->update($updateData);
 
-        return response()->json(['message' => 'Settings updated successfully']);
+        return response()->json(['message' => 'Paramètres mis à jour avec succès']);
     }
 
     public function billing(Request $request)
@@ -358,7 +358,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $admin = User::find($userId);
 
-        if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$admin) return response()->json(['message' => 'Non autorisé'], 401);
 
         $tenantId = $admin->tenant_id;
 
@@ -412,7 +412,7 @@ class AdminController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $admin = User::find($userId);
 
-        if (!$admin) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$admin) return response()->json(['message' => 'Non autorisé'], 401);
 
         $path = $request->file('logo')->store('logos', 'public');
         $url = asset('storage/' . $path);

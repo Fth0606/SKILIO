@@ -35,7 +35,7 @@ class SkillController extends Controller
 
     public function categories()
     {
-        return response()->json(['data' => ['Programming', 'Language', 'AI/Data', 'Music', 'Math', 'Creative', 'Soft Skills']]);
+        return response()->json(['data' => ['Programmation', 'Langues', 'IA/Data', 'Musique', 'Maths', 'Créatif', 'Soft Skills']]);
     }
 
     public function store(Request $request)
@@ -44,7 +44,7 @@ class SkillController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $user = User::find($userId);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -74,7 +74,7 @@ class SkillController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Skill added successfully', 'data' => $skill]);
+        return response()->json(['message' => 'Compétence ajoutée avec succès', 'data' => $skill]);
     }
 
     public function userSkills(Request $request)
@@ -100,14 +100,14 @@ class SkillController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $user = User::find($userId);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         DB::table('skill_user')
             ->where('user_id', $user->id)
             ->where('skill_id', $id)
             ->delete();
 
-        return response()->json(['message' => 'Skill removed']);
+        return response()->json(['message' => 'Compétence supprimée']);
     }
 
     public function teachers(Request $request)
@@ -154,7 +154,7 @@ class SkillController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $user = User::find($userId);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         $slots = $request->input('slots', []);
         
@@ -173,6 +173,6 @@ class SkillController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Availability saved successfully']);
+        return response()->json(['message' => 'Disponibilités enregistrées avec succès']);
     }
 }

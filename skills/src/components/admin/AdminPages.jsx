@@ -5,10 +5,10 @@ import {
   useBranding, useSaveBranding, useBilling,
   useSuspendUser, useActivateUser,
 } from '../../hooks/useApi'
-import { adminAPI as adminApi, adminAPI as usersApi, adminAPI as skillsApi } from '../../services/api'
+import { adminAPI as adminApi } from '../../services/api'
 import {
   Card, StatCard, Table, Pagination, Modal, Badge,
-  StatusBadge, EmptyState, Spinner, ProgressBar
+  StatusBadge, EmptyState, Spinner, ProgressBar, FloatingInput
 } from '../ui'
 import toast from 'react-hot-toast'
 
@@ -16,74 +16,74 @@ import toast from 'react-hot-toast'
 export function AdminAnalytics() {
   const { data, isLoading } = useAdminAnalytics()
 
-  if (isLoading) return <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={36} /></div>
-  if (!data) return <EmptyState icon="📊" title="No analytics data" />
+  if (isLoading) return <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div>
+  if (!data) return <EmptyState icon="📊" title="Aucune donnée analytique" />
 
   const CHART = {
-    style: { fontSize: 12, fill: '#5a7a6a' },
+    style: { fontSize: 12, fill: 'var(--text-muted)', fontWeight: 600 },
     tooltip: {
-      contentStyle: { background: '#111814', border: '1px solid #1e2b24', borderRadius: 8 },
-      labelStyle: { color: '#fff' },
+      contentStyle: { background: 'var(--glass-bg)', border: '1px solid var(--border)', borderRadius: 12, backdropFilter: 'blur(10px)' },
+      labelStyle: { color: 'var(--text-main)', fontWeight: 700 },
     }
   }
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Analytics</h1>
+      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 32 }}>Analytiques</h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard label="Total Users"    value={data.total_users}          icon="👥" />
-        <StatCard label="Active Users"   value={data.active_users}         icon="✅" color="#1D9E75" />
-        <StatCard label="Sessions / mo"  value={data.sessions_this_month}  icon="📅" color="#EF9F27" />
-        <StatCard label="Credits Exchanged" value={data.credits_exchanged} icon="💳" color="#7F77DD" />
-        <StatCard label="Completion Rate"   value={`${data.completion_rate}%`} icon="🏆" color="#22c55e" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 24, marginBottom: 40 }}>
+        <StatCard label="Total Utilisateurs"    value={data.total_users}          icon="👥" />
+        <StatCard label="Utilisateurs Actifs"   value={data.active_users}         icon="✅" color="var(--primary)" />
+        <StatCard label="Séances / mois"  value={data.sessions_this_month}  icon="📅" color="var(--accent)" />
+        <StatCard label="Crédits Échangés" value={`${data.credits_exchanged} DH`} icon="💳" color="var(--primary-light)" />
+        <StatCard label="Taux de réussite"   value={`${data.completion_rate}%`} icon="🏆" color="#22c55e" />
       </div>
 
       {/* User quota */}
-      <Card style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700 }}>User Quota</h3>
-          <span style={{ color: '#5a7a6a', fontSize: 13 }}>{data.plan?.name} Plan</span>
+      <Card style={{ marginBottom: 32, borderRadius: 24, padding: 32 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, alignItems: 'baseline' }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Quota d'utilisateurs</h3>
+          <span className="badge badge-purple">Forfait {data.plan?.name}</span>
         </div>
         <ProgressBar value={data.total_users} max={data.plan?.max_users || 1000} />
       </Card>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
         {/* Sessions per week */}
-        <Card>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Sessions per Week</h3>
-          <ResponsiveContainer width="100%" height={200}>
+        <Card style={{ borderRadius: 24, padding: 32 }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Séances par semaine</h3>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={data.sessions_chart || []}>
               <XAxis dataKey="week" tick={CHART.style} axisLine={false} tickLine={false} />
               <YAxis tick={CHART.style} axisLine={false} tickLine={false} />
               <Tooltip {...CHART.tooltip} />
-              <Bar dataKey="count" fill="#1D9E75" radius={[4,4,0,0]} />
+              <Bar dataKey="count" fill="var(--primary)" radius={[6,6,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Popular skills */}
-        <Card>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Popular Skills</h3>
+        <Card style={{ borderRadius: 24, padding: 32 }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Compétences populaires</h3>
           {data.popular_skills?.map(skill => (
-            <div key={skill.name} style={{ marginBottom: 12 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                <span style={{ fontSize: 13 }}>{skill.name}</span>
-                <span style={{ color: '#5a7a6a', fontSize: 12 }}>{skill.count} sessions</span>
+            <div key={skill.name} style={{ marginBottom: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 700 }}>{skill.name}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600 }}>{skill.count} séances</span>
               </div>
-              <ProgressBar value={skill.count} max={data.popular_skills[0]?.count || 1} />
+              <ProgressBar value={skill.count} max={data.popular_skills[0]?.count || 1} color="var(--accent)" />
             </div>
           ))}
         </Card>
       </div>
 
-      <button className="btn-secondary" onClick={async () => {
+      <button className="btn-secondary" style={{ padding: '12px 24px', fontWeight: 700 }} onClick={async () => {
         const res = await adminApi.exportReport()
         const url = URL.createObjectURL(new Blob([res.data]))
-        const a = document.createElement('a'); a.href = url; a.download = 'skilio-report.csv'; a.click()
-        toast.success('Report exported!')
+        const a = document.createElement('a'); a.href = url; a.download = 'rapport-skilio.csv'; a.click()
+        toast.success('Rapport exporté !')
       }}>
-        ↓ Export CSV Report
+        ↓ Exporter le rapport CSV
       </button>
     </div>
   )
@@ -103,8 +103,8 @@ export function AdminUsers() {
 
   const handleInvite = async (e) => {
     e.preventDefault()
-    await usersApi.inviteUser({ email: inviteEmail, role: inviteRole })
-    toast.success(`Invitation sent to ${inviteEmail}`)
+    await adminApi.inviteUser({ email: inviteEmail, role: inviteRole })
+    toast.success(`Invitation envoyée à ${inviteEmail}`)
     setInviteModal(false)
     setInviteEmail('')
   }
@@ -112,9 +112,8 @@ export function AdminUsers() {
   const handleBulkCsv = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const form = new FormData(); form.append('file', file)
-    await usersApi.bulkImport(file)
-    toast.success('Students imported!')
+    await adminApi.bulkImport(file)
+    toast.success('Étudiants importés !')
     refetch()
   }
 
@@ -122,61 +121,60 @@ export function AdminUsers() {
   const activate = (id) => activateUser.mutate(id)
 
   const columns = [
-    { key: 'name',       label: 'Name' },
+    { key: 'name',       label: 'Nom' },
     { key: 'email',      label: 'Email',  muted: true },
-    { key: 'role',       label: 'Role',   render: v => <Badge variant={v === 'tenant_admin' ? 'purple' : 'green'}>{v}</Badge> },
-    { key: 'credits',    label: 'Credits', muted: true },
-    { key: 'status',     label: 'Status', render: v => <Badge variant={v === 'active' ? 'green' : 'red'}>{v}</Badge> },
+    { key: 'role',       label: 'Rôle',   render: v => <Badge variant={v === 'tenant_admin' ? 'purple' : 'green'}>{v === 'tenant_admin' ? 'Admin' : 'Étudiant'}</Badge> },
+    { key: 'credits',    label: 'Crédits', render: v => `${v} DH`, muted: true },
+    { key: 'status',     label: 'Statut', render: v => <Badge variant={v === 'active' ? 'green' : 'red'}>{v === 'active' ? 'Actif' : 'Suspendu'}</Badge> },
     {
       key: 'id', label: '',
       render: (id, row) => (
         row.status === 'active'
-          ? <button onClick={() => suspend(id)}  style={{ background: 'rgba(226,75,74,0.1)', border: '1px solid rgba(226,75,74,0.3)', color: '#E24B4A', padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>Suspend</button>
-          : <button onClick={() => activate(id)} style={{ background: 'rgba(29,158,117,0.1)', border: '1px solid rgba(29,158,117,0.3)', color: '#1D9E75', padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>Activate</button>
+          ? <button onClick={() => suspend(id)}  style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Suspendre</button>
+          : <button onClick={() => activate(id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Activer</button>
       )
     }
   ]
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700 }}>User Management</h1>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <label className="btn-secondary" style={{ cursor: 'pointer' }}>
-            ↑ Bulk CSV
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800 }}>Gestion des utilisateurs</h1>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <label className="btn-secondary" style={{ cursor: 'pointer', padding: '12px 20px', fontWeight: 700 }}>
+            ↑ Import CSV
             <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleBulkCsv} />
           </label>
-          <button className="btn-primary" onClick={() => setInviteModal(true)}>+ Invite User</button>
+          <button className="btn-primary" style={{ padding: '12px 24px', fontWeight: 800 }} onClick={() => setInviteModal(true)}>+ Inviter un utilisateur</button>
         </div>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <input className="input-dark" placeholder="Search users…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} style={{ maxWidth: 320 }} />
+      <div style={{ marginBottom: 24 }}>
+        <input className="input-premium" placeholder="Rechercher des utilisateurs…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} style={{ maxWidth: 350 }} />
       </div>
 
-      {isLoading ? <div style={{ textAlign: 'center', padding: 60 }}><Spinner size={32} /></div> : (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <Table columns={columns} data={data?.data || []} />
-          {data?.last_page > 1 && <div style={{ padding: 16 }}><Pagination page={page} lastPage={data.last_page} onChange={setPage} /></div>}
+      {isLoading ? <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div> : (
+        <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+          <div style={{ padding: '24px' }}>
+            <Table columns={columns} data={data?.data || []} />
+          </div>
+          {data?.last_page > 1 && <div style={{ padding: 24, borderTop: '1px solid var(--border)' }}><Pagination page={page} lastPage={data.last_page} onChange={setPage} /></div>}
         </Card>
       )}
 
-      <Modal open={inviteModal} onClose={() => setInviteModal(false)} title="Invite a User">
+      <Modal open={inviteModal} onClose={() => setInviteModal(false)} title="Inviter un utilisateur">
         <form onSubmit={handleInvite}>
-          <div style={{ marginBottom: 14 }}>
-            <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Email</label>
-            <input className="input-dark" type="email" required value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="student@university.edu" />
-          </div>
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Role</label>
-            <select className="input-dark" value={inviteRole} onChange={e => setInviteRole(e.target.value)}>
-              <option value="student">Student</option>
-              <option value="tenant_admin">Admin</option>
+          <FloatingInput label="Email" id="invite-email" type="email" required value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder=" " />
+          <div style={{ marginBottom: 32 }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Rôle</label>
+            <select className="input-premium" value={inviteRole} onChange={e => setInviteRole(e.target.value)}>
+              <option value="student">Étudiant</option>
+              <option value="tenant_admin">Administrateur</option>
             </select>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button type="button" className="btn-secondary" style={{ flex: 1 }} onClick={() => setInviteModal(false)}>Cancel</button>
-            <button type="submit" className="btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Send Invitation →</button>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button type="button" className="btn-secondary" style={{ flex: 1, padding: 14, borderRadius: 16 }} onClick={() => setInviteModal(false)}>Annuler</button>
+            <button type="submit" className="btn-primary" style={{ flex: 1, justifyContent: 'center', padding: 14, borderRadius: 16 }}>Envoyer l'invitation →</button>
           </div>
         </form>
       </Modal>
@@ -189,21 +187,25 @@ export function AdminSkills() {
   const [page, setPage] = useState(1)
   const { data, isLoading, refetch } = useAdminSkills({ page, per_page: 15 })
 
-  const approve = (id) => skillsApi.approveSkill(id).then(() => { toast.success('Skill approved'); refetch() })
-  const hide    = (id) => skillsApi.hideSkill(id).then(() => { toast.success('Skill hidden'); refetch() })
+  const approve = (id) => adminApi.approveSkill(id).then(() => { toast.success('Compétence approuvée'); refetch() })
+  const hide    = (id) => adminApi.hideSkill(id).then(() => { toast.success('Compétence masquée'); refetch() })
 
   const columns = [
-    { key: 'name',     label: 'Skill' },
-    { key: 'category', label: 'Category', muted: true },
-    { key: 'level',    label: 'Level',    render: v => <Badge variant="purple">{v}</Badge> },
-    { key: 'offered_by', label: 'Teacher', render: v => v?.name, muted: true },
-    { key: 'status',   label: 'Status',  render: v => <Badge variant={v === 'approved' ? 'green' : v === 'pending' ? 'amber' : 'red'}>{v}</Badge> },
+    { key: 'name',     label: 'Compétence' },
+    { key: 'category', label: 'Catégorie', muted: true },
+    { key: 'level',    label: 'Niveau',    render: v => <Badge variant="purple">{v}</Badge> },
+    { key: 'offered_by', label: 'Enseignant', render: v => v?.name, muted: true },
+    { key: 'status',   label: 'Statut',  render: v => {
+        const variants = { approved: 'green', pending: 'amber', hidden: 'red' };
+        const labels = { approved: 'Approuvée', pending: 'En attente', hidden: 'Masquée' };
+        return <Badge variant={variants[v] || 'gray'}>{labels[v] || v}</Badge>
+    }},
     {
       key: 'id', label: 'Actions',
       render: (id, row) => (
-        <div style={{ display: 'flex', gap: 6 }}>
-          {row.status !== 'approved' && <button onClick={() => approve(id)} style={{ background: 'rgba(29,158,117,0.1)', border: '1px solid rgba(29,158,117,0.3)', color: '#1D9E75', padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>Approve</button>}
-          {row.status !== 'hidden'   && <button onClick={() => hide(id)}    style={{ background: 'rgba(136,135,128,0.1)', border: '1px solid #1e2b24', color: '#888780', padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>Hide</button>}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {row.status !== 'approved' && <button onClick={() => approve(id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Approuver</button>}
+          {row.status !== 'hidden'   && <button onClick={() => hide(id)}    style={{ background: 'var(--shadow-color)', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Masquer</button>}
         </div>
       )
     }
@@ -211,11 +213,13 @@ export function AdminSkills() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Skill Management</h1>
-      {isLoading ? <Spinner size={32} /> : (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <Table columns={columns} data={data?.data || []} />
-          {data?.last_page > 1 && <div style={{ padding: 16 }}><Pagination page={page} lastPage={data.last_page} onChange={setPage} /></div>}
+      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 32 }}>Gestion des compétences</h1>
+      {isLoading ? <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div> : (
+        <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+          <div style={{ padding: '24px' }}>
+            <Table columns={columns} data={data?.data || []} />
+          </div>
+          {data?.last_page > 1 && <div style={{ padding: 24, borderTop: '1px solid var(--border)' }}><Pagination page={page} lastPage={data.last_page} onChange={setPage} /></div>}
         </Card>
       )}
     </div>
@@ -226,12 +230,12 @@ export function AdminSkills() {
 export function AdminBranding() {
   const { data: branding, isLoading } = useBranding()
   const saveBranding = useSaveBranding()
-  const [form, setForm] = useState({ institution_name: '', primary_color: '#0F6E56', logo_url: '', welcome_message: '' })
+  const [form, setForm] = useState({ institution_name: '', primary_color: '#6366F1', logo_url: '', welcome_message: '' })
 
   // Sync form when data loads
   useEffect(() => { if (branding) setForm(branding) }, [branding])
 
-  const COLORS = ['#0F6E56','#A51C30','#002147','#7F77DD','#EF9F27','#1e40af','#7c3aed']
+  const COLORS = ['#6366F1','#FF6B6B','#0F6E56','#A51C30','#002147','#7F77DD','#EF9F27']
 
   const handleSave = (e) => {
     e.preventDefault()
@@ -242,79 +246,78 @@ export function AdminBranding() {
     const file = e.target.files[0]; if (!file) return
     const fd = new FormData(); fd.append('logo', file)
     const res = await adminApi.uploadLogo(fd)
-    setForm(f => ({ ...f, logo_url: res.data.url }))
-    toast.success('Logo uploaded!')
+    setForm(f => ({ ...f, logo_url: res.data.data.url }))
+    toast.success('Logo téléchargé !')
   }
 
-  if (isLoading) return <Spinner />
+  if (isLoading) return <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div>
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>White-Label Branding</h1>
-      <p style={{ color: '#5a7a6a', marginBottom: 28 }}>Customize your platform's appearance for your institution</p>
+      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Personnalisation de marque</h1>
+      <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500, marginBottom: 40 }}>Personnalisez l'apparence de la plateforme pour votre établissement</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
         <form onSubmit={handleSave}>
-          <Card>
-            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 20 }}>Settings</h3>
+          <Card style={{ padding: 32, borderRadius: 24 }}>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Paramètres</h3>
 
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Institution Name</label>
-              <input className="input-dark" value={form.institution_name} onChange={e => setForm(f => ({ ...f, institution_name: e.target.value }))} placeholder="Harvard University" />
-            </div>
+            <FloatingInput label="Nom de l'établissement" id="inst-name" value={form.institution_name} onChange={e => setForm(f => ({ ...f, institution_name: e.target.value }))} placeholder=" " />
 
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 8 }}>Primary Color</label>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 12, fontWeight: 700 }}>Couleur principale</label>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {COLORS.map(c => (
                   <button key={c} type="button" onClick={() => setForm(f => ({ ...f, primary_color: c }))}
-                    style={{ width: 32, height: 32, borderRadius: 8, background: c, cursor: 'pointer', border: form.primary_color === c ? '2px solid #fff' : '2px solid transparent', transition: 'border 0.15s' }} />
+                    style={{ width: 36, height: 36, borderRadius: 10, background: c, cursor: 'pointer', border: form.primary_color === c ? '3px solid var(--text-main)' : '2px solid transparent', transition: 'all 0.2s', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
                 ))}
                 <input type="color" value={form.primary_color} onChange={e => setForm(f => ({ ...f, primary_color: e.target.value }))}
-                  style={{ width: 32, height: 32, borderRadius: 8, border: 'none', cursor: 'pointer', background: 'none', padding: 0 }} />
+                  style={{ width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'none', padding: 0 }} />
               </div>
             </div>
 
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Logo</label>
-              {form.logo_url && <img src={form.logo_url} alt="logo" style={{ height: 40, marginBottom: 8, objectFit: 'contain' }} />}
-              <label className="btn-secondary" style={{ cursor: 'pointer', display: 'inline-block' }}>
-                ↑ Upload Logo
-                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoUpload} />
-              </label>
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 12, fontWeight: 700 }}>Logo</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                {form.logo_url && <img src={form.logo_url} alt="logo" style={{ height: 50, objectFit: 'contain', borderRadius: 8, padding: 8, background: 'var(--shadow-color)' }} />}
+                <label className="btn-secondary" style={{ cursor: 'pointer', display: 'inline-block', padding: '10px 20px', fontWeight: 700 }}>
+                  ↑ Télécharger le logo
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLogoUpload} />
+                </label>
+              </div>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Welcome Message</label>
-              <textarea className="input-dark" rows={3} value={form.welcome_message} onChange={e => setForm(f => ({ ...f, welcome_message: e.target.value }))} placeholder="Welcome to SKILIO! Exchange knowledge with your peers." style={{ resize: 'vertical' }} />
+            <div className="input-group">
+              <textarea className="input-premium" id="welcome-msg" rows={3} value={form.welcome_message} onChange={e => setForm(f => ({ ...f, welcome_message: e.target.value }))} placeholder=" " />
+              <label htmlFor="welcome-msg" className="floating-label">Message de bienvenue</label>
             </div>
 
-            <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={saveBranding.isLoading}>
-              {saveBranding.isLoading ? <Spinner size={16} /> : 'Save & Apply to All Pages →'}
+            <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontWeight: 800, marginTop: 10 }} disabled={saveBranding.isLoading}>
+              {saveBranding.isLoading ? <Spinner size={20} /> : 'Enregistrer et appliquer →'}
             </button>
           </Card>
         </form>
 
         {/* Live preview */}
-        <Card>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Live Preview</h3>
-          <div style={{ background: '#0a0f0d', borderRadius: 12, overflow: 'hidden', border: '1px solid #1e2b24' }}>
+        <Card style={{ padding: 32, borderRadius: 24 }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Aperçu en direct</h3>
+          <div style={{ background: 'var(--bg)', borderRadius: 20, overflow: 'hidden', border: '1px solid var(--border)', boxShadow: '0 20px 40px var(--shadow-color)' }}>
             {/* Preview nav */}
-            <div style={{ background: '#111814', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ background: 'var(--surface)', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid var(--border)' }}>
               {form.logo_url
-                ? <img src={form.logo_url} style={{ height: 24, objectFit: 'contain' }} alt="logo" />
-                : <div style={{ width: 24, height: 24, borderRadius: 4, background: form.primary_color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>⇄</div>
+                ? <img src={form.logo_url} style={{ height: 28, objectFit: 'contain' }} alt="logo" />
+                : <div style={{ width: 28, height: 28, borderRadius: 6, background: form.primary_color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 800, color: '#fff' }}>⇄</div>
               }
-              <span style={{ color: '#fff', fontWeight: 600, fontSize: 14 }}>{form.institution_name || 'Your Institution'}</span>
+              <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 16 }}>{form.institution_name || 'Votre établissement'}</span>
             </div>
             {/* Preview hero */}
-            <div style={{ padding: 24, textAlign: 'center' }}>
-              <div style={{ color: '#fff', fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
-                {form.institution_name || 'Your Institution'} SKILIO
+            <div style={{ padding: 48, textAlign: 'center' }}>
+              <div style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 24, marginBottom: 12, fontFamily: 'var(--font-heading)' }}>
+                {form.institution_name || 'Votre établissement'} SKILIO
               </div>
-              <p style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 16 }}>{form.welcome_message || 'Welcome message will appear here'}</p>
-              <button style={{ background: form.primary_color, color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'default', fontWeight: 600, fontSize: 13 }}>
-                Get Started
+              <p style={{ color: 'var(--text-muted)', fontSize: 15, marginBottom: 24, fontWeight: 500 }}>{form.welcome_message || 'Votre message de bienvenue apparaîtra ici'}</p>
+              <button style={{ background: form.primary_color, color: '#fff', border: 'none', padding: '12px 28px', borderRadius: 12, cursor: 'default', fontWeight: 800, fontSize: 14, boxShadow: `0 10px 20px ${form.primary_color}33` }}>
+                Démarrer
               </button>
             </div>
           </div>
@@ -328,48 +331,50 @@ export function AdminBranding() {
 export function AdminBilling() {
   const { data, isLoading } = useBilling()
 
-  if (isLoading) return <Spinner />
+  if (isLoading) return <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div>
 
   const plans = [
-    { name: 'Starter',    price: 0,   users: 50,   features: ['Basic matching', 'Session booking', 'Email notifications'] },
-    { name: 'Academy',    price: 99,  users: 500,  features: ['White-labeling', 'Custom subdomain', 'Advanced analytics', '5 admins'] },
-    { name: 'Enterprise', price: 299, users: 99999, features: ['SSO/SAML', 'API access', 'SLA', 'Dedicated manager'] },
+    { name: 'Starter',    price: 0,   users: 50,   features: ['Mise en relation de base', 'Réservation de séances', 'Notifications par email'] },
+    { name: 'Academy',    price: 99,  users: 500,  features: ['Marque blanche', 'Sous-domaine personnalisé', 'Analytiques avancées', '5 administrateurs'] },
+    { name: 'Enterprise', price: 299, users: 99999, features: ['SSO/SAML', 'Accès API', 'SLA', 'Manager dédié'] },
   ]
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Subscription & Billing</h1>
-      <p style={{ color: '#5a7a6a', marginBottom: 28 }}>Manage your plan and download invoices</p>
+      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Abonnement et facturation</h1>
+      <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500, marginBottom: 40 }}>Gérez votre forfait et téléchargez vos factures</p>
 
       {/* Current plan */}
-      <Card style={{ marginBottom: 24 }}>
+      <Card style={{ marginBottom: 32, borderRadius: 24, padding: 32, border: '2px solid var(--primary)', background: 'var(--shadow-color)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <div style={{ color: '#5a7a6a', fontSize: 12, marginBottom: 4 }}>CURRENT PLAN</div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>{data?.plan?.name || 'Starter'}</div>
-            <div style={{ color: '#5a7a6a', fontSize: 13 }}>
-              {data?.users_count} / {data?.plan?.max_users} users · renews {data?.renews_at}
+            <div style={{ color: 'var(--primary)', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: 8 }}>ABONNEMENT ACTUEL</div>
+            <div style={{ fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--text-main)' }}>{data?.plan?.name || 'Starter'}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 4, fontWeight: 600 }}>
+              {data?.users_count} / {data?.plan?.max_users} utilisateurs · Renouvellement le {data?.renews_at}
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 28, fontWeight: 800, color: '#1D9E75' }}>${data?.plan?.price || 0}<span style={{ fontSize: 14, color: '#5a7a6a' }}>/mo</span></div>
+            <div style={{ fontSize: 36, fontWeight: 800, color: 'var(--primary)', fontFamily: 'var(--font-heading)' }}>{data?.plan?.price || 0} DH<span style={{ fontSize: 16, color: 'var(--text-muted)' }}>/mois</span></div>
           </div>
         </div>
       </Card>
 
       {/* Plan selection */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 24, marginBottom: 40 }}>
         {plans.map(plan => (
-          <div key={plan.name} className="card" style={{ padding: 20, border: data?.plan?.name === plan.name ? '2px solid #1D9E75' : '1px solid #1e2b24' }}>
-            {data?.plan?.name === plan.name && <span className="badge badge-green" style={{ marginBottom: 10, display: 'inline-block' }}>Current Plan</span>}
-            <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{plan.name}</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: '#1D9E75', marginBottom: 4 }}>${plan.price}<span style={{ fontSize: 12, color: '#5a7a6a' }}>/mo</span></div>
-            <div style={{ color: '#5a7a6a', fontSize: 12, marginBottom: 12 }}>Up to {plan.users === 99999 ? 'Unlimited' : plan.users} users</div>
-            {plan.features.map(f => <div key={f} style={{ color: '#5a7a6a', fontSize: 12, marginBottom: 6 }}>✓ {f}</div>)}
+          <div key={plan.name} className="card glass" style={{ padding: 32, borderRadius: 28, border: data?.plan?.name === plan.name ? '2px solid var(--primary)' : '1px solid var(--border)', transform: data?.plan?.name === plan.name ? 'scale(1.02)' : 'none' }}>
+            {data?.plan?.name === plan.name && <span className="badge badge-green" style={{ marginBottom: 16 }}>Forfait actuel</span>}
+            <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8, color: 'var(--text-main)' }}>{plan.name}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--primary)', marginBottom: 16, fontFamily: 'var(--font-heading)' }}>{plan.price} DH<span style={{ fontSize: 14, color: 'var(--text-muted)' }}>/mois</span></div>
+            <div style={{ color: 'var(--text-main)', fontSize: 14, marginBottom: 20, fontWeight: 700 }}>Jusqu'à {plan.users === 99999 ? 'Illimité' : plan.users} utilisateurs</div>
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, marginBottom: 24 }}>
+                {plan.features.map(f => <div key={f} style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 10, fontWeight: 500 }}>✓ {f}</div>)}
+            </div>
             {data?.plan?.name !== plan.name && (
-              <button className="btn-primary" style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
-                onClick={() => { toast.success(`Upgrading to ${plan.name}… (redirect to Stripe)`) }}>
-                {plan.price > (data?.plan?.price || 0) ? 'Upgrade' : 'Downgrade'}
+              <button className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontWeight: 800 }}
+                onClick={() => { toast.success(`Mise à jour vers ${plan.name}… (redirection Stripe)`) }}>
+                {plan.price > (data?.plan?.price || 0) ? 'Améliorer' : 'Rétrograder'}
               </button>
             )}
           </div>
@@ -377,19 +382,23 @@ export function AdminBilling() {
       </div>
 
       {/* Invoices */}
-      <Card>
-        <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Invoices</h3>
-        {data?.invoices?.length ? (
-          <Table
-            columns={[
-              { key: 'period', label: 'Period' },
-              { key: 'amount', label: 'Amount', render: v => `$${v}` },
-              { key: 'status', label: 'Status', render: v => <Badge variant="green">{v}</Badge> },
-              { key: 'id', label: '', render: id => <button className="btn-secondary" style={{ padding: '5px 12px', fontSize: 12 }} onClick={() => adminApi.downloadInvoice(id)}>↓ PDF</button> }
-            ]}
-            data={data.invoices}
-          />
-        ) : <EmptyState icon="🧾" title="No invoices yet" desc="Invoices appear here after your first billing cycle" />}
+      <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+        <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border)' }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Factures</h3>
+        </div>
+        <div style={{ padding: '24px' }}>
+            {data?.invoices?.length ? (
+            <Table
+                columns={[
+                { key: 'period', label: 'Période' },
+                { key: 'amount', label: 'Montant', render: v => `${v} DH` },
+                { key: 'status', label: 'Statut', render: v => <Badge variant="green">{v === 'paid' ? 'Payée' : v}</Badge> },
+                { key: 'id', label: '', render: id => <button className="btn-secondary" style={{ padding: '6px 16px', fontSize: 12, fontWeight: 700 }} onClick={() => adminApi.downloadInvoice(id)}>↓ PDF</button> }
+                ]}
+                data={data.invoices}
+            />
+            ) : <EmptyState icon="🧾" title="Aucune facture pour l'instant" desc="Les factures apparaîtront ici après votre premier cycle de facturation" />}
+        </div>
       </Card>
     </div>
   )

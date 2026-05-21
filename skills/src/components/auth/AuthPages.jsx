@@ -1,32 +1,33 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Spinner } from '../ui'
+import { Spinner, FloatingInput } from '../ui'
 import toast from 'react-hot-toast'
 
 function AuthLayout({ children, title, sub }) {
   return (
-    <div style={{ minHeight: '100vh', background: '#070c09', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      {/* Background orb */}
-      <div style={{ position: 'fixed', top: '20%', left: '30%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle,rgba(29,158,117,0.1) 0%,transparent 70%)', pointerEvents: 'none' }} />
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, position: 'relative', overflow: 'hidden' }}>
+      {/* Background orbs */}
+      <div style={{ position: 'absolute', top: '10%', left: '20%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, var(--primary) 0.1, transparent 70%)', opacity: 0.1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, var(--accent) 0.1, transparent 70%)', opacity: 0.1, pointerEvents: 'none' }} />
 
-      <div style={{ width: '100%', maxWidth: 420 }}>
+      <div style={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg,#1D9E75,#EF9F27)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>⇄</div>
-            <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>SKILIO</span>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: '#fff', boxShadow: '0 10px 20px var(--shadow-color)' }}>⇄</div>
+            <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 28, fontFamily: 'var(--font-heading)', letterSpacing: '-1px' }}>SKILIO</span>
           </div>
-          <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 700, marginBottom: 6 }}>{title}</h1>
-          <p style={{ color: '#5a7a6a', fontSize: 14 }}>{sub}</p>
+          <h1 style={{ color: 'var(--text-main)', fontSize: 32, fontWeight: 800, marginBottom: 8, fontFamily: 'var(--font-heading)' }}>{title}</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>{sub}</p>
         </div>
 
-        <div className="card" style={{ padding: 28 }}>
+        <div className="card glass" style={{ padding: 40, borderRadius: 32 }}>
           {children}
         </div>
 
-        <p style={{ color: '#5a7a6a', textAlign: 'center', marginTop: 16, fontSize: 13 }}>
-          © 2026 SKILIO Inc. · <Link to="/" style={{ color: '#1D9E75' }}>Back to home</Link>
+        <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 24, fontSize: 14, fontWeight: 500 }}>
+          © 2026 SKILIO Inc. · <Link to="/" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Retour à l'accueil</Link>
         </p>
       </div>
     </div>
@@ -44,43 +45,43 @@ export function LoginPage() {
     setLoading(true)
     try {
       const user = await login(form)
-      toast.success(`Welcome back, ${user.name}!`)
+      toast.success(`Bienvenue, ${user.name} !`)
       if (user.role === 'super_admin')   navigate('/super')
       else if (user.role === 'tenant_admin') navigate('/admin')
       else navigate('/dashboard')
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed')
+      toast.error(err.response?.data?.message || 'Échec de la connexion')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <AuthLayout title="Sign in to your account" sub="Enter your credentials to continue">
+    <AuthLayout title="Connectez-vous à votre compte" sub="Entrez vos identifiants pour continuer">
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Email address</label>
-          <input
-            type="email" required className="input-dark"
-            placeholder="you@university.edu"
-            value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-          />
-        </div>
-        <div style={{ marginBottom: 24 }}>
-          <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Password</label>
-          <input
-            type="password" required className="input-dark"
-            placeholder="••••••••"
-            value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-          />
-        </div>
-        <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: 12 }} disabled={loading}>
-          {loading ? <Spinner size={18} /> : 'Sign In →'}
+        <FloatingInput
+          label="Email universitaire"
+          id="email"
+          type="email"
+          required
+          value={form.email}
+          onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+        />
+        <FloatingInput
+          label="Mot de passe"
+          id="password"
+          type="password"
+          required
+          value={form.password}
+          onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+        />
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontSize: 16, marginTop: 10 }} disabled={loading}>
+          {loading ? <Spinner size={20} /> : 'Se connecter →'}
         </button>
       </form>
-      <p style={{ color: '#5a7a6a', textAlign: 'center', marginTop: 20, fontSize: 13 }}>
-        Don't have an account?{' '}
-        <Link to="/register" style={{ color: '#1D9E75', fontWeight: 600 }}>Register with your school email</Link>
+      <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 32, fontSize: 14, fontWeight: 500 }}>
+        Pas encore de compte ?{' '}
+        <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Inscrivez-vous avec votre email scolaire</Link>
       </p>
     </AuthLayout>
   )
@@ -95,20 +96,20 @@ export function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (form.password !== form.password_confirmation) {
-      toast.error('Passwords do not match')
+      toast.error('Les mots de passe ne correspondent pas')
       return
     }
     setLoading(true)
     try {
       const user = await register(form)
-      toast.success('Account created! Please check your email to verify.')
+      toast.success('Compte créé ! Veuillez vérifier votre email.')
       navigate('/dashboard')
     } catch (err) {
       const errors = err.response?.data?.errors
       if (errors) {
         Object.values(errors).forEach(msgs => msgs.forEach(m => toast.error(m)))
       } else {
-        toast.error(err.response?.data?.message || 'Registration failed')
+        toast.error(err.response?.data?.message || 'Échec de l\'inscription')
       }
     } finally {
       setLoading(false)
@@ -118,25 +119,30 @@ export function RegisterPage() {
   const set = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }))
 
   return (
-    <AuthLayout title="Create your account" sub="Join your university's SKILIO community">
+    <AuthLayout title="Créer votre compte" sub="Rejoignez la communauté SKILIO de votre université">
       <form onSubmit={handleSubmit}>
         {[
-          { key: 'name',                  label: 'Full Name',        type: 'text',     ph: 'Your Name' },
-          { key: 'email',                 label: 'University Email', type: 'email',    ph: 'you@university.edu' },
-          { key: 'password',              label: 'Password',         type: 'password', ph: '••••••••' },
-          { key: 'password_confirmation', label: 'Confirm Password', type: 'password', ph: '••••••••' },
+          { key: 'name',                  label: 'Nom complet',        type: 'text' },
+          { key: 'email',                 label: 'Email universitaire', type: 'email' },
+          { key: 'password',              label: 'Mot de passe',         type: 'password' },
+          { key: 'password_confirmation', label: 'Confirmer le mot de passe', type: 'password' },
         ].map(field => (
-          <div key={field.key} style={{ marginBottom: 16 }}>
-            <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>{field.label}</label>
-            <input type={field.type} required className="input-dark" placeholder={field.ph} value={form[field.key]} onChange={set(field.key)} />
-          </div>
+          <FloatingInput
+            key={field.key}
+            id={field.key}
+            label={field.label}
+            type={field.type}
+            required
+            value={form[field.key]}
+            onChange={set(field.key)}
+          />
         ))}
-        <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: 12, marginTop: 8 }} disabled={loading}>
-          {loading ? <Spinner size={18} /> : 'Create Account →'}
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontSize: 16, marginTop: 10 }} disabled={loading}>
+          {loading ? <Spinner size={20} /> : 'Créer un compte →'}
         </button>
       </form>
-      <p style={{ color: '#5a7a6a', textAlign: 'center', marginTop: 20, fontSize: 13 }}>
-        Already have an account? <Link to="/login" style={{ color: '#1D9E75', fontWeight: 600 }}>Sign in</Link>
+      <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 32, fontSize: 14, fontWeight: 500 }}>
+        Vous avez déjà un compte ? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Connexion</Link>
       </p>
     </AuthLayout>
   )

@@ -11,9 +11,54 @@ import {
 } from '../../hooks/useApi'
 import {
   Card, StatCard, StatusBadge, Avatar, Stars, Modal,
-  Table, Pagination, EmptyState, Spinner, Badge
+  Table, Pagination, EmptyState, Spinner, Badge, FloatingInput
 } from '../ui'
 import toast from 'react-hot-toast'
+
+// ─── Unique Credit Counter ──────────────────────────────────────────────────
+function CreditCounter({ value = 0 }) {
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    const dur = 1000, step = 16, steps = dur / step
+    let cur = displayValue; const inc = (value - displayValue) / steps
+    const t = setInterval(() => {
+      cur += inc;
+      if ((inc > 0 && cur >= value) || (inc < 0 && cur <= value)) {
+        cur = value; clearInterval(t)
+      }
+      setDisplayValue(cur)
+    }, step)
+    return () => clearInterval(t)
+  }, [value])
+
+  const radius = 45
+  const circumference = 2 * Math.PI * radius
+  const progress = Math.min(value / 10, 1) // Just for visual effect
+  const strokeDashoffset = circumference - progress * circumference
+
+  return (
+    <div style={{ position: 'relative', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+      <svg width="140" height="140" style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx="70" cy="70" r={radius} stroke="var(--border)" strokeWidth="8" fill="none" />
+        <circle
+          cx="70" cy="70" r={radius}
+          stroke="var(--primary)"
+          strokeWidth="8"
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+        />
+      </svg>
+      <div style={{ position: 'absolute', textAlign: 'center' }}>
+        <div style={{ fontSize: 42, fontWeight: 800, color: 'var(--text-main)', fontFamily: 'var(--font-heading)', lineHeight: 1 }}>{Math.round(displayValue)}</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Crédits</div>
+      </div>
+    </div>
+  )
+}
 
 // ─── Student Dashboard ────────────────────────────────────────────────────────
 export function StudentDashboard() {
@@ -32,40 +77,40 @@ export function StudentDashboard() {
 
   return (
     <div>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Welcome back, {user?.name?.split(' ')[0]} 👋</h1>
-        <p style={{ color: '#5a7a6a' }}>{user?.tenant?.name || 'SKILIO'} · Student</p>
+      <div style={{ marginBottom: 40 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Bienvenue, {user?.name?.split(' ')[0]} 👋</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>{user?.tenant?.name || 'SKILIO'} · Étudiant</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard label="Credits" value={user?.credits ?? 0} icon="💳" color="#1D9E75" />
-        <StatCard label="Sessions Done" value={user?.sessions_count ?? 0} icon="🎓" color="#EF9F27" />
-        <StatCard label="Skills Taught" value={user?.skills_taught_count ?? 0} icon="📚" color="#7F77DD" />
-        <StatCard label="Avg Rating" value={user?.avg_rating ? `${user.avg_rating}★` : '—'} icon="⭐" color="#f59e0b" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 24, marginBottom: 40 }}>
+        <StatCard label="Crédits" value={user?.credits ?? 0} icon="💳" color="var(--primary)" />
+        <StatCard label="Séances effectuées" value={user?.sessions_count ?? 0} icon="🎓" color="var(--accent)" />
+        <StatCard label="Compétences enseignées" value={user?.skills_taught_count ?? 0} icon="📚" color="var(--primary-light)" />
+        <StatCard label="Note moyenne" value={user?.avg_rating ? `${user.avg_rating}★` : '—'} icon="⭐" color="#f59e0b" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 32 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
           <Card>
-            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Upcoming Sessions</h3>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Prochaines séances</h3>
             {sessions?.data?.length ? sessions.data.map(s => (
               <SessionRow key={s.id} session={s} onRate={() => setRatingModal(s)} hasMeetingPlaceAlert={unreadMeetingPlaceSessionIds.has(s.id)} />
-            )) : <EmptyState icon="📅" title="No accepted sessions yet" desc="Sessions appear here once a teacher accepts" />}
+            )) : <EmptyState icon="📅" title="Aucune séance acceptée pour le moment" desc="Les séances apparaîtront ici une fois qu'un enseignant aura accepté" />}
             <RatingModal session={ratingModal} onClose={() => setRatingModal(null)} />
           </Card>
           <Card>
-            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>My Pending Bookings</h3>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Mes réservations en attente</h3>
             {myBookings?.data?.length ? myBookings.data.map(s => (
               <SessionRow key={s.id} session={s} onRate={() => setRatingModal(s)} hasMeetingPlaceAlert={unreadMeetingPlaceSessionIds.has(s.id)} />
-            )) : <EmptyState icon="⏳" title="No pending bookings" desc="Book a session to see it here" />}
+            )) : <EmptyState icon="⏳" title="Aucune réservation en attente" desc="Réservez une séance pour la voir ici" />}
           </Card>
         </div>
 
         <Card>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Pending Requests (as teacher)</h3>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Demandes en attente (en tant qu'enseignant)</h3>
           {requests?.data?.length ? requests.data.map(s => (
             <RequestRow key={s.id} session={s} hasMeetingPlaceAlert={unreadMeetingPlaceSessionIds.has(s.id)} />
-          )) : <EmptyState icon="📬" title="No pending requests" desc="Add skills to start receiving booking requests" />}
+          )) : <EmptyState icon="📬" title="Aucune demande en attente" desc="Ajoutez des compétences pour commencer à recevoir des demandes de réservation" />}
         </Card>
       </div>
     </div>
@@ -74,13 +119,13 @@ export function StudentDashboard() {
 
 function getCancelWarning(session, isLearner) {
   if (session.status !== 'accepted' || !isLearner) {
-    return 'Cancel this session? Your reserved credit will be refunded.'
+    return 'Annuler cette séance ? Votre crédit réservé sera remboursé.'
   }
   const minutesUntil = (new Date(session.scheduled_at) - new Date()) / 60000
   if (minutesUntil < 120) {
-    return 'Less than 2 hours before this session starts.\n\nCancelling now will cost you 1 credit (no refund). The teacher will not earn anything.\n\nContinue?'
+    return 'Moins de 2 heures avant le début de cette séance.\n\nL\'annuler maintenant vous coûtera 1 crédit (aucun remboursement). L\'enseignant ne gagnera rien.\n\nContinuer ?'
   }
-  return 'Cancel this session? You are more than 2 hours before the start time — your credit will be refunded.'
+  return 'Annuler cette séance ? Vous êtes à plus de 2 heures du début — votre crédit sera remboursé.'
 }
 
 function SessionRow({ session, onRate, hasMeetingPlaceAlert = false }) {
@@ -93,7 +138,7 @@ function SessionRow({ session, onRate, hasMeetingPlaceAlert = false }) {
 
   const isLearner  = user?.id == session.requester_id
   const otherName  = isLearner ? session.teacher?.name : session.learner?.name
-  const relation   = isLearner ? 'with' : 'from student'
+  const relation   = isLearner ? 'avec' : 'de l\'étudiant'
 
   const hasConfirmed = isLearner ? session.requester_confirmed : session.teacher_confirmed
   const hasRated     = isLearner ? session.requester_rated : session.teacher_rated
@@ -111,57 +156,47 @@ function SessionRow({ session, onRate, hasMeetingPlaceAlert = false }) {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e2b24' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid var(--border)' }}>
       <div style={{ flex: 1 }}>
-        <div style={{ fontWeight: 600, fontSize: 14 }}>{session.skill?.name}</div>
-        <div style={{ color: '#5a7a6a', fontSize: 12 }}>{relation} {otherName} · {session.scheduled_at}</div>
+        <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-main)', marginBottom: 4 }}>{session.skill?.name}</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 500 }}>{relation} {otherName} · {session.scheduled_at}</div>
         {session.notes && (
-          <div style={{ marginTop: 4, padding: '4px 8px', background: 'rgba(29,158,117,0.05)', borderLeft: '2px solid #1D9E75', color: '#5a7a6a', fontSize: 12, fontStyle: 'italic' }}>
+          <div style={{ marginTop: 12, padding: '12px 16px', background: 'var(--shadow-color)', borderLeft: '4px solid var(--primary)', color: 'var(--text-muted)', fontSize: 14, fontStyle: 'italic', borderRadius: '0 12px 12px 0' }}>
             "{session.notes}"
           </div>
         )}
-        <div style={{ marginTop: 4 }}><StatusBadge status={session.status} /></div>
+        <div style={{ marginTop: 12 }}><StatusBadge status={session.status} /></div>
         {session.meeting_place?.title && (
-          <div style={{ marginTop: 6, fontSize: 12, color: '#5a7a6a' }}>
-            Meeting: {session.meeting_place.title}
-            {session.meeting_place.room ? ` · Room ${session.meeting_place.room}` : ''}
-            {session.meeting_place.status ? ` · ${session.meeting_place.status}` : ''}
+          <div style={{ marginTop: 12, fontSize: 13, color: 'var(--text-muted)', fontWeight: 600 }}>
+            📍 Lieu : {session.meeting_place.title}
+            {session.meeting_place.room ? ` · Salle ${session.meeting_place.room}` : ''}
           </div>
         )}
-        {session.meeting_place?.status && ['proposed', 'changed'].includes(session.meeting_place.status) && (
-          <>
-            {session.meeting_place?.proposed_by && session.meeting_place.proposed_by !== (isLearner ? 'requester' : 'teacher') && (
-              <div style={{ marginTop: 6, fontSize: 11, color: '#EF9F27' }}>
-                New meeting place update — please review
-              </div>
-            )}
-          </>
-        )}
         {hasConfirmed && !hasRated && session.status !== 'completed' && (
-          <div style={{ fontSize: 11, color: '#EF9F27', marginTop: 4 }}>
+          <div style={{ fontSize: 12, color: 'var(--accent)', marginTop: 8, fontWeight: 700 }}>
             {session.status === 'pending_ratings'
-              ? 'Both confirmed — please rate your partner'
-              : 'You confirmed — waiting for other party (you can still rate)'}
+              ? 'Séance terminée — veuillez évaluer votre partenaire'
+              : 'Vous avez confirmé — en attente de l\'autre partie'}
           </div>
         )}
       </div>
-      <div style={{ display: 'flex', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 10, marginLeft: 20 }}>
         <button
           className="btn-secondary"
-          style={{ padding: '6px 12px', fontSize: 12, position: 'relative' }}
+          style={{ padding: '8px 16px', fontSize: 13, position: 'relative' }}
           onClick={() => { markMeetingRead.mutate(); setMeetingOpen(true) }}
         >
-          Meeting Place
-          {hasMeetingPlaceAlert && <span style={{ position: 'absolute', top: 3, right: 3, width: 8, height: 8, borderRadius: 999, background: '#E24B4A' }} />}
+          Lieu
+          {hasMeetingPlaceAlert && <span style={{ position: 'absolute', top: -4, right: -4, width: 12, height: 12, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)' }} />}
         </button>
         {session.status === 'accepted' && !hasConfirmed && (
           <>
-            <button className="btn-primary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={handleDone} disabled={markComplete.isLoading}>Done</button>
-            <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={handleCancel} disabled={cancel.isLoading}>Cancel</button>
+            <button className="btn-primary" style={{ padding: '8px 16px', fontSize: 13 }} onClick={handleDone} disabled={markComplete.isLoading}>Terminé</button>
+            <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: 13, color: 'var(--accent)' }} onClick={handleCancel} disabled={cancel.isLoading}>Annuler</button>
           </>
         )}
         {(session.status === 'pending_ratings' || (hasConfirmed && !hasRated)) && session.status !== 'completed' && (
-          <button className="btn-primary" style={{ padding: '6px 12px', fontSize: 12, background: '#EF9F27' }} onClick={() => onRate(session)}>Rate ⭐</button>
+          <button className="btn-primary" style={{ padding: '8px 16px', fontSize: 13, background: 'var(--accent)' }} onClick={() => onRate(session)}>Évaluer ⭐</button>
         )}
       </div>
       <MeetingPlaceModal session={meetingOpen ? session : null} onClose={() => setMeetingOpen(false)} />
@@ -186,27 +221,27 @@ function RequestRow({ session, hasMeetingPlaceAlert = false }) {
   const markMeetingRead = useMarkMeetingPlaceNotificationsRead()
   const [meetingOpen, setMeetingOpen] = useState(false)
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e2b24' }}>
-      <div>
-        <div style={{ fontWeight: 600, fontSize: 14 }}>{session.skill?.name}</div>
-        <div style={{ color: '#5a7a6a', fontSize: 12 }}>from {session.learner?.name} · {session.scheduled_at}</div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-main)', marginBottom: 4 }}>{session.skill?.name}</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 500 }}>de {session.learner?.name} · {session.scheduled_at}</div>
         {session.notes && (
-          <div style={{ marginTop: 4, padding: '4px 8px', background: 'rgba(29,158,117,0.05)', borderLeft: '2px solid #1D9E75', color: '#5a7a6a', fontSize: 12, fontStyle: 'italic' }}>
+          <div style={{ marginTop: 12, padding: '12px 16px', background: 'var(--shadow-color)', borderLeft: '4px solid var(--primary)', color: 'var(--text-muted)', fontSize: 14, fontStyle: 'italic', borderRadius: '0 12px 12px 0' }}>
             "{session.notes}"
           </div>
         )}
       </div>
-      <div style={{ display: 'flex', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 8, marginLeft: 20 }}>
         <button
           className="btn-secondary"
-          style={{ padding: '6px 12px', fontSize: 12, position: 'relative' }}
+          style={{ padding: '8px 16px', fontSize: 13, position: 'relative' }}
           onClick={() => { markMeetingRead.mutate(); setMeetingOpen(true) }}
         >
-          Meeting Place
-          {hasMeetingPlaceAlert && <span style={{ position: 'absolute', top: 3, right: 3, width: 8, height: 8, borderRadius: 999, background: '#E24B4A' }} />}
+          Lieu
+          {hasMeetingPlaceAlert && <span style={{ position: 'absolute', top: -4, right: -4, width: 12, height: 12, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)' }} />}
         </button>
-        <button className="btn-primary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={() => accept.mutate(session.id)} disabled={accept.isLoading}>Accept</button>
-        <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={() => reject.mutate(session.id)}>Reject</button>
+        <button className="btn-primary" style={{ padding: '8px 16px', fontSize: 13 }} onClick={() => accept.mutate(session.id)} disabled={accept.isLoading}>Accepter</button>
+        <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: 13, color: 'var(--accent)' }} onClick={() => reject.mutate(session.id)}>Refuser</button>
       </div>
       <MeetingPlaceModal session={meetingOpen ? session : null} onClose={() => setMeetingOpen(false)} />
     </div>
@@ -226,32 +261,37 @@ export function SearchPage() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Find a Skill</h1>
-      <p style={{ color: '#5a7a6a', marginBottom: 24 }}>Browse peers who can teach you something new</p>
+      <div style={{ marginBottom: 40 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Trouver une compétence</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>Parcourez les profils des étudiants prêts à partager leur savoir</p>
+      </div>
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
-        <input className="input-dark" placeholder="Search skills or teachers…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} style={{ flex: 1, minWidth: 200 }} />
-        <select className="input-dark" value={category} onChange={e => { setCategory(e.target.value); setPage(1) }} style={{ width: 160 }}>
-          <option value="">All Categories</option>
+      <div className="card glass" style={{ padding: 24, marginBottom: 40, display: 'flex', gap: 16, flexWrap: 'wrap', borderRadius: 24 }}>
+        <input className="input-premium" placeholder="Rechercher des compétences ou des enseignants…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} style={{ flex: 1, minWidth: 250 }} />
+        <select className="input-premium" value={category} onChange={e => { setCategory(e.target.value); setPage(1) }} style={{ width: 200 }}>
+          <option value="">Toutes les catégories</option>
           {categories?.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select className="input-dark" value={level} onChange={e => { setLevel(e.target.value); setPage(1) }} style={{ width: 140 }}>
-          <option value="">All Levels</option>
-          {['Beginner','Intermediate','Advanced','Expert'].map(l => <option key={l} value={l}>{l}</option>)}
+        <select className="input-premium" value={level} onChange={e => { setLevel(e.target.value); setPage(1) }} style={{ width: 180 }}>
+          <option value="">Tous les niveaux</option>
+          {['Beginner','Intermediate','Advanced','Expert'].map(l => {
+              const labels = { Beginner: 'Débutant', Intermediate: 'Intermédiaire', Advanced: 'Avancé', Expert: 'Expert' };
+              return <option key={l} value={l}>{labels[l]}</option>
+          })}
         </select>
       </div>
 
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: 60 }}><Spinner size={32} /></div>
+        <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div>
       ) : (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 24 }}>
             {data?.data?.map(teacher => (
               <TeacherCard key={teacher.id} teacher={teacher} onBook={() => setBooking(teacher)} />
             ))}
           </div>
-          {data?.data?.length === 0 && <EmptyState icon="🔍" title="No results found" desc="Try a different search or category" />}
+          {data?.data?.length === 0 && <EmptyState icon="🔍" title="Aucun résultat trouvé" desc="Essayez une autre recherche ou catégorie" />}
           {data?.last_page > 1 && <Pagination page={page} lastPage={data.last_page} onChange={setPage} />}
         </>
       )}
@@ -264,26 +304,26 @@ export function SearchPage() {
 function TeacherCard({ teacher, onBook }) {
   const initials = teacher.name?.split(' ').map(n => n[0]).join('') || 'T'
   return (
-    <div className="card card-hover" style={{ padding: 20 }}>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-        <Avatar initials={initials} size={44} />
+    <div className="card card-hover glass" style={{ padding: 28, borderRadius: 28 }}>
+      <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
+        <Avatar initials={initials} size={60} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 600, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{teacher.name}</div>
+          <div style={{ fontWeight: 800, fontSize: 18, color: 'var(--text-main)', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{teacher.name}</div>
           <Stars rating={teacher.avg_rating || 0} />
-          <span style={{ color: '#5a7a6a', fontSize: 12 }}>{teacher.sessions_count || 0} sessions</span>
+          <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600, marginTop: 4 }}>{teacher.sessions_count || 0} séances</div>
         </div>
       </div>
 
-      {/* Skills offered */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+      {/* Skills offered - Bento style grid */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
         {teacher.skills?.slice(0, 3).map(s => (
-          <span key={s.id} className="badge badge-green">{s.name}</span>
+          <span key={s.id} className="badge badge-green" style={{ fontSize: 11, padding: '4px 12px' }}>{s.name}</span>
         ))}
-        {teacher.skills?.length > 3 && <span className="badge badge-gray">+{teacher.skills.length - 3}</span>}
+        {teacher.skills?.length > 3 && <span className="badge badge-gray" style={{ fontSize: 11, padding: '4px 12px' }}>+{teacher.skills.length - 3}</span>}
       </div>
 
-      <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={onBook}>
-        Book a Session
+      <button className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontWeight: 800 }} onClick={onBook}>
+        Réserver une séance
       </button>
     </div>
   )
@@ -297,7 +337,7 @@ function BookingModal({ teacher, onClose }) {
   const bookSession = useBookSession()
 
   const handleBook = async () => {
-    if (!skillId || !slotId) { toast.error('Please select a skill and a time slot'); return }
+    if (!skillId || !slotId) { toast.error('Veuillez sélectionner une compétence et un créneau'); return }
     await bookSession.mutateAsync({ teacher_id: teacher.id, skill_id: skillId, slot_id: slotId, message })
     refreshUser?.()
     onClose()
@@ -305,41 +345,41 @@ function BookingModal({ teacher, onClose }) {
 
   if (!teacher) return null
   return (
-    <Modal open={!!teacher} onClose={onClose} title={`Book with ${teacher.name}`}>
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Skill</label>
-        <select className="input-dark" value={skillId} onChange={e => setSkillId(e.target.value)}>
-          <option value="">Choose a skill…</option>
+    <Modal open={!!teacher} onClose={onClose} title={`Réserver avec ${teacher.name}`}>
+      <div style={{ marginBottom: 20 }}>
+        <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Compétence</label>
+        <select className="input-premium" value={skillId} onChange={e => setSkillId(e.target.value)}>
+          <option value="">Choisir une compétence…</option>
           {teacher.skills?.map(s => <option key={s.id} value={s.id}>{s.name} ({s.level})</option>)}
         </select>
       </div>
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Time Slot</label>
-        <select className="input-dark" value={slotId} onChange={e => setSlotId(e.target.value)}>
-          <option value="">Choose a slot…</option>
+      <div style={{ marginBottom: 20 }}>
+        <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Créneau horaire</label>
+        <select className="input-premium" value={slotId} onChange={e => setSlotId(e.target.value)}>
+          <option value="">Choisir un créneau…</option>
           {teacher.availability?.map(slot => (
             <option key={slot.id} value={slot.id}>{slot.day} {slot.start} – {slot.end}</option>
           ))}
         </select>
       </div>
-      <div style={{ marginBottom: 20 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Message (optional)</label>
-        <textarea className="input-dark" rows={3} placeholder="Hi! I'd love to learn…" value={message} onChange={e => setMessage(e.target.value)} style={{ resize: 'vertical' }} />
+      <div style={{ marginBottom: 24 }}>
+        <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Message (optionnel)</label>
+        <textarea className="input-premium" rows={3} placeholder="Bonjour ! J'aimerais apprendre…" value={message} onChange={e => setMessage(e.target.value)} style={{ resize: 'vertical' }} />
       </div>
 
-      <div style={{ background: '#0a0f0d', borderRadius: 10, padding: 14, marginBottom: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#5a7a6a', marginBottom: 6 }}>
-          <span>Cost</span><span style={{ color: '#EF9F27', fontWeight: 700 }}>1 Credit</span>
+      <div style={{ background: 'var(--shadow-color)', borderRadius: 20, padding: 20, marginBottom: 32, border: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 600 }}>
+          <span>Coût</span><span style={{ color: 'var(--accent)', fontWeight: 800 }}>1 Crédit</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#5a7a6a' }}>
-          <span>Duration</span><span>1 hour</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'var(--text-muted)', fontWeight: 600 }}>
+          <span>Durée</span><span style={{ color: 'var(--text-main)', fontWeight: 800 }}>1 heure</span>
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 10 }}>
-        <button className="btn-secondary" style={{ flex: 1 }} onClick={onClose}>Cancel</button>
-        <button className="btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={handleBook} disabled={bookSession.isLoading}>
-          {bookSession.isLoading ? <Spinner size={16} /> : 'Confirm Booking →'}
+      <div style={{ display: 'flex', gap: 12 }}>
+        <button className="btn-secondary" style={{ flex: 1, padding: 14, borderRadius: 16 }} onClick={onClose}>Annuler</button>
+        <button className="btn-primary" style={{ flex: 1, justifyContent: 'center', padding: 14, borderRadius: 16 }} onClick={handleBook} disabled={bookSession.isLoading}>
+          {bookSession.isLoading ? <Spinner size={20} /> : 'Confirmer la réservation →'}
         </button>
       </div>
     </Modal>
@@ -370,36 +410,41 @@ export function SessionsPage() {
     setCancelModal(row)
   }
 
-  const tabs = ['upcoming', 'pending', 'completed', 'cancelled']
+  const tabs = [
+      { key: 'upcoming', label: 'À venir' },
+      { key: 'pending', label: 'En attente' },
+      { key: 'completed', label: 'Terminées' },
+      { key: 'cancelled', label: 'Annulées' }
+  ]
 
   const columns = [
-    { key: 'skill',       label: 'Skill',    render: (_, row) => row.skill?.name },
-    { key: 'teacher',     label: 'Teacher',  render: (_, row) => row.teacher?.name },
+    { key: 'skill',       label: 'Compétence',    render: (_, row) => row.skill?.name },
+    { key: 'teacher',     label: 'Enseignant',  render: (_, row) => row.teacher?.name },
     { key: 'scheduled_at',label: 'Date',     muted: true },
-    { key: 'status',      label: 'Status',   render: (v) => <StatusBadge status={v} /> },
-    { key: 'meeting_place', label: 'Meeting Place', render: (v) => (
-      <div style={{ fontSize: 12, color: '#5a7a6a' }}>
-        {v?.title ? `${v.title}${v?.status ? ` (${v.status})` : ''}` : 'Not set'}
+    { key: 'status',      label: 'Statut',   render: (v) => <StatusBadge status={v} /> },
+    { key: 'meeting_place', label: 'Lieu de rencontre', render: (v) => (
+      <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}>
+        {v?.title ? `${v.title}${v?.status ? ` (${v.status === 'accepted' ? 'accepté' : 'en attente'})` : ''}` : 'Non défini'}
       </div>
     ) },
     {
       key: 'actions', label: '',
       render: (_, row) => (
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
           <button
             className="btn-secondary"
-            style={{ padding: '5px 10px', fontSize: 12, position: 'relative' }}
+            style={{ padding: '6px 12px', fontSize: 12, position: 'relative' }}
             onClick={() => { markMeetingRead.mutate(); setMeetingModal(row) }}
           >
-            Place
-            {unreadMeetingPlaceSessionIds.has(row.id) && <span style={{ position: 'absolute', top: 3, right: 3, width: 8, height: 8, borderRadius: 999, background: '#E24B4A' }} />}
+            Lieu
+            {unreadMeetingPlaceSessionIds.has(row.id) && <span style={{ position: 'absolute', top: -3, right: -3, width: 8, height: 8, borderRadius: '50%', background: 'var(--accent)' }} />}
           </button>
           {row.status === 'accepted' && <>
-            <button className="btn-primary" style={{ padding: '5px 10px', fontSize: 12 }} onClick={async () => { await markComplete.mutateAsync(row.id); setRatingModal(row) }}>Mark Done</button>
-            <button className="btn-secondary" style={{ padding: '5px 10px', fontSize: 12 }} onClick={() => handleCancelRow(row)} disabled={cancel.isLoading}>Cancel</button>
+            <button className="btn-primary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={async () => { await markComplete.mutateAsync(row.id); setRatingModal(row) }}>Terminé</button>
+            <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: 12, color: 'var(--accent)' }} onClick={() => handleCancelRow(row)} disabled={cancel.isLoading}>Annuler</button>
           </>}
           {row.status === 'pending_ratings' && (
-            <button className="btn-primary" style={{ padding: '5px 10px', fontSize: 12 }} onClick={() => setRatingModal(row)}>Rate</button>
+            <button className="btn-primary" style={{ padding: '6px 12px', fontSize: 12, background: 'var(--accent)' }} onClick={() => setRatingModal(row)}>Évaluer</button>
           )}
         </div>
       )
@@ -408,21 +453,34 @@ export function SessionsPage() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>My Sessions</h1>
+      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 32 }}>Mes séances</h1>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 32 }}>
         {tabs.map(t => (
-          <button key={t} onClick={() => { setTab(t); setPage(1) }}
-            style={{ background: tab === t ? '#0F6E56' : 'transparent', color: tab === t ? '#fff' : '#5a7a6a', border: '1px solid', borderColor: tab === t ? '#0F6E56' : '#1e2b24', padding: '7px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, textTransform: 'capitalize' }}>
-            {t}
+          <button key={t.key} onClick={() => { setTab(t.key); setPage(1) }}
+            style={{
+                background: tab === t.key ? 'var(--primary)' : 'var(--shadow-color)',
+                color: tab === t.key ? '#fff' : 'var(--text-muted)',
+                border: '1px solid',
+                borderColor: tab === t.key ? 'var(--primary)' : 'var(--border)',
+                padding: '10px 24px',
+                borderRadius: 12,
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 700,
+                transition: 'all 0.2s'
+            }}>
+            {t.label}
           </button>
         ))}
       </div>
 
-      {isLoading ? <div style={{ textAlign: 'center', padding: 60 }}><Spinner size={32} /></div> : (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <Table columns={columns} data={data?.data || []} />
-          {data?.last_page > 1 && <div style={{ padding: 16 }}><Pagination page={page} lastPage={data.last_page} onChange={setPage} /></div>}
+      {isLoading ? <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div> : (
+        <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+          <div style={{ padding: '24px' }}>
+            <Table columns={columns} data={data?.data || []} />
+          </div>
+          {data?.last_page > 1 && <div style={{ padding: 24, borderTop: '1px solid var(--border)' }}><Pagination page={page} lastPage={data.last_page} onChange={setPage} /></div>}
         </Card>
       )}
 
@@ -454,27 +512,27 @@ function CancelSessionModal({ open, onClose, warning, onSubmit, loading }) {
   if (!open) return null
 
   return (
-    <Modal open={open} onClose={onClose} title="Cancel Session" width={520}>
-      <div style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 12, whiteSpace: 'pre-line' }}>
+    <Modal open={open} onClose={onClose} title="Annuler la séance" width={520}>
+      <div style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 20, whiteSpace: 'pre-line', fontWeight: 500, lineHeight: 1.6 }}>
         {warning}
       </div>
-      <div style={{ marginBottom: 16 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Reason (required)</label>
-        <textarea className="input-dark" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Explain why you are cancelling..." style={{ resize: 'vertical' }} />
+      <div style={{ marginBottom: 24 }}>
+        <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Raison (obligatoire)</label>
+        <textarea className="input-premium" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Expliquez pourquoi vous annulez..." style={{ resize: 'vertical' }} />
       </div>
-      <div style={{ display: 'flex', gap: 10 }}>
-        <button className="btn-secondary" style={{ flex: 1 }} onClick={onClose}>Back</button>
+      <div style={{ display: 'flex', gap: 12 }}>
+        <button className="btn-secondary" style={{ flex: 1, padding: 14, borderRadius: 16 }} onClick={onClose}>Retour</button>
         <button
           className="btn-primary"
-          style={{ flex: 1, justifyContent: 'center', background: '#E24B4A' }}
+          style={{ flex: 1, justifyContent: 'center', background: 'var(--accent)', padding: 14, borderRadius: 16 }}
           onClick={async () => {
-            if (!reason.trim()) { toast.error('Please add a cancellation reason'); return }
+            if (!reason.trim()) { toast.error('Veuillez ajouter un motif d\'annulation'); return }
             await onSubmit(reason.trim())
             onClose()
           }}
           disabled={loading}
         >
-          {loading ? <Spinner size={16} /> : 'Confirm Cancel'}
+          {loading ? <Spinner size={20} /> : 'Confirmer l\'annulation'}
         </button>
       </div>
     </Modal>
@@ -517,15 +575,15 @@ function MeetingPlaceModal({ session, onClose }) {
   const canEdit = ['pending', 'accepted', 'pending_ratings'].includes(session.status)
   const handleSave = async () => {
     if (!canEdit) {
-      toast.error('Meeting place cannot be changed for this session')
+      toast.error('Le lieu de rencontre ne peut plus être modifié pour cette séance')
       return
     }
     if (!form.title?.trim()) {
-      toast.error('Please add a meeting place title')
+      toast.error('Veuillez ajouter un titre pour le lieu')
       return
     }
     if (hasExisting && !form.change_reason?.trim()) {
-      toast.error('Please provide a reason for changing the meeting place')
+      toast.error('Veuillez fournir une raison pour le changement de lieu')
       return
     }
 
@@ -547,74 +605,61 @@ function MeetingPlaceModal({ session, onClose }) {
   }
 
   return (
-    <Modal open={!!session} onClose={onClose} title="Meeting Place">
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 12, color: '#5a7a6a', marginBottom: 6 }}>Current Status</div>
+    <Modal open={!!session} onClose={onClose} title="Lieu de rencontre">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 700 }}>Statut actuel</div>
         <StatusBadge status={session.meeting_place?.status || 'pending'} />
       </div>
 
       {!canEdit && (
-        <div style={{ background: 'rgba(226,75,74,0.08)', border: '1px solid rgba(226,75,74,0.3)', color: '#E24B4A', borderRadius: 10, padding: 12, fontSize: 12, marginBottom: 14 }}>
-          Meeting place cannot be changed when the session is {session.status}.
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', borderRadius: 16, padding: 16, fontSize: 13, marginBottom: 24, fontWeight: 600 }}>
+          Le lieu de rencontre ne peut pas être modifié lorsque la séance est {session.status}.
         </div>
       )}
 
       {hasExisting && (
-        <div style={{ background: '#0a0f0d', borderRadius: 10, padding: 12, marginBottom: 14, fontSize: 12, color: '#5a7a6a' }}>
-          <div><strong style={{ color: '#fff' }}>{session.meeting_place?.title}</strong></div>
-          {session.meeting_place?.address && <div>{session.meeting_place.address}</div>}
-          {session.meeting_place?.room && <div>Room: {session.meeting_place.room}</div>}
-          {session.meeting_place?.map_link && <a href={session.meeting_place.map_link} target="_blank" rel="noreferrer" style={{ color: '#1D9E75' }}>Open map link</a>}
+        <div style={{ background: 'var(--shadow-color)', borderRadius: 20, padding: 20, marginBottom: 24, fontSize: 14, color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
+          <div><strong style={{ color: 'var(--text-main)', fontSize: 16 }}>{session.meeting_place?.title}</strong></div>
+          {session.meeting_place?.address && <div style={{ marginTop: 4 }}>{session.meeting_place.address}</div>}
+          {session.meeting_place?.room && <div style={{ marginTop: 4 }}>Salle : {session.meeting_place.room}</div>}
+          {session.meeting_place?.map_link && <div style={{ marginTop: 12 }}><a href={session.meeting_place.map_link} target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Ouvrir le lien GPS</a></div>}
         </div>
       )}
 
-      <div style={{ marginBottom: 10 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Title</label>
-        <input className="input-dark" value={form.title} onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))} placeholder="Main Library" />
-      </div>
-      <div style={{ marginBottom: 10 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Address</label>
-        <input className="input-dark" value={form.address} onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))} placeholder="Street and building" />
-      </div>
-      <div style={{ marginBottom: 10 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Map Link</label>
-        <input className="input-dark" value={form.map_link} onChange={(e) => setForm(prev => ({ ...prev, map_link: e.target.value }))} placeholder="https://maps.google.com/..." />
-      </div>
-      <div style={{ marginBottom: 10 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Room Number</label>
-        <input className="input-dark" value={form.room} onChange={(e) => setForm(prev => ({ ...prev, room: e.target.value }))} placeholder="A-203" />
-      </div>
-      <div style={{ marginBottom: 10 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Notes</label>
-        <textarea className="input-dark" rows={2} value={form.notes} onChange={(e) => setForm(prev => ({ ...prev, notes: e.target.value }))} placeholder="Meet near the reception desk." />
-      </div>
-      {hasExisting && (
-        <div style={{ marginBottom: 14 }}>
-          <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Reason for change</label>
-          <input className="input-dark" value={form.change_reason} onChange={(e) => setForm(prev => ({ ...prev, change_reason: e.target.value }))} placeholder="Traffic, room unavailable, etc." />
+      <div style={{ display: 'grid', gap: 16 }}>
+        <FloatingInput label="Titre (ex: Bibliothèque)" id="place-title" value={form.title} onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))} />
+        <FloatingInput label="Adresse" id="place-address" value={form.address} onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))} />
+        <FloatingInput label="Lien Google Maps" id="place-map" value={form.map_link} onChange={(e) => setForm(prev => ({ ...prev, map_link: e.target.value }))} />
+        <FloatingInput label="Numéro de salle" id="place-room" value={form.room} onChange={(e) => setForm(prev => ({ ...prev, room: e.target.value }))} />
+        <div className="input-group">
+          <textarea className="input-premium" rows={2} value={form.notes} onChange={(e) => setForm(prev => ({ ...prev, notes: e.target.value }))} placeholder=" " id="place-notes" />
+          <label htmlFor="place-notes" className="floating-label">Notes (ex: Près de l'accueil)</label>
         </div>
-      )}
+        {hasExisting && (
+          <FloatingInput label="Raison du changement" id="place-reason" value={form.change_reason} onChange={(e) => setForm(prev => ({ ...prev, change_reason: e.target.value }))} />
+        )}
+      </div>
 
       {!!session.meeting_place_history?.length && (
-        <div style={{ marginBottom: 16, maxHeight: 120, overflowY: 'auto' }}>
-          <div style={{ color: '#5a7a6a', fontSize: 12, marginBottom: 6 }}>History</div>
+        <div style={{ marginTop: 24, marginBottom: 24, maxHeight: 150, overflowY: 'auto', padding: 16, background: 'var(--shadow-color)', borderRadius: 16 }}>
+          <div style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 12, fontWeight: 800, textTransform: 'uppercase' }}>Historique</div>
           {session.meeting_place_history.slice().reverse().map((h, idx) => (
-            <div key={idx} style={{ fontSize: 12, color: '#5a7a6a', marginBottom: 4 }}>
-              {h.type} by {h.by_role} at {h.at}
+            <div key={idx} style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, paddingBottom: 8, borderBottom: '1px solid var(--border)' }}>
+              <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>{h.type}</span> par {h.by_role === 'requester' ? 'Apprenant' : 'Enseignant'} le {h.at}
             </div>
           ))}
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: 10 }}>
-        <button className="btn-secondary" style={{ flex: 1 }} onClick={onClose}>Close</button>
+      <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+        <button className="btn-secondary" style={{ flex: 1, padding: 14, borderRadius: 16 }} onClick={onClose}>Fermer</button>
         {canAccept && (
-          <button className="btn-primary" style={{ flex: 1, justifyContent: 'center', background: '#1D9E75' }} onClick={handleAccept} disabled={acceptMeetingPlace.isLoading}>
-            {acceptMeetingPlace.isLoading ? <Spinner size={16} /> : 'Accept Place'}
+          <button className="btn-primary" style={{ flex: 1, justifyContent: 'center', background: 'var(--primary)', padding: 14, borderRadius: 16 }} onClick={handleAccept} disabled={acceptMeetingPlace.isLoading}>
+            {acceptMeetingPlace.isLoading ? <Spinner size={20} /> : 'Accepter le lieu'}
           </button>
         )}
-        <button className="btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={handleSave} disabled={!canEdit || updateMeetingPlace.isLoading}>
-          {updateMeetingPlace.isLoading ? <Spinner size={16} /> : (hasExisting ? 'Request Change' : 'Propose Place')}
+        <button className="btn-primary" style={{ flex: 1, justifyContent: 'center', padding: 14, borderRadius: 16 }} onClick={handleSave} disabled={!canEdit || updateMeetingPlace.isLoading}>
+          {updateMeetingPlace.isLoading ? <Spinner size={20} /> : (hasExisting ? 'Demander un changement' : 'Proposer un lieu')}
         </button>
       </div>
     </Modal>
@@ -626,7 +671,6 @@ function RatingModal({ session, onClose }) {
   const [rating, setRating]   = useState(5)
   const [comment, setComment] = useState('')
   const submitRating = useSubmitRating()
-  const isLearner = user?.id == session?.requester_id
 
   const handleSubmit = async () => {
     await submitRating.mutateAsync({ sessionId: session.id, data: { rating, comment } })
@@ -636,26 +680,26 @@ function RatingModal({ session, onClose }) {
 
   if (!session) return null
   return (
-    <Modal open={!!session} onClose={onClose} title="Rate your session">
-      <p style={{ color: '#5a7a6a', fontSize: 14, marginBottom: 20 }}>
-        How was your session on <strong style={{ color: '#fff' }}>{session.skill?.name}</strong>?
+    <Modal open={!!session} onClose={onClose} title="Évaluez votre séance">
+      <p style={{ color: 'var(--text-muted)', fontSize: 16, marginBottom: 24, fontWeight: 500 }}>
+        Comment s'est passée votre séance sur <strong style={{ color: 'var(--text-main)' }}>{session.skill?.name}</strong> ?
       </p>
-      <div style={{ textAlign: 'center', marginBottom: 20 }}>
-        <div style={{ fontSize: 12, color: '#5a7a6a', marginBottom: 10 }}>Your rating</div>
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12, fontWeight: 700, textTransform: 'uppercase' }}>Votre note</div>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
           {[1,2,3,4,5].map(n => (
-            <button key={n} onClick={() => setRating(n)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 32, color: n <= rating ? '#EF9F27' : '#1e2b24', transition: 'color 0.15s' }}>★</button>
+            <button key={n} onClick={() => setRating(n)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 40, color: n <= rating ? 'var(--accent)' : 'var(--border)', transition: 'all 0.2s', filter: n <= rating ? 'drop-shadow(0 0 10px var(--accent))' : 'none' }}>★</button>
           ))}
         </div>
       </div>
-      <div style={{ marginBottom: 20 }}>
-        <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Comment (optional)</label>
-        <textarea className="input-dark" rows={3} value={comment} onChange={e => setComment(e.target.value)} placeholder="Great session, very clear explanations…" style={{ resize: 'vertical' }} />
+      <div style={{ marginBottom: 32 }}>
+        <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Commentaire (optionnel)</label>
+        <textarea className="input-premium" rows={3} value={comment} onChange={e => setComment(e.target.value)} placeholder="Excellente séance, explications très claires…" style={{ resize: 'vertical' }} />
       </div>
-      <div style={{ display: 'flex', gap: 10 }}>
-        <button className="btn-secondary" style={{ flex: 1 }} onClick={onClose}>Skip</button>
-        <button className="btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={handleSubmit} disabled={submitRating.isLoading}>
-          {submitRating.isLoading ? <Spinner size={16} /> : 'Submit Rating'}
+      <div style={{ display: 'flex', gap: 12 }}>
+        <button className="btn-secondary" style={{ flex: 1, padding: 14, borderRadius: 16 }} onClick={onClose}>Passer</button>
+        <button className="btn-primary" style={{ flex: 1, justifyContent: 'center', padding: 14, borderRadius: 16 }} onClick={handleSubmit} disabled={submitRating.isLoading}>
+          {submitRating.isLoading ? <Spinner size={20} /> : 'Soumettre l\'évaluation'}
         </button>
       </div>
     </Modal>
@@ -674,7 +718,7 @@ export function TeachPage() {
   const [showAdd, setShowAdd] = useState(false)
   const [form, setForm]       = useState({ name: '', category: '', level: 'Intermediate', description: '' })
 
-  const DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+  const DAYS    = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche']
   const [slots, setSlots] = useState(DAYS.map((_, i) => ({ day_index: i, start: '10:00', end: '12:00', active: false })))
 
   useEffect(() => {
@@ -709,80 +753,77 @@ export function TeachPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Teach & Earn Credits</h1>
-          <p style={{ color: '#5a7a6a' }}>Add skills you can teach and set your availability</p>
+          <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Enseigner & Gagner des crédits</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>Ajoutez les compétences que vous pouvez enseigner et définissez vos disponibilités</p>
         </div>
-        <button className="btn-primary" onClick={() => setShowAdd(true)}>+ Add Skill</button>
+        <button className="btn-primary" style={{ padding: '14px 28px', borderRadius: 16, fontWeight: 800 }} onClick={() => setShowAdd(true)}>+ Ajouter une compétence</button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
         {/* My Skills */}
         <Card>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>Skills I Teach</h3>
-          {isLoading ? <Spinner /> : mySkills?.length ? mySkills.map(skill => (
-            <div key={skill.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #1e2b24' }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Compétences que j'enseigne</h3>
+          {isLoading ? <Spinner size={40} /> : mySkills?.length ? mySkills.map(skill => (
+            <div key={skill.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{skill.name}</div>
-                <div style={{ color: '#5a7a6a', fontSize: 12 }}>{skill.category} · {skill.level}</div>
+                <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-main)', marginBottom: 4 }}>{skill.name}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600 }}>{skill.category} · {skill.level}</div>
               </div>
-              <button onClick={() => removeSkill.mutate(skill.id)} style={{ background: 'rgba(226,75,74,0.1)', border: '1px solid rgba(226,75,74,0.3)', color: '#E24B4A', padding: '5px 10px', borderRadius: 6, cursor: 'pointer', fontSize: 12 }}>Remove</button>
+              <button onClick={() => removeSkill.mutate(skill.id)} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', padding: '8px 16px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 700, transition: 'all 0.2s' }}>Supprimer</button>
             </div>
-          )) : <EmptyState icon="📚" title="No skills yet" desc="Add skills you can teach to start earning credits" />}
+          )) : <EmptyState icon="📚" title="Aucune compétence pour le moment" desc="Ajoutez des compétences que vous pouvez enseigner pour commencer à gagner des crédits" />}
         </Card>
 
         {/* Availability */}
         <Card>
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>My Availability</h3>
-          <p style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 16 }}>Select days and times when you're available to teach</p>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, fontFamily: 'var(--font-heading)' }}>Ma disponibilité</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 24, fontWeight: 500 }}>Sélectionnez les jours et créneaux où vous êtes disponible pour enseigner</p>
           {DAYS.map((day, i) => (
-            <div key={day} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, opacity: slots[i].active ? 1 : 0.5 }}>
-              <input type="checkbox" checked={slots[i].active} onChange={e => updateSlot(i, 'active', e.target.checked)} />
-              <span style={{ color: '#fff', fontSize: 13, width: 80 }}>{day}</span>
-              <input type="time" className="input-dark" style={{ flex: 1 }} value={slots[i].start} onChange={e => updateSlot(i, 'start', e.target.value)} disabled={!slots[i].active} />
-              <span style={{ color: '#5a7a6a' }}>→</span>
-              <input type="time" className="input-dark" style={{ flex: 1 }} value={slots[i].end} onChange={e => updateSlot(i, 'end', e.target.value)} disabled={!slots[i].active} />
+            <div key={day} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, opacity: slots[i].active ? 1 : 0.4, transition: 'all 0.2s' }}>
+              <input type="checkbox" style={{ width: 20, height: 20, cursor: 'pointer', accentColor: 'var(--primary)' }} checked={slots[i].active} onChange={e => updateSlot(i, 'active', e.target.checked)} />
+              <span style={{ color: 'var(--text-main)', fontSize: 14, fontWeight: 700, width: 80 }}>{day}</span>
+              <input type="time" className="input-premium" style={{ flex: 1, padding: '8px' }} value={slots[i].start} onChange={e => updateSlot(i, 'start', e.target.value)} disabled={!slots[i].active} />
+              <span style={{ color: 'var(--text-muted)', fontWeight: 800 }}>→</span>
+              <input type="time" className="input-premium" style={{ flex: 1, padding: '8px' }} value={slots[i].end} onChange={e => updateSlot(i, 'end', e.target.value)} disabled={!slots[i].active} />
             </div>
           ))}
-          <button className="btn-primary" style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
+          <button className="btn-primary" style={{ marginTop: 24, width: '100%', justifyContent: 'center', padding: 14, borderRadius: 16, fontWeight: 800 }}
             onClick={handleSaveAvail} disabled={setAvail.isLoading}>
-            {setAvail.isLoading ? <Spinner size={16} /> : 'Save Availability'}
+            {setAvail.isLoading ? <Spinner size={20} /> : 'Enregistrer les disponibilités'}
           </button>
         </Card>
       </div>
 
       {/* Add Skill Modal */}
-      <Modal open={showAdd} onClose={() => setShowAdd(false)} title="Add a Skill to Teach">
+      <Modal open={showAdd} onClose={() => setShowAdd(false)} title="Proposer une compétence">
         <form onSubmit={handleAddSkill}>
-          {[
-            { key: 'name',        label: 'Skill Name',  type: 'text',   ph: 'e.g. Python, French, Guitar' },
-            { key: 'description', label: 'Description', type: 'text',   ph: 'Brief description of what you\'ll teach' },
-          ].map(f => (
-            <div key={f.key} style={{ marginBottom: 14 }}>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>{f.label}</label>
-              <input className="input-dark" type={f.type} placeholder={f.ph} value={form[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} required />
-            </div>
-          ))}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+          <FloatingInput label="Nom de la compétence" id="skill-name" type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required />
+          <FloatingInput label="Description (brève)" id="skill-desc" type="text" value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} />
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
             <div>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Category</label>
-              <select className="input-dark" value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))} required>
-                <option value="">Select…</option>
+              <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Catégorie</label>
+              <select className="input-premium" value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))} required>
+                <option value="">Sélectionner…</option>
                 {categories?.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label style={{ color: '#5a7a6a', fontSize: 12, display: 'block', marginBottom: 6 }}>Level</label>
-              <select className="input-dark" value={form.level} onChange={e => setForm(p => ({ ...p, level: e.target.value }))}>
-                {['Beginner','Intermediate','Advanced','Expert'].map(l => <option key={l} value={l}>{l}</option>)}
+              <label style={{ color: 'var(--text-muted)', fontSize: 13, display: 'block', marginBottom: 8, fontWeight: 700 }}>Niveau</label>
+              <select className="input-premium" value={form.level} onChange={e => setForm(p => ({ ...p, level: e.target.value }))}>
+                <option value="Beginner">Débutant</option>
+                <option value="Intermediate">Intermédiaire</option>
+                <option value="Advanced">Avancé</option>
+                <option value="Expert">Expert</option>
               </select>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button type="button" className="btn-secondary" style={{ flex: 1 }} onClick={() => setShowAdd(false)}>Cancel</button>
-            <button type="submit" className="btn-primary" style={{ flex: 1, justifyContent: 'center' }} disabled={addSkill.isLoading}>
-              {addSkill.isLoading ? <Spinner size={16} /> : 'Add Skill →'}
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button type="button" className="btn-secondary" style={{ flex: 1, padding: 14, borderRadius: 16 }} onClick={() => setShowAdd(false)}>Annuler</button>
+            <button type="submit" className="btn-primary" style={{ flex: 1, justifyContent: 'center', padding: 14, borderRadius: 16 }} disabled={addSkill.isLoading}>
+              {addSkill.isLoading ? <Spinner size={20} /> : 'Ajouter la compétence →'}
             </button>
           </div>
         </form>
@@ -798,26 +839,37 @@ export function CreditsPage() {
 
   const columns = [
     { key: 'created_at', label: 'Date', muted: true },
-    { key: 'type',       label: 'Type',   render: v => <Badge variant={v === 'earn' ? 'green' : v === 'spend' ? 'amber' : 'red'}>{v}</Badge> },
-    { key: 'amount',     label: 'Amount', render: v => <span style={{ color: v > 0 ? '#1D9E75' : '#E24B4A', fontWeight: 700 }}>{v > 0 ? '+' : ''}{v}</span> },
+    { key: 'type',       label: 'Type',   render: v => {
+        const labels = { earn: 'Gain', spend: 'Dépense', penalty: 'Pénalité', refund: 'Remboursement' };
+        const variants = { earn: 'green', spend: 'amber', penalty: 'red', refund: 'purple' };
+        return <Badge variant={variants[v] || 'gray'}>{labels[v] || v}</Badge>
+    }},
+    { key: 'amount',     label: 'Montant', render: v => <span style={{ color: v > 0 ? 'var(--primary)' : 'var(--accent)', fontWeight: 800 }}>{v > 0 ? '+' : ''}{v} DH</span> },
     { key: 'description',label: 'Description', muted: true },
   ]
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Credits</h1>
+      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 40 }}>Crédits</h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard label="Balance" value={user?.credits ?? 0} icon="💳" color="#1D9E75" />
-        <StatCard label="Total Earned" value={txData?.meta?.total_earned ?? '—'} icon="📈" color="#EF9F27" />
-        <StatCard label="Total Spent" value={txData?.meta?.total_spent ?? '—'} icon="📉" color="#7F77DD" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))', gap: 32, marginBottom: 40, alignItems: 'center' }}>
+        <Card style={{ textAlign: 'center', padding: 32 }}>
+            <CreditCounter value={user?.credits ?? 0} />
+            <div style={{ marginTop: 20, color: 'var(--text-muted)', fontWeight: 600 }}>Solde actuel</div>
+        </Card>
+        <div style={{ display: 'grid', gap: 24 }}>
+            <StatCard label="Total gagné" value={`${txData?.meta?.total_earned ?? 0} DH`} icon="📈" color="var(--primary)" />
+            <StatCard label="Total dépensé" value={`${txData?.meta?.total_spent ?? 0} DH`} icon="📉" color="var(--accent)" />
+        </div>
       </div>
 
-      <Card style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e2b24' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700 }}>Transaction History</h3>
+      <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+        <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border)' }}>
+          <h3 style={{ fontSize: 20, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Historique des transactions</h3>
         </div>
-        <Table columns={columns} data={txData?.data || []} />
+        <div style={{ padding: '24px' }}>
+            <Table columns={columns} data={txData?.data || []} />
+        </div>
       </Card>
     </div>
   )
@@ -840,28 +892,30 @@ export function RatingsPage() {
 
   return (
     <div>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>My Ratings</h1>
-      <p style={{ color: '#5a7a6a', marginBottom: 24 }}>What students say about your teaching</p>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard label="Avg Rating" value={avgDisplay} icon="⭐" color="#EF9F27" />
-        <StatCard label="Total Reviews" value={reviewCount} icon="💬" color="#7F77DD" />
+      <div style={{ marginBottom: 40 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Mes évaluations</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>Ce que les étudiants disent de votre enseignement</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 24, marginBottom: 40 }}>
+        <StatCard label="Note moyenne" value={avgDisplay} icon="⭐" color="#f59e0b" />
+        <StatCard label="Total des avis" value={reviewCount} icon="💬" color="var(--primary-light)" />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 24 }}>
         {ratings?.length ? ratings.map((r) => (
-          <Card key={r.id}>
+          <Card key={r.id} className="card-hover glass" style={{ borderRadius: 28, padding: 32 }}>
             <Stars rating={r.rating} />
-            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.7, margin: '10px 0 12px' }}>"{r.comment || 'No comment'}"</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Avatar initials={r.from?.name?.split(' ').map(n=>n[0]).join('')} size={30} />
+            <p style={{ color: 'var(--text-main)', fontSize: 15, lineHeight: 1.7, margin: '20px 0 24px', fontWeight: 500, fontStyle: 'italic' }}>"{r.comment || 'Aucun commentaire'}"</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
+              <Avatar initials={r.from?.name?.split(' ').map(n=>n[0]).join('')} size={40} />
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600 }}>{r.from?.name}</div>
-                <div style={{ color: '#5a7a6a', fontSize: 11 }}>{r.session?.skill?.name} · {r.created_at}</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-main)' }}>{r.from?.name}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 600 }}>{r.session?.skill?.name} · {r.created_at}</div>
               </div>
             </div>
           </Card>
-        )) : <EmptyState icon="⭐" title="No ratings yet" desc="Complete sessions to receive ratings from students" />}
+        )) : <EmptyState icon="⭐" title="Aucune évaluation pour l'instant" desc="Complétez des séances pour recevoir des avis de vos étudiants" />}
       </div>
     </div>
   )

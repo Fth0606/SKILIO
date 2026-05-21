@@ -117,7 +117,7 @@ Route::post('/notifications/{id}/read', function (Illuminate\Http\Request $reque
     $user = App\Models\User::find($userId);
 
     if (!$user) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'Non autorisé'], 401);
     }
 
     DB::table('notifications')
@@ -125,7 +125,7 @@ Route::post('/notifications/{id}/read', function (Illuminate\Http\Request $reque
         ->where('user_id', $user->id)
         ->update(['is_read' => true, 'read_at' => now()]);
 
-    return response()->json(['message' => 'Notification marked as read']);
+    return response()->json(['message' => 'Notification marquée comme lue']);
 });
 
 Route::post('/notifications/read-all', function (Illuminate\Http\Request $request) {
@@ -134,7 +134,7 @@ Route::post('/notifications/read-all', function (Illuminate\Http\Request $reques
     $user = App\Models\User::find($userId);
 
     if (!$user) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'Non autorisé'], 401);
     }
 
     DB::table('notifications')
@@ -142,7 +142,7 @@ Route::post('/notifications/read-all', function (Illuminate\Http\Request $reques
         ->where('is_read', false)
         ->update(['is_read' => true, 'read_at' => now()]);
 
-    return response()->json(['message' => 'Notifications marked as read']);
+    return response()->json(['message' => 'Notifications marquées comme lues']);
 });
 
 Route::post('/notifications/meeting-place/read', function (Illuminate\Http\Request $request) {
@@ -151,7 +151,7 @@ Route::post('/notifications/meeting-place/read', function (Illuminate\Http\Reque
     $user = App\Models\User::find($userId);
 
     if (!$user) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'Non autorisé'], 401);
     }
 
     DB::table('notifications')
@@ -160,5 +160,5 @@ Route::post('/notifications/meeting-place/read', function (Illuminate\Http\Reque
         ->where('is_read', false)
         ->update(['is_read' => true, 'read_at' => now()]);
 
-    return response()->json(['message' => 'Meeting place notifications marked as read']);
+    return response()->json(['message' => 'Notifications de lieu de rencontre marquées comme lues']);
 });

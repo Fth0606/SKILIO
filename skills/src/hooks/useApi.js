@@ -10,7 +10,7 @@ export const useBranding = () => useQuery('branding', () => adminAPI.getSettings
 export const useSaveBranding = () => {
   const queryClient = useQueryClient()
   return useMutation(data => adminAPI.saveSettings(data), {
-    onSuccess: () => { toast.success('Branding saved!'); queryClient.invalidateQueries('branding') }
+    onSuccess: () => { toast.success('Personnalisation enregistrée !'); queryClient.invalidateQueries('branding') }
   })
 }
 export const useBilling = () => useQuery('billing', () => adminAPI.billing().then(res => res.data.data))
@@ -18,15 +18,15 @@ export const useBilling = () => useQuery('billing', () => adminAPI.billing().the
 export const useSuspendUser = () => {
   const queryClient = useQueryClient()
   return useMutation(id => adminAPI.suspendUser(id), {
-    onSuccess: () => { toast.success('User suspended'); queryClient.invalidateQueries('adminUsers') },
-    onError: () => toast.error('Failed to suspend user')
+    onSuccess: () => { toast.success('Utilisateur suspendu'); queryClient.invalidateQueries('adminUsers') },
+    onError: () => toast.error('Échec de la suspension de l\'utilisateur')
   })
 }
 export const useActivateUser = () => {
   const queryClient = useQueryClient()
   return useMutation(id => adminAPI.activateUser(id), {
-    onSuccess: () => { toast.success('User activated'); queryClient.invalidateQueries('adminUsers') },
-    onError: () => toast.error('Failed to activate user')
+    onSuccess: () => { toast.success('Utilisateur activé'); queryClient.invalidateQueries('adminUsers') },
+    onError: () => toast.error('Échec de l\'activation de l\'utilisateur')
   })
 }
 
@@ -36,13 +36,13 @@ export const useTenants = (params) => useQuery(['tenants', params], () => superA
 export const useCreateTenant = () => {
   const queryClient = useQueryClient()
   return useMutation(data => superAdminAPI.createTenant(data), {
-    onSuccess: () => { toast.success('Tenant created!'); queryClient.invalidateQueries('tenants') }
+    onSuccess: () => { toast.success('Établissement créé !'); queryClient.invalidateQueries('tenants') }
   })
 }
 export const useSuspendTenant = () => {
   const queryClient = useQueryClient()
   return useMutation(id => superAdminAPI.suspendTenant(id), {
-    onSuccess: () => { toast.success('Tenant suspended!'); queryClient.invalidateQueries('tenants') }
+    onSuccess: () => { toast.success('Établissement suspendu !'); queryClient.invalidateQueries('tenants') }
   })
 }
 export const usePlans = () => useQuery('plans', () => superAdminAPI.plans().then(res => res.data.data))
@@ -55,26 +55,26 @@ export const useMySessions = (params) => useQuery(['mySessions', params], () => 
 export const useBookSession = () => {
   const queryClient = useQueryClient()
   return useMutation(data => sessionsAPI.request(data), {
-    onSuccess: () => { toast.success('Session booked!'); queryClient.invalidateQueries('mySessions') }
+    onSuccess: () => { toast.success('Séance réservée ! En attente de confirmation.'); queryClient.invalidateQueries('mySessions') }
   })
 }
 export const useAcceptSession = () => {
   const queryClient = useQueryClient()
   return useMutation(id => sessionsAPI.accept(id), {
-    onSuccess: () => { toast.success('Session accepted!'); queryClient.invalidateQueries('mySessions') }
+    onSuccess: () => { toast.success('Séance acceptée !'); queryClient.invalidateQueries('mySessions') }
   })
 }
 export const useRejectSession = () => {
   const queryClient = useQueryClient()
   return useMutation(id => sessionsAPI.reject(id), {
-    onSuccess: () => { toast.success('Session rejected!'); queryClient.invalidateQueries('mySessions') }
+    onSuccess: () => { toast.success('Séance refusée !'); queryClient.invalidateQueries('mySessions') }
   })
 }
 export const useMarkComplete = () => {
   const queryClient = useQueryClient()
   return useMutation(id => sessionsAPI.markCompleted(id), {
     onSuccess: (res) => {
-      toast.success(res.data?.message || 'Session confirmed!')
+      toast.success(res.data?.message || 'Séance confirmée !')
       queryClient.invalidateQueries('mySessions')
     }
   })
@@ -83,7 +83,7 @@ export const useCancelSession = () => {
   const queryClient = useQueryClient()
   return useMutation(({ sessionId, data }) => sessionsAPI.cancel(sessionId, data), {
     onSuccess: (res) => {
-      const msg = res.data?.message || 'Session cancelled'
+      const msg = res.data?.message || 'Séance annulée'
       if (res.data?.penalty_applied) {
         toast.error(msg, { duration: 5000 })
       } else {
@@ -98,7 +98,7 @@ export const useCancelSession = () => {
       const apiErrors = err?.response?.data?.errors
       const firstField = apiErrors ? Object.keys(apiErrors)[0] : null
       const firstErr = firstField && Array.isArray(apiErrors[firstField]) ? apiErrors[firstField][0] : null
-      const msg = firstErr || apiMsg || 'Failed to cancel session'
+      const msg = firstErr || apiMsg || 'Échec de l\'annulation de la séance'
       toast.error(msg)
     }
   })
@@ -107,13 +107,13 @@ export const useMySkills = () => useQuery('mySkills', () => teachersAPI.myProfil
 export const useAddSkill = () => {
   const queryClient = useQueryClient()
   return useMutation(data => skillsAPI.create(data), {
-    onSuccess: () => { toast.success('Skill added!'); queryClient.invalidateQueries('mySkills') }
+    onSuccess: () => { toast.success('Compétence ajoutée !'); queryClient.invalidateQueries('mySkills') }
   })
 }
 export const useRemoveSkill = () => {
   const queryClient = useQueryClient()
   return useMutation(id => skillsAPI.delete(id), {
-    onSuccess: () => { toast.success('Skill removed!'); queryClient.invalidateQueries('mySkills') }
+    onSuccess: () => { toast.success('Compétence supprimée !'); queryClient.invalidateQueries('mySkills') }
   })
 }
 export const useCategories = () => useQuery('categories', () => skillsAPI.categories().then(res => res.data.data))
@@ -122,7 +122,7 @@ export const useSubmitRating = () => {
   const queryClient = useQueryClient()
   return useMutation(({ sessionId, data }) => sessionsAPI.rate(sessionId, data), {
     onSuccess: () => {
-      toast.success('Rating submitted!')
+      toast.success('Évaluation soumise ! Crédits transférés.')
       queryClient.invalidateQueries('mySessions')
       queryClient.invalidateQueries('myRatings')
       queryClient.invalidateQueries('transactions')
@@ -135,7 +135,7 @@ export const useMyAvailability = () => useQuery('myAvailability', () => teachers
 export const useSetAvailability = () => {
   const queryClient = useQueryClient()
   return useMutation(data => teachersAPI.setAvailability(data.slots), {
-    onSuccess: () => { toast.success('Availability saved!'); queryClient.invalidateQueries('myAvailability') }
+    onSuccess: () => { toast.success('Disponibilités enregistrées !'); queryClient.invalidateQueries('myAvailability') }
   })
 }
 
@@ -143,7 +143,7 @@ export const useUpdateMeetingPlace = () => {
   const queryClient = useQueryClient()
   return useMutation(({ sessionId, data }) => sessionsAPI.updateMeetingPlace(sessionId, data), {
     onSuccess: (res) => {
-      toast.success(res.data?.message || 'Meeting place saved!')
+      toast.success(res.data?.message || 'Lieu de rencontre enregistré !')
       queryClient.invalidateQueries('mySessions')
       queryClient.invalidateQueries('notifications')
     },
@@ -152,7 +152,7 @@ export const useUpdateMeetingPlace = () => {
       const apiErrors = err?.response?.data?.errors
       const firstField = apiErrors ? Object.keys(apiErrors)[0] : null
       const firstErr = firstField && Array.isArray(apiErrors[firstField]) ? apiErrors[firstField][0] : null
-      const msg = firstErr || apiMsg || 'Failed to save meeting place'
+      const msg = firstErr || apiMsg || 'Échec de l\'enregistrement du lieu'
       toast.error(msg)
     }
   })
@@ -162,7 +162,7 @@ export const useAcceptMeetingPlace = () => {
   const queryClient = useQueryClient()
   return useMutation((sessionId) => sessionsAPI.acceptMeetingPlace(sessionId), {
     onSuccess: (res) => {
-      toast.success(res.data?.message || 'Meeting place accepted!')
+      toast.success(res.data?.message || 'Lieu de rencontre accepté !')
       queryClient.invalidateQueries('mySessions')
       queryClient.invalidateQueries('notifications')
     },
@@ -171,7 +171,7 @@ export const useAcceptMeetingPlace = () => {
       const apiErrors = err?.response?.data?.errors
       const firstField = apiErrors ? Object.keys(apiErrors)[0] : null
       const firstErr = firstField && Array.isArray(apiErrors[firstField]) ? apiErrors[firstField][0] : null
-      const msg = firstErr || apiMsg || 'Failed to accept meeting place'
+      const msg = firstErr || apiMsg || 'Échec de l\'acceptation du lieu'
       toast.error(msg)
     }
   })

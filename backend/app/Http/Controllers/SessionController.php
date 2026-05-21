@@ -149,7 +149,7 @@ class SessionController extends Controller
     {
         $user = $this->authUser($request);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         $request->validate([
             'teacher_id' => 'required|exists:users,id',
@@ -158,7 +158,7 @@ class SessionController extends Controller
 
         // Basic check for credits
         if ($user->credits_balance < 1) {
-            return response()->json(['message' => 'Insufficient credits'], 400);
+            return response()->json(['message' => 'Crédits insuffisants'], 400);
         }
 
         // Resolve scheduled_at from the chosen slot, or default to 2 days from now
@@ -196,20 +196,20 @@ class SessionController extends Controller
                 'amount' => -$session->credits_held,
                 'balance_after' => $user->fresh()->credits_balance,
                 'type' => 'spend',
-                'description' => "Reserved credit for learning {$skillName}",
+                'description' => "Crédit réservé pour l'apprentissage de {$skillName}",
             ]);
 
             return $session;
         });
 
-        return response()->json(['message' => 'Session requested successfully', 'data' => $session]);
+        return response()->json(['message' => 'Séance demandée avec succès', 'data' => $session]);
     }
 
     public function accept(Request $request, $id)
     {
         $session = SessionRequest::findOrFail($id);
         $session->update(['status' => 'accepted']);
-        return response()->json(['message' => 'Session accepted']);
+        return response()->json(['message' => 'Séance acceptée']);
     }
 
     public function reject(Request $request, $id)
@@ -232,7 +232,7 @@ class SessionController extends Controller
                     'amount' => $session->credits_held,
                     'balance_after' => $learner->fresh()->credits_balance,
                     'type' => 'refund',
-                    'description' => "Refund for rejected session on {$skillName}",
+                    'description' => "Remboursement pour séance refusée sur {$skillName}",
                 ]);
             }
         });
@@ -243,12 +243,12 @@ class SessionController extends Controller
         $this->notifyUser(
             $session->requester_id,
             'session_rejected',
-            'Session request rejected',
-            "{$teacherName} has rejected your booking request for {$skillName}. Your credit has been refunded.",
+            'Demande de séance refusée',
+            "{$teacherName} a refusé votre demande de réservation pour {$skillName}. Votre crédit a été remboursé.",
             ['session_id' => $session->id]
         );
 
-        return response()->json(['message' => 'Session rejected']);
+        return response()->json(['message' => 'Séance refusée']);
     }
 
     public function complete(Request $request, $id)
@@ -258,11 +258,11 @@ class SessionController extends Controller
         $userId = str_replace('mock-token-', '', $token);
 
         if ($session->requester_id != $userId && $session->teacher_id != $userId) {
-            return response()->json(['message' => 'You are not part of this session'], 403);
+            return response()->json(['message' => 'Vous ne faites pas partie de cette séance'], 403);
         }
 
         if (!in_array($session->status, ['accepted', 'pending_ratings'])) {
-            return response()->json(['message' => 'This session cannot be marked as done'], 422);
+            return response()->json(['message' => 'Cette séance ne peut pas être marquée comme terminée'], 422);
         }
 
         if ($session->requester_id == $userId) {
@@ -280,8 +280,8 @@ class SessionController extends Controller
         $session->save();
 
         $message = $session->status === 'pending_ratings'
-            ? 'Session complete! Please rate your partner below.'
-            : 'Confirmed! Waiting for the other party — you can still leave your rating now.';
+            ? 'Séance terminée ! Veuillez évaluer votre partenaire ci-dessous.'
+            : "Confirmé ! En attente de l'autre partie — vous pouvez laisser votre évaluation dès maintenant.";
 
         return response()->json(['message' => $message, 'data' => $session->fresh()]);
     }
@@ -295,29 +295,29 @@ class SessionController extends Controller
         $user = User::find($userId);
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Non autorisé'], 401);
         }
 
         // Allow both the learner and the teacher to rate each other
         if ($user->id != $session->requester_id && $user->id != $session->teacher_id) {
-            return response()->json(['message' => 'You are not part of this session'], 403);
+            return response()->json(['message' => 'Vous ne faites pas partie de cette séance'], 403);
         }
 
         if (!in_array($session->status, ['accepted', 'pending_ratings', 'completed'])) {
-            return response()->json(['message' => 'This session cannot be rated yet'], 422);
+            return response()->json(['message' => 'Cette séance ne peut pas encore être évaluée'], 422);
         }
 
         $isRequester = $user->id == $session->requester_id;
         $hasConfirmed = $isRequester ? $session->requester_confirmed : $session->teacher_confirmed;
         if (!$hasConfirmed) {
-            return response()->json(['message' => 'Mark the session as done before rating'], 422);
+            return response()->json(['message' => "Marquez la séance comme terminée avant d'évaluer"], 422);
         }
 
         if ($isRequester && $session->requester_rated) {
-            return response()->json(['message' => 'You already rated this session'], 422);
+            return response()->json(['message' => 'Vous avez déjà évalué cette séance'], 422);
         }
         if (!$isRequester && $session->teacher_rated) {
-            return response()->json(['message' => 'You already rated this session'], 422);
+            return response()->json(['message' => 'Vous avez déjà évalué cette séance'], 422);
         }
 
         $request->validate([
@@ -354,7 +354,7 @@ class SessionController extends Controller
             $this->updateRatedUserStats($ratedId, $isRequester ? 'teacher' : 'student');
         });
 
-        return response()->json(['message' => 'Rating submitted successfully']);
+        return response()->json(['message' => 'Évaluation soumise avec succès']);
     }
 
     private function finalizeSession(SessionRequest $session): void
@@ -383,7 +383,7 @@ class SessionController extends Controller
                     'amount' => $session->credits_held,
                     'balance_after' => $teacher->fresh()->credits_balance,
                     'type' => 'earn',
-                    'description' => "Earned from teaching {$skillName}",
+                    'description' => "Gagné en enseignant {$skillName}",
                 ]);
             }
 
@@ -419,18 +419,18 @@ class SessionController extends Controller
         $user = User::find($userId);
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Non autorisé'], 401);
         }
 
         $isRequester = $user->id == $session->requester_id;
         $isTeacher = $user->id == $session->teacher_id;
 
         if (!$isRequester && !$isTeacher) {
-            return response()->json(['message' => 'You are not part of this session'], 403);
+            return response()->json(['message' => 'Vous ne faites pas partie de cette séance'], 403);
         }
 
         if (!in_array($session->status, ['pending', 'accepted'])) {
-            return response()->json(['message' => 'This session cannot be cancelled'], 422);
+            return response()->json(['message' => 'Cette séance ne peut pas être annulée'], 422);
         }
 
         $request->validate([
@@ -469,7 +469,7 @@ class SessionController extends Controller
                     'amount' => 0,
                     'balance_after' => $learner->fresh()->credits_balance,
                     'type' => 'penalty',
-                    'description' => "Late cancellation penalty for {$skillName} (no refund)",
+                    'description' => "Pénalité pour annulation tardive de {$skillName} (aucun remboursement)",
                 ]);
             } else {
                 $session->update([
@@ -493,7 +493,7 @@ class SessionController extends Controller
                         'amount' => $session->credits_held,
                         'balance_after' => $learner->fresh()->credits_balance,
                         'type' => 'refund',
-                        'description' => "Refund for cancelled session on {$skillName}",
+                        'description' => "Remboursement pour séance annulée sur {$skillName}",
                     ]);
                 }
             }
@@ -504,14 +504,14 @@ class SessionController extends Controller
         $this->notifyUser(
             $otherUserId,
             'session_cancelled',
-            'Session cancelled',
-            "{$actorName} cancelled the session ({$skillName}). Reason: {$reason}",
+            'Séance annulée',
+            "{$actorName} a annulé la séance ({$skillName}). Raison : {$reason}",
             ['session_id' => $session->id, 'status' => $penaltyApplied ? 'penalty_applied' : 'cancelled']
         );
 
         if ($penaltyApplied) {
             return response()->json([
-                'message' => 'Session cancelled. Late notice — 1 credit penalty applied (no refund).',
+                'message' => 'Séance annulée. Préavis court — pénalité de 1 crédit appliquée (aucun remboursement).',
                 'penalty_applied' => true,
                 'credits_lost' => (float) $session->credits_held,
             ]);
@@ -519,8 +519,8 @@ class SessionController extends Controller
 
         return response()->json([
             'message' => $refunded
-                ? 'Session cancelled. Your credit has been refunded.'
-                : 'Session cancelled.',
+                ? 'Séance annulée. Votre crédit a été remboursé.'
+                : 'Séance annulée.',
             'penalty_applied' => false,
             'refunded' => $refunded,
         ]);
@@ -568,16 +568,16 @@ class SessionController extends Controller
         $user = $this->authUser($request);
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Non autorisé'], 401);
         }
 
         $role = $this->sessionRole($session, $user->id);
         if (!$role) {
-            return response()->json(['message' => 'You are not part of this session'], 403);
+            return response()->json(['message' => 'Vous ne faites pas partie de cette séance'], 403);
         }
 
         if (!in_array($session->status, ['pending', 'accepted', 'pending_ratings'])) {
-            return response()->json(['message' => 'Meeting place cannot be changed for this session'], 422);
+            return response()->json(['message' => 'Le lieu de rencontre ne peut pas être modifié pour cette séance'], 422);
         }
 
         $validated = $request->validate([
@@ -591,7 +591,7 @@ class SessionController extends Controller
 
         $isFirstProposal = empty($session->meeting_place_status);
         if (!$isFirstProposal && empty($validated['change_reason'])) {
-            return response()->json(['message' => 'Please provide a reason for changing the meeting place'], 422);
+            return response()->json(['message' => 'Veuillez fournir un motif pour le changement de lieu'], 422);
         }
 
         $newStatus = $isFirstProposal ? 'proposed' : 'changed';
@@ -627,13 +627,13 @@ class SessionController extends Controller
         $this->notifyUser(
             $otherUserId,
             'meeting_place',
-            'Meeting place updated',
-            "{$actorName} {$entryType} the meeting place for your session.",
+            'Lieu de rencontre mis à jour',
+            "{$actorName} {$entryType} le lieu de rencontre pour votre séance.",
             ['session_id' => $session->id, 'status' => $newStatus]
         );
 
         return response()->json([
-            'message' => $isFirstProposal ? 'Meeting place proposed successfully' : 'Meeting place updated successfully',
+            'message' => $isFirstProposal ? 'Lieu de rencontre proposé avec succès' : 'Lieu de rencontre mis à jour avec succès',
             'data' => $session->fresh(),
         ]);
     }
@@ -644,20 +644,20 @@ class SessionController extends Controller
         $user = $this->authUser($request);
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Non autorisé'], 401);
         }
 
         $role = $this->sessionRole($session, $user->id);
         if (!$role) {
-            return response()->json(['message' => 'You are not part of this session'], 403);
+            return response()->json(['message' => 'Vous ne faites pas partie de cette séance'], 403);
         }
 
         if (empty($session->meeting_place_status)) {
-            return response()->json(['message' => 'No meeting place has been proposed yet'], 422);
+            return response()->json(['message' => "Aucun lieu de rencontre n'a encore été proposé"], 422);
         }
 
         if ($session->meeting_place_status === 'accepted') {
-            return response()->json(['message' => 'Meeting place is already accepted', 'data' => $session]);
+            return response()->json(['message' => 'Le lieu de rencontre est déjà accepté', 'data' => $session]);
         }
 
         $history = $this->appendMeetingPlaceHistory($session, [
@@ -678,11 +678,11 @@ class SessionController extends Controller
         $this->notifyUser(
             $otherUserId,
             'meeting_place',
-            'Meeting place accepted',
-            "{$actorName} accepted the meeting place details.",
+            'Lieu de rencontre accepté',
+            "{$actorName} a accepté les détails du lieu de rencontre.",
             ['session_id' => $session->id, 'status' => 'accepted']
         );
 
-        return response()->json(['message' => 'Meeting place accepted', 'data' => $session->fresh()]);
+        return response()->json(['message' => 'Lieu de rencontre accepté', 'data' => $session->fresh()]);
     }
 }

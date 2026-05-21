@@ -19,7 +19,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['message' => 'Identifiants invalides'], 401);
         }
 
         // For now, since we don't have Sanctum/Passport setup yet, 
@@ -36,7 +36,7 @@ class AuthController extends Controller
         $userId = str_replace('mock-token-', '', $token);
         $user = User::with(['tenant', 'availability'])->find($userId);
 
-        if (!$user) return response()->json(['message' => 'Unauthorized'], 401);
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
 
         // Manually attach skills for now
         $user->skills = \Illuminate\Support\Facades\DB::table('skill_user')
@@ -50,6 +50,6 @@ class AuthController extends Controller
 
     public function logout()
     {
-        return response()->json(['message' => 'Logged out']);
+        return response()->json(['message' => 'Déconnecté']);
     }
 }

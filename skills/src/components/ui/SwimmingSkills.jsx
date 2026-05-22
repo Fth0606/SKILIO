@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe } from 'lucide-react'
 
 const SWIMMING_SKILLS = [
@@ -12,50 +11,50 @@ const SWIMMING_SKILLS = [
   { name: 'Español', icon: Globe, color: '#EAB308' },
 ]
 
-const FLOATING_SKILLS = Array.from({ length: 15 }, (_, i) => ({
+const generateFloatingSkills = () => Array.from({ length: 12 }, (_, i) => ({
   id: i,
   skill: SWIMMING_SKILLS[i % SWIMMING_SKILLS.length],
   startX: Math.random() * 100,
   startY: Math.random() * 100,
-  size: 40 + Math.random() * 30,
+  size: 30 + Math.random() * 25,
   duration: 15 + Math.random() * 20,
   delay: Math.random() * -20,
   rotation: Math.random() * 360,
-  opacity: 0.15 + Math.random() * 0.25,
+  opacity: 0.12 + Math.random() * 0.2,
 }))
 
+// Generate once at module level to avoid re-renders
+const FLOATING_SKILLS = generateFloatingSkills()
+
 export default function SwimmingSkills() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <div className="swimming-skills-bg" aria-hidden="true">
       <div className="swimming-skills-container">
-        {FLOATING_SKILLS.map((item) => (
-          <div
-            key={item.id}
-            className="swimming-skill-item"
-            style={{
-              '--start-x': `${item.startX}%`,
-              '--start-y': `${item.startY}%`,
-              '--size': `${item.size}px`,
-              '--duration': `${item.duration}s`,
-              '--delay': `${item.delay}s`,
-              '--rotation': `${item.rotation}deg`,
-              '--opacity': item.opacity,
-              '--color': item.skill.color,
-            }}
-          >
-            <item.skill.icon size={item.size * 0.4} strokeWidth={1.5} />
-          </div>
-        ))}
+        {FLOATING_SKILLS.map((item) => {
+          const Icon = item.skill.icon
+          return (
+            <div
+              key={item.id}
+              className="swimming-skill-item"
+              style={{
+                '--start-x': `${item.startX}%`,
+                '--start-y': `${item.startY}%`,
+                '--size': `${item.size}px`,
+                '--duration': `${item.duration}s`,
+                '--delay': `${item.delay}s`,
+                '--rotation': `${item.rotation}deg`,
+                '--opacity': item.opacity,
+                '--color': item.skill.color,
+              }}
+            >
+              <Icon size={item.size * 0.4} strokeWidth={1.5} />
+            </div>
+          )
+        })}
       </div>
       <style>{`
         .swimming-skills-bg {
-          position: fixed;
+          position: absolute;
           top: 0;
           left: 0;
           right: 0;
@@ -81,7 +80,7 @@ export default function SwimmingSkills() {
           height: var(--size);
           color: var(--color);
           opacity: var(--opacity);
-          filter: drop-shadow(0 0 10px var(--color));
+          filter: drop-shadow(0 0 8px var(--color));
           animation: swim-around var(--duration) ease-in-out infinite;
           animation-delay: var(--delay);
           transform: rotate(var(--rotation));

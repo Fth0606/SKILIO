@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import SwimmingSkills from '../components/ui/SwimmingSkills'
-import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2 } from 'lucide-react'
+import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2, Search } from 'lucide-react'
 
 const SCHOOLS = [
   { name: 'Harvard',   color: '#A51C30' },

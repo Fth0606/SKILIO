@@ -4,6 +4,26 @@ import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications, useMarkAllNotificationsRead } from '../../hooks/useApi'
 import { Avatar, Modal, Spinner, Badge, Logo } from '../ui'
+import {
+  Home,
+  Search,
+  Calendar,
+  GraduationCap,
+  Star,
+  CreditCard,
+  BarChart3,
+  Users,
+  Wrench,
+  Palette,
+  Bell,
+  Sun,
+  Moon,
+  Radio,
+  School,
+  Layers,
+  Banknote,
+  Ticket
+} from 'lucide-react'
 
 // ─── Theme Toggle Component ──────────────────────────────────────────────────
 function ThemeToggle() {
@@ -27,7 +47,7 @@ function ThemeToggle() {
       className="btn-secondary"
       title={theme === 'dark' ? 'Mode Clair' : 'Mode Sombre'}
     >
-      {theme === 'dark' ? '🌞' : '🌙'}
+      {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
     </button>
   )
 }
@@ -89,28 +109,28 @@ export function AppShell({ children }) {
   const unreadCount = (notifications || []).filter(n => !n.is_read).length
 
   const studentLinks = [
-    { to: '/dashboard',          icon: '🏠', label: 'Tableau de bord' },
-    { to: '/dashboard/search',   icon: '🔍', label: 'Trouver une compétence' },
-    { to: '/dashboard/sessions', icon: '📅', label: 'Mes séances' },
-    { to: '/dashboard/teach',    icon: '🎓', label: 'Enseigner' },
-    { to: '/dashboard/ratings',  icon: '⭐', label: 'Mes évaluations' },
-    { to: '/dashboard/credits',  icon: '💳', label: 'Crédits' },
+    { to: '/dashboard',          icon: <Home size={18} />, label: 'Tableau de bord' },
+    { to: '/dashboard/search',   icon: <Search size={18} />, label: 'Trouver une compétence' },
+    { to: '/dashboard/sessions', icon: <Calendar size={18} />, label: 'Mes séances' },
+    { to: '/dashboard/teach',    icon: <GraduationCap size={18} />, label: 'Enseigner' },
+    { to: '/dashboard/ratings',  icon: <Star size={18} />, label: 'Mes évaluations' },
+    { to: '/dashboard/credits',  icon: <CreditCard size={18} />, label: 'Crédits' },
   ]
 
   const adminLinks = [
-    { to: '/admin',              icon: '📊', label: 'Analytiques' },
-    { to: '/admin/users',        icon: '👥', label: 'Gestion des utilisateurs' },
-    { to: '/admin/skills',       icon: '🛠️', label: 'Gestion des compétences' },
-    { to: '/admin/branding',     icon: '🎨', label: 'Paramètres de marque' },
-    { to: '/admin/billing',      icon: '💳', label: 'Facturation' },
+    { to: '/admin',              icon: <BarChart3 size={18} />, label: 'Analytiques' },
+    { to: '/admin/users',        icon: <Users size={18} />, label: 'Gestion des utilisateurs' },
+    { to: '/admin/skills',       icon: <Wrench size={18} />, label: 'Gestion des compétences' },
+    { to: '/admin/branding',     icon: <Palette size={18} />, label: 'Paramètres de marque' },
+    { to: '/admin/billing',      icon: <CreditCard size={18} />, label: 'Facturation' },
   ]
 
   const superLinks = [
-    { to: '/super',              icon: '📡', label: 'Plateforme' },
-    { to: '/super/tenants',      icon: '🏫', label: 'Établissements' },
-    { to: '/super/plans',        icon: '📋', label: 'Forfaits' },
-    { to: '/super/revenue',      icon: '💰', label: 'Revenus' },
-    { to: '/super/tickets',      icon: '🎫', label: 'Support' },
+    { to: '/super',              icon: <Radio size={18} />, label: 'Plateforme' },
+    { to: '/super/tenants',      icon: <School size={18} />, label: 'Établissements' },
+    { to: '/super/plans',        icon: <Layers size={18} />, label: 'Forfaits' },
+    { to: '/super/revenue',      icon: <Banknote size={18} />, label: 'Revenus' },
+    { to: '/super/tickets',      icon: <Ticket size={18} />, label: 'Support' },
   ]
 
   const links = user?.role === 'super_admin' ? superLinks : user?.role === 'tenant_admin' ? adminLinks : studentLinks
@@ -174,10 +194,10 @@ export function AppShell({ children }) {
                 if (unreadCount > 0) markAllRead.mutate()
               }}
               className="btn-secondary"
-              style={{ flex: 1, padding: '10px', fontSize: 18 }}
+              style={{ flex: 1, padding: '10px', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
               title="Notifications"
             >
-              🔔 {!!unreadCount && <span style={{ fontSize: 12, marginLeft: -4, verticalAlign: 'top' }}>{unreadCount}</span>}
+              <Bell size={20} /> {!!unreadCount && <span style={{ fontSize: 12, verticalAlign: 'top' }}>{unreadCount}</span>}
             </button>
             <ThemeToggle />
           </div>

@@ -77,14 +77,14 @@ export function SuperDashboard() {
           <span className="badge badge-purple">Prochains 3 mois</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }}>
-          {(Array.isArray(revenue?.forecast) ? revenue.forecast : [
+        {(Array.isArray(revenue?.forecast) ? revenue.forecast : (typeof revenue?.forecast === 'object' && revenue?.forecast !== null ? [revenue.forecast] : [
             { month: 'Juin', mrr: 56000, sessions: 14200 },
             { month: 'Juillet', mrr: 61000, sessions: 15800 },
             { month: 'Août', mrr: 67000, sessions: 17200 },
-          ]).map(f => (
+        ])).map(f => (
             <div key={f.month} style={{ background: 'var(--shadow-color)', border: '1px solid var(--border)', borderRadius: 20, padding: 24, textAlign: 'center' }}>
               <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 700, textTransform: 'uppercase', marginBottom: 8 }}>{f.month}</div>
-              <div style={{ color: 'var(--primary)', fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>{(f.mrr/1000).toFixed(0)}k DH</div>
+            <div style={{ color: 'var(--primary)', fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>{((f.mrr || 0)/1000).toFixed(0)}k DH</div>
               <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600, marginTop: 4 }}>{f.sessions?.toLocaleString()} séances</div>
             </div>
           ))}
@@ -121,7 +121,7 @@ export function SuperTenants() {
     { key: 'sessions_count', label: 'Séances', muted: true },
     { key: 'status',     label: 'Statut',     render: v => <Badge variant={v === 'active' ? 'green' : 'red'}>{v === 'active' ? 'Actif' : 'Suspendu'}</Badge> },
     {
-      key: 'actions', label: 'Actions',
+      key: 'actions_tenant', label: 'Actions',
       render: (_, row) => (
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => superAdminApi.tenantUsageStats(row.id).then(r => toast.success(JSON.stringify(r.data.data)))}
@@ -225,7 +225,9 @@ export function SuperPlans() {
                   <div key={f} style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 10, fontWeight: 500 }}>✓ {f}</div>
                 )) : (plan.features && typeof plan.features === 'object' ? Object.entries(plan.features).map(([k, v]) => (
                   <div key={k} style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 10, fontWeight: 500 }}>✓ {k.replace(/_/g, ' ')}: {v ? 'Oui' : 'Non'}</div>
-                )) : null)}
+                )) : (typeof plan.features === 'string' ? plan.features.split(',').map(f => (
+                  <div key={f} style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 10, fontWeight: 500 }}>✓ {f.trim()}</div>
+                )) : null))}
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
               <button className="btn-secondary" style={{ flex: 1, fontSize: 13, padding: '12px 0', borderRadius: 12, fontWeight: 700 }} onClick={() => setEditing(plan)}>Modifier</button>
@@ -304,13 +306,13 @@ export function SuperTickets() {
   const resolve = (id) => superAdminApi.resolveTicket(id).then(() => { toast.success('Ticket résolu'); refetch() })
 
   const columns = [
-    { key: 'id',       label: '#',       muted: true },
+    { key: 'id_display', label: '#', render: (_, row) => row.id, muted: true },
     { key: 'subject',  label: 'Sujet' },
     { key: 'tenant',   label: 'Établissement',  render: v => v?.name, muted: true },
     { key: 'status',   label: 'Statut',  render: v => <Badge variant={v === 'open' ? 'amber' : 'green'}>{v === 'open' ? 'Ouvert' : 'Résolu'}</Badge> },
     { key: 'created_at', label: 'Ouvert le', muted: true },
     {
-      key: 'actions', label: 'Actions',
+      key: 'actions_ticket', label: 'Actions',
       render: (_, row) => row.status === 'open' && (
         <button onClick={() => resolve(row.id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Marquer comme résolu</button>
       )

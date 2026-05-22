@@ -24,7 +24,7 @@ class SuperAdminController extends Controller
 
     public function tenants(Request $request)
     {
-        $query = Tenant::withCount('users');
+        $query = Tenant::with(['plan'])->withCount('users');
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')
@@ -32,6 +32,11 @@ class SuperAdminController extends Controller
         }
 
         $tenants = $query->paginate($request->input('per_page', 15));
+
+        $tenants->getCollection()->transform(function ($tenant) {
+            $tenant->status = $tenant->is_active ? 'active' : 'suspended';
+            return $tenant;
+        });
 
         return response()->json(['data' => $tenants]);
     }
@@ -71,6 +76,7 @@ class SuperAdminController extends Controller
         $plans = Plan::all()->map(function($plan) {
             // Map price_monthly to price for frontend compatibility if needed
             $plan->price = $plan->price_monthly;
+            $plan->published = (bool)$plan->is_public;
             return $plan;
         });
         return response()->json(['data' => $plans]);

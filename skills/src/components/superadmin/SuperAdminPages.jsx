@@ -221,7 +221,11 @@ export function SuperPlans() {
             <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--primary)', marginBottom: 8, fontFamily: 'var(--font-heading)' }}>{plan.price} DH<span style={{ fontSize: 16, color: 'var(--text-muted)' }}>/mois</span></div>
             <div style={{ color: 'var(--text-main)', fontSize: 14, marginBottom: 24, fontWeight: 700 }}>Jusqu'à {plan.max_users === -1 ? '∞' : plan.max_users} utilisateurs</div>
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, marginBottom: 32 }}>
-                {plan.features?.map(f => <div key={f} style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 10, fontWeight: 500 }}>✓ {f}</div>)}
+                {Array.isArray(plan.features) ? plan.features.map(f => (
+                  <div key={f} style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 10, fontWeight: 500 }}>✓ {f}</div>
+                )) : (plan.features && typeof plan.features === 'object' ? Object.entries(plan.features).map(([k, v]) => (
+                  <div key={k} style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 10, fontWeight: 500 }}>✓ {k.replace(/_/g, ' ')}: {v ? 'Oui' : 'Non'}</div>
+                )) : null)}
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
               <button className="btn-secondary" style={{ flex: 1, fontSize: 13, padding: '12px 0', borderRadius: 12, fontWeight: 700 }} onClick={() => setEditing(plan)}>Modifier</button>

@@ -77,7 +77,7 @@ export function SuperDashboard() {
           <span className="badge badge-purple">Prochains 3 mois</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }}>
-          {(Array.isArray(revenue?.forecast) ? revenue.forecast : [
+          {(revenue?.forecast || [
             { month: 'Juin', mrr: 56000, sessions: 14200 },
             { month: 'Juillet', mrr: 61000, sessions: 15800 },
             { month: 'Août', mrr: 67000, sessions: 17200 },
@@ -306,9 +306,9 @@ export function SuperTickets() {
     { key: 'status',   label: 'Statut',  render: v => <Badge variant={v === 'open' ? 'amber' : 'green'}>{v === 'open' ? 'Ouvert' : 'Résolu'}</Badge> },
     { key: 'created_at', label: 'Ouvert le', muted: true },
     {
-      key: 'actions', label: 'Actions',
-      render: (_, row) => row.status === 'open' && (
-        <button onClick={() => resolve(row.id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Marquer comme résolu</button>
+      key: 'id', label: 'Actions',
+      render: (id, row) => row.status === 'open' && (
+        <button onClick={() => resolve(id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Marquer comme résolu</button>
       )
     }
   ]

@@ -57,6 +57,34 @@ function Counter({ target, suffix, decimal }) {
   return <span ref={ref}>{disp}{suffix}</span>
 }
 
+function FloatingShapes() {
+  return (
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+      <div className="floating-orb" style={{ width: 600, height: 600, top: '-10%', left: '-10%', background: 'var(--primary)', opacity: 0.15 }} />
+      <div className="floating-orb" style={{ width: 500, height: 500, bottom: '10%', right: '-5%', background: 'var(--accent)', opacity: 0.1, animationDelay: '-5s' }} />
+      <div className="floating-orb" style={{ width: 400, height: 400, top: '40%', left: '40%', background: 'var(--primary-light)', opacity: 0.1, animationDelay: '-10s' }} />
+
+      {/* Small stars/dots */}
+      {[...Array(20)].map((_, i) => (
+        <div key={i} style={{
+          position: 'absolute',
+          width: Math.random() * 4 + 2,
+          height: Math.random() * 4 + 2,
+          background: i % 2 === 0 ? 'var(--primary)' : 'var(--accent)',
+          borderRadius: '50%',
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          opacity: 0.4,
+          animation: `pulse ${Math.random() * 3 + 2}s infinite alternate`
+        }} />
+      ))}
+      <style>{`
+        @keyframes pulse { from { opacity: 0.2; transform: scale(0.8); } to { opacity: 0.6; transform: scale(1.2); } }
+      `}</style>
+    </div>
+  )
+}
+
 export default function LandingPage() {
   const navigate = useNavigate()
   const { user }  = useAuth()
@@ -81,22 +109,7 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <section style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 20px' }}>
-        {/* Orbs */}
-        {[
-          { w:600, top:'10%', left:'10%', color:'var(--primary)', dx:30,  dy:30  },
-          { w:500, bottom:'10%', right:'10%', color:'var(--accent)', dx:-20, dy:-20 },
-          { w:300, top:'50%', left:'50%', color:'var(--primary-light)', dx:40,  dy:40, center:true },
-        ].map((o, i) => (
-          <div key={i} style={{
-            position: 'absolute', width: o.w, height: o.w, borderRadius: '50%',
-            background: `radial-gradient(circle, ${o.color}15 0%, transparent 70%)`,
-            top: o.top, bottom: o.bottom, left: o.left, right: o.right,
-            transform: o.center
-              ? `translate(-50%,-50%) translate(${mouse.x * o.dx}px,${mouse.y * o.dy}px)`
-              : `translate(${mouse.x * o.dx}px,${mouse.y * o.dy}px)`,
-            transition: 'transform 0.2s ease-out', pointerEvents: 'none',
-          }} />
-        ))}
+        <FloatingShapes />
 
         {/* Grid background */}
         <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px)`, backgroundSize:'80px 80px', opacity:0.2 }} />
@@ -179,25 +192,45 @@ export default function LandingPage() {
             <p style={{ color:'var(--text-muted)', fontSize:18, fontWeight:500 }}>De la recherche au transfert de crédit en 4 étapes simples</p>
           </div>
 
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:0, overflowX:'auto', paddingBottom:32, marginBottom:100 }}>
-            {[
-              { icon:'🔍', label:'Rechercher', sub:'Trouver une compétence' },
-              { icon:'📤', label:'Demander', sub:'Envoyer une demande' },
-              { icon:'✅', label:'Accepter', sub:'L\'enseignant confirme' },
-              { icon:'💳', label:'Crédit bloqué', sub:'1 crédit verrouillé' },
-              { icon:'🎓', label:'Séance', sub:'1 heure en direct' },
-              { icon:'⭐', label:'Évaluer', sub:'Les deux notent' },
-              { icon:'⇄', label:'Transférer', sub:'Le crédit est déplacé' },
-            ].map((step, i, arr) => (
-              <div key={i} style={{ display:'flex', alignItems:'center', flexShrink:0 }}>
-                <div style={{ textAlign:'center', minWidth:120 }}>
-                  <div className="card glass" style={{ width:72, height:72, borderRadius:20, background: i === arr.length-1 ? 'var(--primary)' : 'var(--surface)', border:`2px solid ${i === arr.length-1 ? 'var(--primary)' : 'var(--border)'}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, margin:'0 auto 16px', boxShadow:i===arr.length-1?'0 10px 20px var(--shadow-color)':'none' }}>{step.icon}</div>
-                  <div style={{ fontWeight:800, fontSize:14, color:'var(--text-main)', marginBottom:4 }}>{step.label}</div>
-                  <div style={{ color:'var(--text-muted)', fontSize:12, fontWeight:500 }}>{step.sub}</div>
+          <div style={{ position: 'relative', marginBottom: 120 }}>
+            {/* Curved Path Background */}
+            <svg className="svg-connector" viewBox="0 0 1000 150" style={{ width: '100%', height: 150, top: -20 }}>
+              <path d="M 50 75 Q 150 10, 250 75 T 450 75 T 650 75 T 850 75 T 1000 75" />
+            </svg>
+
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:20, overflowX:'auto', padding:'20px 0', position:'relative', zIndex:1 }}>
+              {[
+                { icon:'🔍', label:'Rechercher', sub:'Trouver une compétence' },
+                { icon:'📤', label:'Demander', sub:'Envoyer une demande' },
+                { icon:'✅', label:'Accepter', sub:'L\'enseignant confirme' },
+                { icon:'💳', label:'Crédit bloqué', sub:'1 crédit verrouillé' },
+                { icon:'🎓', label:'Séance', sub:'1 heure en direct' },
+                { icon:'⭐', label:'Évaluer', sub:'Les deux notent' },
+                { icon:'⇄', label:'Transférer', sub:'Le crédit est déplacé' },
+              ].map((step, i, arr) => (
+                <div key={i} style={{ textAlign:'center', minWidth:130, flexShrink:0 }}>
+                  <div
+                    className="card glass"
+                    style={{
+                      width:80, height:80, borderRadius:24,
+                      background: i === arr.length-1 ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'var(--surface)',
+                      border:`2px solid ${i === arr.length-1 ? 'transparent' : 'var(--border)'}`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      fontSize:32, margin:'0 auto 20px',
+                      boxShadow: i === arr.length-1 ? '0 15px 30px var(--shadow-color)' : '0 8px 20px var(--border)',
+                      transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                      cursor: 'default'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1) translateY(-10px)' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) translateY(0)' }}
+                  >
+                    {step.icon}
+                  </div>
+                  <div style={{ fontWeight:800, fontSize:15, color:'var(--text-main)', marginBottom:4 }}>{step.label}</div>
+                  <div style={{ color:'var(--text-muted)', fontSize:12, fontWeight:500, maxWidth:110, margin:'0 auto' }}>{step.sub}</div>
                 </div>
-                {i < arr.length-1 && <div style={{ width:40, height:2, background:'var(--border)', flexShrink:0, margin:'0 10px 40px' }} />}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Feature Grid */}

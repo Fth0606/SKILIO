@@ -31,14 +31,14 @@ export function SuperDashboard() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 24, marginBottom: 40 }}>
-        <StatCard label="Total Établissements"  value={data?.total_tenants  || 47}      icon="🏫" color="var(--primary-light)" />
-        <StatCard label="Total Utilisateurs"    value={data?.total_users?.toLocaleString() || '28,431'} icon="👥" />
-        <StatCard label="Séances"       value={data?.total_sessions?.toLocaleString() || '124,567'} icon="📅" color="var(--accent)" />
-        <StatCard label="MRR"            value={`${(data?.mrr || 51200).toLocaleString()} DH`}    icon="💰" color="var(--primary)" />
-        <StatCard label="Taux d'attrition"     value={`${data?.churn_rate || 4.2}%`}    icon="📉" color="#ef4444" />
-        <StatCard label="LTV"            value={`${(data?.ltv || 3200).toLocaleString()} DH`}           icon="📈" color="var(--primary)" />
-        <StatCard label="CAC"            value={`${(data?.cac || 450).toLocaleString()} DH`}            icon="🎯" color="var(--accent)" />
-        <StatCard label="Total Crédits"  value={(data?.credits_total || 89234).toLocaleString()} icon="💳" color="var(--primary-light)" />
+        <StatCard label="Total Établissements"  value={data?.total_tenants  || 0}      icon="🏫" color="var(--primary-light)" />
+        <StatCard label="Total Utilisateurs"    value={data?.total_users?.toLocaleString() || '0'} icon="👥" />
+        <StatCard label="Séances"       value={data?.total_sessions?.toLocaleString() || '0'} icon="📅" color="var(--accent)" />
+        <StatCard label="MRR"            value={`${(data?.mrr || 0).toLocaleString()} DH`}    icon="💰" color="var(--primary)" />
+        <StatCard label="Taux d'attrition"     value={`${data?.churn_rate || 0}%`}    icon="📉" color="#ef4444" />
+        <StatCard label="LTV"            value={`${(data?.ltv || 0).toLocaleString()} DH`}           icon="📈" color="var(--primary)" />
+        <StatCard label="CAC"            value={`${(data?.cac || 0).toLocaleString()} DH`}            icon="🎯" color="var(--accent)" />
+        <StatCard label="Total Crédits"  value={(data?.credits_total || 0).toLocaleString()} icon="💳" color="var(--primary-light)" />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
@@ -121,14 +121,14 @@ export function SuperTenants() {
     { key: 'sessions_count', label: 'Séances', muted: true },
     { key: 'status',     label: 'Statut',     render: v => <Badge variant={v === 'active' ? 'green' : 'red'}>{v === 'active' ? 'Actif' : 'Suspendu'}</Badge> },
     {
-      key: 'id', label: 'Actions',
-      render: (id, row) => (
+      key: 'actions', label: 'Actions',
+      render: (_, row) => (
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => superAdminApi.tenantUsageStats(id).then(r => toast.success(JSON.stringify(r.data.data)))}
+          <button onClick={() => superAdminApi.tenantUsageStats(row.id).then(r => toast.success(JSON.stringify(r.data.data)))}
             style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Stats</button>
           {row.status === 'active'
-            ? <button onClick={() => suspendTenant.mutate(id)} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Suspendre</button>
-            : <button onClick={() => superAdminApi.activateTenant(id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Activer</button>
+            ? <button onClick={() => suspendTenant.mutate(row.id)} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Suspendre</button>
+            : <button onClick={() => superAdminApi.activateTenant(row.id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Activer</button>
           }
         </div>
       )
@@ -267,11 +267,11 @@ export function SuperRevenue() {
     <div>
       <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 40 }}>Revenus</h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 24, marginBottom: 40 }}>
-        <StatCard label="MRR"         value={`${(data?.mrr || 51200).toLocaleString()} DH`}    icon="💰" color="var(--primary)" />
-        <StatCard label="ARR"         value={`${((data?.mrr||51200)*12/1000).toFixed(0)}k DH`}  icon="📈" color="var(--primary)" />
-        <StatCard label="Attrition"  value={`${data?.churn_rate || 4.2}%`}                   icon="📉" color="#ef4444" />
-        <StatCard label="LTV"         value={`${(data?.ltv || 3200).toLocaleString()} DH`}       icon="🏆" color="var(--accent)" />
-        <StatCard label="CAC"         value={`${(data?.cac || 450).toLocaleString()} DH`}        icon="🎯" color="var(--primary-light)" />
+        <StatCard label="MRR"         value={`${(data?.mrr || 0).toLocaleString()} DH`}    icon="💰" color="var(--primary)" />
+        <StatCard label="ARR"         value={`${((data?.mrr || 0)*12/1000).toFixed(0)}k DH`}  icon="📈" color="var(--primary)" />
+        <StatCard label="Attrition"  value={`${data?.churn_rate || 0}%`}                   icon="📉" color="#ef4444" />
+        <StatCard label="LTV"         value={`${(data?.ltv || 0).toLocaleString()} DH`}       icon="🏆" color="var(--accent)" />
+        <StatCard label="CAC"         value={`${(data?.cac || 0).toLocaleString()} DH`}        icon="🎯" color="var(--primary-light)" />
       </div>
 
       <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>

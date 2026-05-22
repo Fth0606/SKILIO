@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import SwimmingSkills from '../components/ui/SwimmingSkills'
+import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2 } from 'lucide-react'
 
 const SCHOOLS = [
   { name: 'Harvard',   color: '#A51C30' },
@@ -12,15 +14,26 @@ const SCHOOLS = [
   { name: 'Sorbonne',  color: '#003366' },
 ]
 
+const SKILL_ICONS = {
+  'Python': Code,
+  'Français': Languages,
+  'Machine Learning': Bot,
+  'Guitare': Music,
+  'Calculus': Calculator,
+  'Design': Palette,
+  'Prise de parole': Mic,
+  'Espagnol': Globe,
+}
+
 const SKILLS = [
-  { name: 'Python',         cat: 'Programmation', icon: '🐍', sessions: 342 },
-  { name: 'Français',         cat: 'Langues',    icon: '🇫🇷', sessions: 289 },
-  { name: 'Machine Learning', cat: 'IA/Data',   icon: '🤖', sessions: 198 },
-  { name: 'Guitare',         cat: 'Musique',        icon: '🎸', sessions: 156 },
-  { name: 'Calculus',       cat: 'Maths',         icon: '∫',  sessions: 211 },
-  { name: 'Design',         cat: 'Créatif',     icon: '🎨', sessions: 134 },
-  { name: 'Prise de parole', cat: 'Soft Skills',  icon: '🎤', sessions: 167 },
-  { name: 'Espagnol',        cat: 'Langues',     icon: '🇪🇸', sessions: 301 },
+  { name: 'Python',         cat: 'Programmation', sessions: 342 },
+  { name: 'Français',         cat: 'Langues',    sessions: 289 },
+  { name: 'Machine Learning', cat: 'IA/Data',   sessions: 198 },
+  { name: 'Guitare',         cat: 'Musique',    sessions: 156 },
+  { name: 'Calculus',       cat: 'Maths',       sessions: 211 },
+  { name: 'Design',         cat: 'Créatif',     sessions: 134 },
+  { name: 'Prise de parole', cat: 'Soft Skills', sessions: 167 },
+  { name: 'Espagnol',        cat: 'Langues',    sessions: 301 },
 ]
 
 const PLANS = [
@@ -30,10 +43,10 @@ const PLANS = [
 ]
 
 const STATS = [
-  { value: 47,      label: 'Universités',        suffix: '+' },
-  { value: 28431,   label: 'Étudiants actifs',      suffix: '' },
-  { value: 124567,  label: 'Séances complétées',   suffix: '' },
-  { value: 4.9,     label: 'Note moyenne',          suffix: '★', decimal: true },
+  { value: 47,      label: 'Universités',      suffix: '+', icon: GraduationCap },
+  { value: 28431,   label: 'Étudiants actifs',  suffix: '', icon: Users },
+  { value: 124567,  label: 'Séances complétées', suffix: '', icon: BookOpen },
+  { value: 4.9,     label: 'Note moyenne',       suffix: '', icon: Star, decimal: true },
 ]
 
 function Counter({ target, suffix, decimal }) {
@@ -117,7 +130,7 @@ export default function LandingPage() {
         {/* Floating elements */}
         <div className="animate-float" style={{ position:'absolute', top:'20%', left:'8%', zIndex:2 }}>
           <div className="card glass" style={{ padding:'12px 20px', display:'flex', alignItems:'center', gap:12, borderRadius:16 }}>
-            <span style={{ fontSize:24 }}>🐍</span>
+            <Code size={28} className="gradient-text" />
             <div>
               <div style={{ fontWeight:800, fontSize:14 }}>Python</div>
               <div style={{ color:'var(--text-muted)', fontSize:11 }}>342 séances</div>
@@ -127,7 +140,7 @@ export default function LandingPage() {
 
         <div className="animate-float" style={{ position:'absolute', bottom:'25%', right:'10%', zIndex:2, animationDelay:'1s' }}>
           <div className="card glass" style={{ padding:'16px', borderRadius:20 }}>
-            <div style={{ display:'flex', gap:4, marginBottom:6 }}>{[...Array(5)].map((_,i) => <span key={i} style={{ color:'var(--accent)', fontSize:14 }}>★</span>)}</div>
+            <div style={{ display:'flex', gap:4, marginBottom:6, color:'var(--accent)' }}>{[...Array(5)].map((_,i) => <Star key={i} size={14} fill="currentColor" />)}</div>
             <div style={{ fontWeight:700, fontSize:12 }}>Séance notée 5.0</div>
           </div>
         </div>
@@ -135,17 +148,17 @@ export default function LandingPage() {
         {/* Hero text */}
         <div style={{ textAlign:'center', zIndex:3, maxWidth:900 }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:10, background:'var(--shadow-color)', border:'1px solid var(--border)', borderRadius:30, padding:'8px 20px', marginBottom:40 }} className="glass">
-            <span style={{ width:8, height:8, borderRadius:'50%', background:'var(--primary)', display:'inline-block', boxShadow:'0 0 10px var(--primary)' }} />
+            <Sparkles size={16} style={{ color: 'var(--primary)' }} />
             <span style={{ color:'var(--primary)', fontSize:14, fontWeight:700, letterSpacing:'0.5px' }}>Propulsé par 47+ universités dans le monde</span>
           </div>
 
-          <h1 style={{ fontSize:'clamp(3rem, 8vw, 5.5rem)', marginBottom:32, color:'var(--text-main)' }}>
+          <h1 style={{ fontSize:'clamp(2.5rem, 8vw, 5rem)', marginBottom:32, color:'var(--text-main)', fontWeight:900, letterSpacing:'-2px' }}>
             Les étudiants enseignent.<br />
             <span style={{ background: 'linear-gradient(to right, var(--primary), var(--accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Les étudiants apprennent.</span><br />
             Tout le monde gagne.
           </h1>
 
-          <p style={{ color:'var(--text-muted)', fontSize:20, lineHeight:1.7, marginBottom:48, maxWidth:650, margin:'0 auto 48px', fontWeight:500 }}>
+          <p style={{ color:'var(--text-muted)', fontSize:18, lineHeight:1.8, marginBottom:48, maxWidth:650, margin:'0 auto 48px', fontWeight:500 }}>
             La plateforme SaaS d'échange de compétences entre pairs pour les universités et les entreprises. Les étudiants gagnent des crédits en enseignant, et les dépensent pour apprendre.
           </p>
 
@@ -172,12 +185,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ background:'var(--primary)', padding:'80px 20px', position:'relative' }}>
-        <div style={{ maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:40, textAlign:'center' }}>
+      <section style={{ background:'linear-gradient(135deg, var(--primary), var(--accent-light))', padding:'80px 20px', position:'relative', overflow:'hidden' }}>
+        <div className="animate-bg" style={{ position:'absolute', inset:0 }} />
+        <div style={{ maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:40, textAlign:'center', position:'relative', zIndex:1 }}>
           {STATS.map(s => (
-            <div key={s.label}>
+            <div key={s.label} className="card glass" style={{ padding:32, borderRadius:24 }}>
+              <s.icon size={32} style={{ color: 'var(--accent)', marginBottom: 16 }} />
               <div style={{ color:'#fff', fontSize:48, fontWeight:800, letterSpacing:'-2px', fontFamily:'var(--font-heading)' }}><Counter target={s.value} suffix={s.suffix} decimal={s.decimal} /></div>
-              <div style={{ color:'rgba(255,255,255,0.7)', fontSize:14, fontWeight:700, marginTop:8, textTransform:'uppercase', letterSpacing:'1px' }}>{s.label}</div>
+              <div style={{ color:'rgba(255,255,255,0.8)', fontSize:14, fontWeight:700, marginTop:8, textTransform:'uppercase', letterSpacing:'1px' }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -200,13 +215,13 @@ export default function LandingPage() {
 
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:20, overflowX:'auto', padding:'20px 0', position:'relative', zIndex:1 }}>
               {[
-                { icon:'🔍', label:'Rechercher', sub:'Trouver une compétence' },
-                { icon:'📤', label:'Demander', sub:'Envoyer une demande' },
-                { icon:'✅', label:'Accepter', sub:'L\'enseignant confirme' },
-                { icon:'💳', label:'Crédit bloqué', sub:'1 crédit verrouillé' },
-                { icon:'🎓', label:'Séance', sub:'1 heure en direct' },
-                { icon:'⭐', label:'Évaluer', sub:'Les deux notent' },
-                { icon:'⇄', label:'Transférer', sub:'Le crédit est déplacé' },
+                { icon:<Search size={28} />, label:'Rechercher', sub:'Trouver une compétence' },
+                { icon:<ArrowRight size={28} />, label:'Demander', sub:'Envoyer une demande' },
+                { icon:<Check size={28} />, label:'Accepter', sub:'L\'enseignant confirme' },
+                { icon:<Zap size={28} />, label:'Crédit bloqué', sub:'1 crédit verrouillé' },
+                { icon:<GraduationCap size={28} />, label:'Séance', sub:'1 heure en direct' },
+                { icon:<Star size={28} />, label:'Évaluer', sub:'Les deux notent' },
+                { icon:<TrendingUp size={28} />, label:'Transférer', sub:'Le crédit est déplacé' },
               ].map((step, i, arr) => (
                 <div key={i} style={{ textAlign:'center', minWidth:130, flexShrink:0 }}>
                   <div
@@ -216,9 +231,10 @@ export default function LandingPage() {
                       background: i === arr.length-1 ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'var(--surface)',
                       border:`2px solid ${i === arr.length-1 ? 'transparent' : 'var(--border)'}`,
                       display:'flex', alignItems:'center', justifyContent:'center',
-                      fontSize:32, margin:'0 auto 20px',
+                      margin:'0 auto 20px',
+                      color: i === arr.length-1 ? '#fff' : 'var(--primary)',
                       boxShadow: i === arr.length-1 ? '0 15px 30px var(--shadow-color)' : '0 8px 20px var(--border)',
-                      transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                      transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                       cursor: 'default'
                     }}
                     onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1) translateY(-10px)' }}
@@ -236,16 +252,16 @@ export default function LandingPage() {
           {/* Feature Grid */}
           {[
             { tag:'Pour les Étudiants', color:'var(--primary)', items:[
-                { icon:'🔍', title:'Recherche Intelligente', desc:'Filtrez par compétence, niveau, créneau horaire et langue.' },
-                { icon:'💳', title:'Économie de Crédits', desc:'Enseignez 1 séance → gagnez 1 crédit. Dépensez 1 crédit pour apprendre.' },
-                { icon:'⭐', title:'Évaluations par les Pairs', desc:'Les deux parties se notent mutuellement. Construisez votre réputation.' },
-                { icon:'📅', title:'Planification Simplifiée', desc:'Définissez vos disponibilités une fois. Rappels automatiques inclus.' },
+                { icon:<Search size={24} />, title:'Recherche Intelligente', desc:'Filtrez par compétence, niveau, créneau horaire et langue.' },
+                { icon:<Zap size={24} />, title:'Économie de Crédits', desc:'Enseignez 1 séance → gagnez 1 crédit. Dépensez 1 crédit pour apprendre.' },
+                { icon:<Star size={24} />, title:'Évaluations par les Pairs', desc:'Les deux parties se notent mutuellement. Construisez votre réputation.' },
+                { icon:<Clock size={24} />, title:'Planification Simplifiée', desc:'Définissez vos disponibilités une fois. Rappels automatiques inclus.' },
               ]},
             { tag:'Pour les Administrateurs', color:'var(--accent)', items:[
-                { icon:'🏫', title:'SaaS Multi-Établissement', desc:'Chaque université dispose de son propre sous-domaine isolé.' },
-                { icon:'📊', title:'Analytiques en Temps Réel', desc:'Suivez les séances, les crédits, les compétences populaires et l\'engagement.' },
-                { icon:'🎨', title:'Marque Blanche', desc:'Téléchargez votre logo, définissez vos couleurs et votre message de bienvenue.' },
-                { icon:'👥', title:'Gestion des Utilisateurs', desc:'Importez en masse via CSV, gérez les rôles et suspendez les comptes.' },
+                { icon:<Globe2 size={24} />, title:'SaaS Multi-Établissement', desc:'Chaque université dispose de son propre sous-domaine isolé.' },
+                { icon:<TrendingUp size={24} />, title:'Analytiques en Temps Réel', desc:'Suivez les séances, les crédits, les compétences populaires et l\'engagement.' },
+                { icon:<Palette size={24} />, title:'Marque Blanche', desc:'Téléchargez votre logo, définissez vos couleurs et votre message de bienvenue.' },
+                { icon:<Shield size={24} />, title:'Sécurité & RGPD', desc:'Hébergement sécurisé, chiffrement de bout en bout et conformité RGPD.' },
               ]},
           ].map((group, gi) => (
             <div key={gi} style={{ marginBottom:100 }}>
@@ -267,21 +283,27 @@ export default function LandingPage() {
       </section>
 
       {/* ── SKILLS GRID ── */}
-      <section style={{ background:'var(--shadow-color)', padding:'120px 20px' }} className="glass">
-        <div style={{ maxWidth:1200, margin:'0 auto' }}>
+      <section style={{ background:'var(--shadow-color)', padding:'120px 20px', position:'relative' }} className="glass">
+        <SwimmingSkills />
+        <div style={{ maxWidth:1200, margin:'0 auto', position:'relative', zIndex:1 }}>
           <div style={{ textAlign:'center', marginBottom:60 }}>
             <h2 style={{ fontSize:'clamp(1.8rem, 4vw, 2.8rem)', marginBottom:16 }}>1 200+ compétences sur la plateforme</h2>
             <p style={{ color:'var(--text-muted)', fontSize:18, fontWeight:500 }}>Du calcul à la guitare — les étudiants enseignent ce qu'ils aiment</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:20 }}>
-            {SKILLS.map(skill => (
-              <div key={skill.name} className="card card-hover" style={{ padding:24, borderRadius:24 }}>
-                <div style={{ fontSize:32, marginBottom:16 }}>{skill.icon}</div>
-                <div style={{ fontWeight:800, fontSize:16, marginBottom:4 }}>{skill.name}</div>
-                <div style={{ color:'var(--text-muted)', fontSize:13, fontWeight:600 }}>{skill.cat}</div>
-                <div style={{ color:'var(--primary)', fontSize:12, fontWeight:800, marginTop:12, textTransform:'uppercase', letterSpacing:'0.5px' }}>{skill.sessions} séances</div>
-              </div>
-            ))}
+            {SKILLS.map(skill => {
+              const Icon = SKILL_ICONS[skill.name] || Code
+              return (
+                <div key={skill.name} className="card card-hover" style={{ padding:24, borderRadius:24 }}>
+                  <div style={{ width:56, height:56, borderRadius:16, background:'linear-gradient(135deg, var(--primary), var(--accent))', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:16, color:'#fff' }}>
+                    <Icon size={28} />
+                  </div>
+                  <div style={{ fontWeight:800, fontSize:16, marginBottom:4 }}>{skill.name}</div>
+                  <div style={{ color:'var(--text-muted)', fontSize:13, fontWeight:600 }}>{skill.cat}</div>
+                  <div style={{ color:'var(--primary)', fontSize:12, fontWeight:800, marginTop:12, textTransform:'uppercase', letterSpacing:'0.5px' }}>{skill.sessions} séances</div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -313,8 +335,8 @@ export default function LandingPage() {
                 <div style={{ color:'var(--primary)', fontSize:15, fontWeight:700, marginBottom:32 }}>Jusqu'à {plan.users} utilisateurs</div>
                 <div style={{ borderTop:'1px solid var(--border)', paddingTop:32, marginBottom:40 }}>
                   {plan.features.map(f => (
-                    <div key={f} style={{ display:'flex', gap:12, marginBottom:16 }}>
-                      <span style={{ color:'var(--primary)', fontSize:18 }}>✓</span>
+                    <div style={{ display:'flex', gap:12, marginBottom:16 }}>
+                      <Check size={18} style={{ color:'var(--primary)', flexShrink:0 }} />
                       <span style={{ color:'var(--text-muted)', fontSize:15, fontWeight:500 }}>{f}</span>
                     </div>
                   ))}
@@ -346,7 +368,9 @@ export default function LandingPage() {
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:60, marginBottom:80 }}>
             <div style={{ maxWidth:320 }}>
               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
-                <div style={{ width:32, height:32, borderRadius:8, background:'linear-gradient(135deg, var(--primary), var(--accent))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, fontWeight:800, color:'#fff' }}>⇄</div>
+                <div style={{ width:32, height:32, borderRadius:8, background:'linear-gradient(135deg, var(--primary), var(--accent))', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff' }}>
+                  <TrendingUp size={18} />
+                </div>
                 <span style={{ fontWeight:800, fontSize:22, fontFamily:'var(--font-heading)', letterSpacing:'-0.5px' }}>SKILIO</span>
               </div>
               <p style={{ color:'var(--text-muted)', fontSize:16, lineHeight:1.8, fontWeight:500 }}>La plateforme d'échange de compétences entre pairs conçue pour les universités et les entreprises.</p>
@@ -364,7 +388,7 @@ export default function LandingPage() {
           </div>
           <div style={{ borderTop:'1px solid var(--border)', paddingTop:40, display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:20 }}>
             <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:500 }}>© 2026 SKILIO Inc. Tous droits réservés.</span>
-            <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:600 }}>Fait pour les apprenants, par les apprenants. 🌍</span>
+            <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:600, display:'flex', alignItems:'center', gap:6 }}>Fait pour les apprenants, par les apprenants. <Globe2 size={16} /></span>
           </div>
         </div>
       </footer>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import SwimmingSkills from '../components/ui/SwimmingSkills'
-import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2 } from 'lucide-react'
+import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2, Search } from 'lucide-react'
 
 const SCHOOLS = [
   { name: 'Harvard',   color: '#A51C30' },
@@ -334,8 +334,8 @@ export default function LandingPage() {
                 </div>
                 <div style={{ color:'var(--primary)', fontSize:15, fontWeight:700, marginBottom:32 }}>Jusqu'à {plan.users} utilisateurs</div>
                 <div style={{ borderTop:'1px solid var(--border)', paddingTop:32, marginBottom:40 }}>
-                  {plan.features.map(f => (
-                    <div style={{ display:'flex', gap:12, marginBottom:16 }}>
+                  {plan.features.map((f, fi) => (
+                    <div key={fi} style={{ display:'flex', gap:12, marginBottom:16 }}>
                       <Check size={18} style={{ color:'var(--primary)', flexShrink:0 }} />
                       <span style={{ color:'var(--text-muted)', fontSize:15, fontWeight:500 }}>{f}</span>
                     </div>

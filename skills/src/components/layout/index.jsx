@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications, useMarkAllNotificationsRead } from '../../hooks/useApi'
-import { Avatar, Modal, Spinner, Badge } from '../ui'
+import { Avatar, Modal, Spinner, Badge, Logo } from '../ui'
 
 // ─── Theme Toggle Component ──────────────────────────────────────────────────
 function ThemeToggle() {
@@ -47,7 +47,7 @@ export function Navbar() {
 
   return (
     <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
       background: scrolled ? 'var(--glass-bg)' : 'transparent',
       backdropFilter: scrolled ? 'blur(20px)' : 'none',
       borderBottom: scrolled ? '1px solid var(--border)' : 'none',
@@ -55,9 +55,8 @@ export function Navbar() {
       padding: '0 2rem',
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
-        <div onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: '#fff' }}>⇄</div>
-          <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 22, letterSpacing: '-1px', fontFamily: 'var(--font-heading)' }}>SKILIO</span>
+        <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          <Logo size={36} withText />
         </div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {['Fonctionnalités', 'Tarifs'].map(item => (
@@ -123,9 +122,8 @@ export function AppShell({ children }) {
       <aside style={{ width: 260, background: 'var(--surface)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }} className="glass">
         {/* Logo */}
         <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/')}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 800, color: '#fff' }}>⇄</div>
-            <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 18, fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>SKILIO</span>
+          <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+            <Logo size={32} withText />
           </div>
         </div>
 

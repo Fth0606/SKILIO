@@ -30,24 +30,23 @@ Route::prefix('admin')->group(function () {
 
 // Super Admin Routes
 Route::prefix('super-admin')->group(function () {
-    Route::get('/analytics', function () {
-        return response()->json(['data' => [
-            'total_tenants' => 47,
-            'total_users' => 28431,
-            'total_sessions' => 124567,
-            'mrr' => 51200,
-            'churn_rate' => 4.2
-        ]]);
-    });
-    Route::get('/tenants', function () {
-        return response()->json(['data' => ['data' => [], 'last_page' => 1]]);
-    });
-    Route::get('/plans', function () {
-        return response()->json(['data' => []]);
-    });
-    Route::get('/revenue', function () {
-        return response()->json(['data' => ['mrr_chart' => [], 'sessions_chart' => [], 'forecast' => []]]);
-    });
+    Route::get('/analytics', [App\Http\Controllers\SuperAdminController::class, 'analytics']);
+    Route::get('/tenants', [App\Http\Controllers\SuperAdminController::class, 'tenants']);
+    Route::get('/tenants/{id}', [App\Http\Controllers\SuperAdminController::class, 'getTenant']);
+    Route::post('/tenants', [App\Http\Controllers\SuperAdminController::class, 'createTenant']);
+    Route::put('/tenants/{id}', [App\Http\Controllers\SuperAdminController::class, 'updateTenant']);
+    Route::post('/tenants/{id}/suspend', [App\Http\Controllers\SuperAdminController::class, 'suspendTenant']);
+    Route::post('/tenants/{id}/activate', [App\Http\Controllers\SuperAdminController::class, 'activateTenant']);
+    Route::delete('/tenants/{id}', [App\Http\Controllers\SuperAdminController::class, 'deleteTenant']);
+    Route::get('/tenants/{id}/stats', [App\Http\Controllers\SuperAdminController::class, 'tenantStats']);
+    Route::get('/plans', [App\Http\Controllers\SuperAdminController::class, 'plans']);
+    Route::post('/plans', [App\Http\Controllers\SuperAdminController::class, 'createPlan']);
+    Route::put('/plans/{id}', [App\Http\Controllers\SuperAdminController::class, 'updatePlan']);
+    Route::post('/plans/{id}/publish', [App\Http\Controllers\SuperAdminController::class, 'publishPlan']);
+    Route::get('/revenue', [App\Http\Controllers\SuperAdminController::class, 'revenue']);
+    Route::get('/tickets', [App\Http\Controllers\SuperAdminController::class, 'tickets']);
+    Route::post('/tickets/{id}/resolve', [App\Http\Controllers\SuperAdminController::class, 'resolveTicket']);
+    Route::post('/tickets/{id}/assign', [App\Http\Controllers\SuperAdminController::class, 'assignTicket']);
 });
 
 // Student/Teacher Routes

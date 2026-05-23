@@ -111,5 +111,8 @@ class DatabaseSeeder extends Seeder
             SupportTicketSeeder::class,
             CreditTransactionSeeder::class,
         ]);
+
+        // 7. Run SuperAdmin Seeders for testing super admin pages
+        $this->call(SuperAdminSeeder::class);
     }
 }

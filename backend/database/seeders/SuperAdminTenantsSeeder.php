@@ -164,24 +164,37 @@ class SuperAdminTenantsSeeder extends Seeder
             'ucla' => 'starter',
         ];
 
-        foreach ($tenants as $tenant) {
-            $subdomain = $tenant['subdomain'];
+        foreach ($tenants as $tenantData) {
+            $subdomain = $tenantData['subdomain'];
             $existing = DB::table('tenants')->where('subdomain', $subdomain)->first();
             
             if ($existing) {
                 $tenantIds[$subdomain] = $existing->id;
                 DB::table('tenants')->where('id', $existing->id)->update([
-                    'name' => $tenant['name'],
-                    'email' => $tenant['email'],
-                    'primary_color' => $tenant['primary_color'],
-                    'secondary_color' => $tenant['secondary_color'],
-                    'max_users' => $tenant['max_users'],
-                    'is_active' => $tenant['is_active'],
-                    'updated_at' => $tenant['updated_at'],
+                    'name' => $tenantData['name'],
+                    'email' => $tenantData['email'],
+                    'primary_color' => $tenantData['primary_color'],
+                    'secondary_color' => $tenantData['secondary_color'],
+                    'max_users' => $tenantData['max_users'],
+                    'is_active' => $tenantData['is_active'],
+                    'updated_at' => $tenantData['updated_at'],
                 ]);
             } else {
-                unset($tenant['subdomain']);
-                $tenantIds[$subdomain] = DB::table('tenants')->insertGetId($tenant);
+                // Remove subdomain from data for insert
+                $insertData = [
+                    'name' => $tenantData['name'],
+                    'subdomain' => $subdomain,
+                    'email' => $tenantData['email'],
+                    'logo_url' => $tenantData['logo_url'],
+                    'primary_color' => $tenantData['primary_color'],
+                    'secondary_color' => $tenantData['secondary_color'],
+                    'custom_css' => $tenantData['custom_css'],
+                    'max_users' => $tenantData['max_users'],
+                    'is_active' => $tenantData['is_active'],
+                    'created_at' => $tenantData['created_at'],
+                    'updated_at' => $tenantData['updated_at'],
+                ];
+                $tenantIds[$subdomain] = DB::table('tenants')->insertGetId($insertData);
             }
 
             // Create subscription for this tenant

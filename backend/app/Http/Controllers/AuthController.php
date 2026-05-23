@@ -22,6 +22,8 @@ class AuthController extends Controller
             return response()->json(['message' => 'Identifiants invalides'], 401);
         }
 
+        $user->load('tenant');
+
         // For now, since we don't have Sanctum/Passport setup yet, 
         // we will just return the user data.
         return response()->json([

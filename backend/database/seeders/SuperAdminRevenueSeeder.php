@@ -105,56 +105,36 @@ class SuperAdminRevenueSeeder extends Seeder
     private function createCreditTransactions()
     {
         $users = DB::table('users')->where('role', '!=', 'super_admin')->get();
-        
-        // Create transactions for CAC calculation
-        $transactionTypes = ['credit_purchase', 'session_earning', 'session_spending', 'bonus'];
+        $types = ['earn', 'spend', 'bonus', 'refund'];
         
         foreach ($users as $user) {
-            // Create 5-15 transactions per user
-            $numTransactions = rand(5, 15);
-            
-            for ($i = 0; $i < $numTransactions; $i++) {
-                $type = $transactionTypes[array_rand($transactionTypes)];
-                $amount = 0;
-                
-                switch ($type) {
-                    case 'credit_purchase':
-                        $amount = rand(1, 10) * 10; // 10, 20, 30... 100
-                        break;
-                    case 'session_earning':
-                        $amount = rand(1, 5) * 10; // 10, 20, 30... 50
-                        break;
-                    case 'session_spending':
-                        $amount = -1 * (rand(1, 3) * 10); // -10, -20, -30
-                        break;
-                    case 'bonus':
-                        $amount = rand(5, 20) * 5; // 25, 50, 75, 100
-                        break;
-                }
+            $currentBalance = $user->credits_balance ?? 100;
+            for ($i = 0; $i < rand(5, 15); $i++) {
+                $type = $types[array_rand($types)];
+                $amount = match($type) {
+                    'earn' => (float) rand(1, 5) * 10,
+                    'spend' => -1 * (float) rand(1, 3) * 10,
+                    'bonus' => (float) rand(5, 20) * 5,
+                    'refund' => (float) rand(1, 3) * 10,
+                };
+                $currentBalance += $amount;
                 
                 DB::table('credit_transactions')->insert([
                     'user_id' => $user->id,
-                    'type' => $type,
+                    'session_request_id' => null,
                     'amount' => $amount,
-                    'description' => $this->getTransactionDescription($type, $amount),
-                    'reference_type' => $type === 'session_earning' || $type === 'session_spending' ? 'session' : null,
-                    'reference_id' => $type === 'session_earning' || $type === 'session_spending' ? rand(1, 100) : null,
+                    'balance_after' => max(0, $currentBalance),
+                    'type' => $type,
+                    'description' => match($type) {
+                        'earn' => 'Earned from teaching session',
+                        'spend' => 'Spent on learning session',
+                        'bonus' => 'Bonus credits awarded',
+                        'refund' => 'Refund issued',
+                    },
+                    'metadata' => null,
                     'created_at' => now()->subDays(rand(1, 180)),
-                    'updated_at' => now(),
                 ]);
             }
         }
-    }
-
-    private function getTransactionDescription($type, $amount)
-    {
-        $descriptions = [
-            'credit_purchase' => 'Purchased ' . abs($amount) . ' credits',
-            'session_earning' => 'Earned ' . abs($amount) . ' credits from teaching session',
-            'session_spending' => 'Spent ' . abs($amount) . ' credits on learning session',
-            'bonus' => 'Bonus credits for ' . abs($amount),
-        ];
-        
-        return $descriptions[$type] ?? 'Transaction';
     }
 }

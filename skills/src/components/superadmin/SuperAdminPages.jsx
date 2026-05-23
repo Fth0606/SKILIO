@@ -121,14 +121,14 @@ export function SuperTenants() {
     { key: 'sessions_count', label: 'Séances', muted: true },
     { key: 'status',     label: 'Statut',     render: v => <Badge variant={v === 'active' ? 'green' : 'red'}>{v === 'active' ? 'Actif' : 'Suspendu'}</Badge> },
     {
-      key: 'id', label: 'Actions',
-      render: (id, row) => (
+      key: 'actions', label: 'Actions',
+      render: (_, row) => (
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => superAdminApi.tenantUsageStats(id).then(r => toast.success(JSON.stringify(r.data.data)))}
+          <button onClick={() => superAdminApi.tenantUsageStats(row.id).then(r => toast.success(JSON.stringify(r.data.data)))}
             style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Stats</button>
           {row.status === 'active'
-            ? <button onClick={() => suspendTenant.mutate(id)} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Suspendre</button>
-            : <button onClick={() => superAdminApi.activateTenant(id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Activer</button>
+            ? <button onClick={() => suspendTenant.mutate(row.id)} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent)', color: 'var(--accent)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Suspendre</button>
+            : <button onClick={() => superAdminApi.activateTenant(row.id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 12px', borderRadius: 10, cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Activer</button>
           }
         </div>
       )
@@ -306,9 +306,9 @@ export function SuperTickets() {
     { key: 'status',   label: 'Statut',  render: v => <Badge variant={v === 'open' ? 'amber' : 'green'}>{v === 'open' ? 'Ouvert' : 'Résolu'}</Badge> },
     { key: 'created_at', label: 'Ouvert le', muted: true },
     {
-      key: 'id', label: 'Actions',
-      render: (id, row) => row.status === 'open' && (
-        <button onClick={() => resolve(id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Marquer comme résolu</button>
+      key: 'actions', label: 'Actions',
+      render: (_, row) => row.status === 'open' && (
+        <button onClick={() => resolve(row.id)} style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Marquer comme résolu</button>
       )
     }
   ]

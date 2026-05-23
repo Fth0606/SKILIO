@@ -225,17 +225,17 @@ class SuperAdminTenantsSeeder extends Seeder
 
             // Create admin user for tenant
             $existingUser = DB::table('users')
-                ->where('email', $tenant['email'])
+                ->where('email', $tenantData['email'])
                 ->first();
                 
             if (!$existingUser) {
                 DB::table('users')->insert([
                     'tenant_id' => $tenantIds[$subdomain],
-                    'name' => explode(' ', $tenant['name'])[0] . ' Admin',
-                    'email' => $tenant['email'],
+                    'name' => explode(' ', $tenantData['name'])[0] . ' Admin',
+                    'email' => $tenantData['email'],
                     'password' => Hash::make('password123'),
                     'role' => 'tenant_admin',
-                    'is_active' => $tenant['is_active'],
+                    'is_active' => $tenantData['is_active'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

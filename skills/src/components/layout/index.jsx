@@ -12,22 +12,21 @@ function ThemeToggle() {
     <button
       onClick={toggleTheme}
       style={{
-        background: 'none',
-        border: 'none',
+        background: 'var(--surface-2)',
+        border: '1px solid var(--border)',
         cursor: 'pointer',
-        fontSize: '20px',
+        fontSize: 16,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '8px',
-        borderRadius: '50%',
-        transition: 'all 0.3s ease',
-        transform: theme === 'dark' ? 'rotate(360deg)' : 'rotate(0deg)',
+        padding: '6px',
+        borderRadius: '8px',
+        transition: 'all 0.2s ease',
+        color: 'var(--text-main)',
       }}
-      className="btn-secondary"
       title={theme === 'dark' ? 'Mode Clair' : 'Mode Sombre'}
     >
-      {theme === 'dark' ? '🌞' : '🌙'}
+      {theme === 'dark' ? '☀️' : '🌙'}
     </button>
   )
 }
@@ -48,26 +47,26 @@ export function Navbar() {
   return (
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-      background: scrolled ? 'var(--glass-bg)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      background: scrolled ? 'rgba(15, 23, 42, 0.95)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(12px)' : 'none',
       borderBottom: scrolled ? '1px solid var(--border)' : 'none',
       transition: 'all 0.3s ease',
       padding: '0 2rem',
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
         <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <Logo size={36} withText />
+          <Logo size={28} withText />
         </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           {['Fonctionnalités', 'Tarifs'].map(item => (
-            <button key={item} onClick={() => navigate(`/#${item === 'Tarifs' ? 'pricing' : 'features'}`)} style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>{item}</button>
+            <button key={item} onClick={() => navigate(`/#${item === 'Tarifs' ? 'pricing' : 'features'}`)} style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', padding: '8px 14px', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>{item}</button>
           ))}
           <ThemeToggle />
           {user ? (
             <button onClick={() => navigate('/dashboard')} className="btn-primary">Tableau de bord →</button>
           ) : (
             <>
-              <button onClick={() => navigate('/login')} className="btn-secondary" style={{ padding: '8px 20px' }}>Connexion</button>
+              <button onClick={() => navigate('/login')} className="btn-secondary" style={{ padding: '8px 16px' }}>Connexion</button>
               <button onClick={() => navigate('/register')} className="btn-primary">Commencer gratuitement →</button>
             </>
           )}
@@ -120,7 +119,7 @@ export function AppShell({ children }) {
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Sidebar */}
       <aside style={{ 
-        width: 280, 
+        width: 260, 
         background: 'var(--surface)', 
         borderRight: '1px solid var(--border)', 
         display: 'flex', 
@@ -133,75 +132,74 @@ export function AppShell({ children }) {
         overflowY: 'auto'
       }}>
         {/* Logo */}
-        <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ padding: '20px 16px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-            <Logo size={32} withText />
+            <Logo size={28} withText />
           </div>
         </div>
 
         {/* Credits (student only) */}
         {user?.role === 'student' && (
-          <div style={{ margin: '20px', background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', borderRadius: 14, padding: 20, textAlign: 'center' }}>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px', marginBottom: 4 }}>Crédits</div>
-            <div style={{ color: '#fff', fontSize: 32, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>{user?.credits ?? 0}</div>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 500 }}>disponibles</div>
+          <div style={{ margin: '16px', background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))', borderRadius: 12, padding: 16, textAlign: 'center', boxShadow: '0 4px 16px rgba(37, 99, 235, 0.3)' }}>
+            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px', marginBottom: 2 }}>Crédits</div>
+            <div style={{ color: '#fff', fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>{user?.credits ?? 0}</div>
+            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 500 }}>disponibles</div>
           </div>
         )}
 
         {/* Nav links */}
-        <nav style={{ padding: '12px', flex: 1, overflowY: 'auto' }}>
+        <nav style={{ padding: '8px', flex: 1, overflowY: 'auto' }}>
           {links.map(link => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === '/dashboard' || link.to === '/admin' || link.to === '/super'}
-              className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
               style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',
-                gap: 12,
-                padding: '12px 16px',
-                borderRadius: 10,
+                gap: 10,
+                padding: '10px 14px',
+                borderRadius: 8,
                 color: isActive ? '#fff' : 'var(--text-muted)',
-                background: isActive ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'transparent',
+                background: isActive ? 'linear-gradient(135deg, var(--primary), var(--primary-dark))' : 'transparent',
                 fontWeight: isActive ? 600 : 500,
-                fontSize: 14,
+                fontSize: 13,
                 textDecoration: 'none',
-                marginBottom: '4px',
+                marginBottom: '2px',
                 transition: 'all 0.2s ease',
-                boxShadow: isActive ? '0 4px 16px rgba(99, 102, 241, 0.3)' : 'none',
+                boxShadow: isActive ? '0 4px 12px rgba(37, 99, 235, 0.3)' : 'none',
               })}
             >
-              <span style={{ fontSize: 18 }}>{link.icon}</span>
+              <span style={{ fontSize: 16 }}>{link.icon}</span>
               <span>{link.label}</span>
             </NavLink>
           ))}
         </nav>
 
         {/* User info */}
-        <div style={{ padding: 20, borderTop: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
+        <div style={{ padding: 16, borderTop: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             <button
               onClick={() => {
                 setNotifOpen(true)
                 if (unreadCount > 0) markAllRead.mutate()
               }}
               className="btn-secondary"
-              style={{ flex: 1, padding: '10px', fontSize: 18 }}
+              style={{ flex: 1, padding: '8px', fontSize: 16 }}
               title="Notifications"
             >
-              🔔 {!!unreadCount && <span style={{ fontSize: 12, marginLeft: -4, verticalAlign: 'top' }}>{unreadCount}</span>}
+              🔔 {!!unreadCount && <span style={{ fontSize: 11, marginLeft: -4, verticalAlign: 'top' }}>{unreadCount}</span>}
             </button>
             <ThemeToggle />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <Avatar initials={user?.name?.split(' ').map(n => n[0]).join('') || 'U'} size={40} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <Avatar initials={user?.name?.split(' ').map(n => n[0]).join('') || 'U'} size={36} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ color: 'var(--text-main)', fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.name || 'Utilisateur'}</div>
-              <div style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>{roleLabel}</div>
+              <div style={{ color: 'var(--text-main)', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.name || 'Utilisateur'}</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 500 }}>{roleLabel}</div>
             </div>
           </div>
-          <button onClick={logout} className="btn-secondary" style={{ width: '100%', padding: '10px', fontSize: 13, color: 'var(--danger)', fontWeight: 600, border: '1px solid var(--border)' }}>Déconnexion</button>
+          <button onClick={logout} className="btn-secondary" style={{ width: '100%', padding: '8px', fontSize: 12, color: 'var(--danger)', fontWeight: 600, border: '1px solid var(--border)' }}>Déconnexion</button>
         </div>
       </aside>
 
@@ -209,28 +207,28 @@ export function AppShell({ children }) {
       <main style={{ 
         flex: 1, 
         overflowY: 'auto', 
-        padding: '32px', 
-        marginLeft: 280,
+        padding: '24px', 
+        marginLeft: 260,
         minHeight: '100vh',
       }}>
         {children}
       </main>
 
-      <Modal open={notifOpen} onClose={() => setNotifOpen(false)} title="Notifications" width={420}>
+      <Modal open={notifOpen} onClose={() => setNotifOpen(false)} title="Notifications" width={400}>
         {notifLoading ? (
           <div style={{ padding: 20, textAlign: 'center' }}><Spinner size={24} /></div>
         ) : (
           <div>
             {(notifications || []).length === 0 ? (
-              <div style={{ color: 'var(--text-muted)', fontSize: 14, padding: 32, textAlign: 'center' }}>Aucune notification pour le moment</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: 32, textAlign: 'center' }}>Aucune notification pour le moment</div>
             ) : (
               (notifications || []).map((n) => (
-                <div key={n.id} style={{ padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-main)' }}>{n.title}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: 11, whiteSpace: 'nowrap' }}>{n.created_at}</div>
+                <div key={n.id} style={{ padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'baseline' }}>
+                    <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-main)' }}>{n.title}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 10, whiteSpace: 'nowrap' }}>{n.created_at}</div>
                   </div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 6, lineHeight: 1.5 }}>{n.message}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 4, lineHeight: 1.5 }}>{n.message}</div>
                 </div>
               ))
             )}

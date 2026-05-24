@@ -4,7 +4,7 @@ import React from 'react'
 
 export function Logo({ size = 32, withText = false }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: size * 0.3 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: size * 0.25 }}>
       <svg width={size} height={size} viewBox="0 0 48 46" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z"
@@ -21,7 +21,7 @@ export function Logo({ size = 32, withText = false }) {
         <span style={{
           color: 'var(--text-main)',
           fontWeight: 700,
-          fontSize: size * 0.65,
+          fontSize: size * 0.55,
           letterSpacing: '-0.5px',
           fontFamily: 'var(--font-heading)'
         }}>
@@ -83,11 +83,11 @@ export function StatusBadge({ status }) {
 export function Avatar({ initials, size = 40, color = 'var(--primary)' }) {
   return (
     <div style={{
-      width: size, height: size, borderRadius: 10,
-      background: `linear-gradient(135deg, var(--primary), var(--primary-light))`,
+      width: size, height: size, borderRadius: 8,
+      background: `linear-gradient(135deg, var(--primary), var(--primary-dark))`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       color: '#fff', fontWeight: 700, fontSize: size * 0.35, flexShrink: 0,
-      boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)',
+      boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
       border: '1px solid var(--border)',
     }}>{initials}</div>
   )
@@ -108,7 +108,7 @@ export function Stars({ rating, max = 5 }) {
 
 export function Card({ children, className = '', style = {} }) {
   return (
-    <div className={`card ${className}`} style={{ padding: 20, ...style }}>
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, ...style }}>
       {children}
     </div>
   )
@@ -116,12 +116,12 @@ export function Card({ children, className = '', style = {} }) {
 
 export function StatCard({ label, value, sub, icon, color = 'var(--primary)' }) {
   return (
-    <div className="card" style={{ padding: 20, position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: -8, right: -8, fontSize: 64, opacity: 0.06 }}>{icon}</div>
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 16, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: -6, right: -6, fontSize: 48, opacity: 0.08 }}>{icon}</div>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px', marginBottom: 8 }}>{label}</div>
-        <div style={{ color, fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>{value}</div>
-        {sub && <div style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 6, fontWeight: 500 }}>{sub}</div>}
+        <div style={{ color: 'var(--text-muted)', fontSize: 10, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px', marginBottom: 6 }}>{label}</div>
+        <div style={{ color, fontSize: 24, fontWeight: 800, fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>{value}</div>
+        {sub && <div style={{ color: 'var(--text-muted)', fontSize: 11, marginTop: 4, fontWeight: 500 }}>{sub}</div>}
       </div>
     </div>
   )
@@ -131,14 +131,14 @@ export function Modal({ open, onClose, title, children, width = 480 }) {
   if (!open) return null
   return (
     <div
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="card" style={{ width: '100%', maxWidth: width, padding: 24, maxHeight: 'calc(100vh - 40px)', display: 'flex', flexDirection: 'column', overflow: 'hidden', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', border: '1px solid var(--border)' }}>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: 24, width: '100%', maxWidth: width, maxHeight: 'calc(100vh - 40px)', display: 'flex', flexDirection: 'column', overflow: 'hidden', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
         <style>{`@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-main)' }}>{title}</h3>
-          <button onClick={onClose} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16, width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>✕</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-main)' }}>{title}</h3>
+          <button onClick={onClose} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16, width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>✕</button>
         </div>
         <div style={{ overflowY: 'auto', paddingRight: 4 }}>
           {children}

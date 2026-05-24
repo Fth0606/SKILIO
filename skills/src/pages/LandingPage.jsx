@@ -125,32 +125,32 @@ export default function LandingPage() {
         <FloatingShapes />
 
         {/* Gradient mesh background */}
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%)', zIndex:0 }} />
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.08) 0%, transparent 50%)', zIndex:0 }} />
 
         {/* Floating skill cards */}
-        <div style={{ position:'absolute', top:'15%', left:'5%', zIndex:2, animation:'float-smooth 5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite' }}>
-          <div className="card" style={{ padding:'12px 20px', display:'flex', alignItems:'center', gap:10, borderRadius:12, border:'1px solid var(--border)' }}>
-            <Code size={22} style={{ color:'var(--primary)' }} />
+        <div className="animate-float" style={{ position:'absolute', top:'15%', left:'5%', zIndex:2, animation:'float-smooth 5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite' }}>
+          <div className="card glass" style={{ padding:'14px 22px', display:'flex', alignItems:'center', gap:12, borderRadius:14, backdropFilter:'blur(20px)' }}>
+            <Code size={26} style={{ color:'var(--primary)' }} />
             <div>
-              <div style={{ fontWeight:700, fontSize:12, color:'var(--text-main)' }}>Python</div>
+              <div style={{ fontWeight:800, fontSize:13, color:'var(--text-main)' }}>Python</div>
               <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:500 }}>342 séances</div>
             </div>
           </div>
         </div>
 
-        <div style={{ position:'absolute', bottom:'20%', right:'7%', zIndex:2, animation:'float-smooth 4.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.5s' }}>
-          <div className="card" style={{ padding:'14px 18px', borderRadius:12, border:'1px solid var(--border)' }}>
-            <div style={{ display:'flex', gap:2, marginBottom:6, color:'#fbbf24' }}>{[...Array(5)].map((_,i) => <Star key={i} size={12} fill="currentColor" />)}</div>
-            <div style={{ fontWeight:600, fontSize:12, color:'var(--text-main)' }}>Séance 5★</div>
+        <div className="animate-float" style={{ position:'absolute', bottom:'20%', right:'7%', zIndex:2, animation:'float-smooth 4.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.5s' }}>
+          <div className="card glass" style={{ padding:'16px 20px', borderRadius:14, backdropFilter:'blur(20px)' }}>
+            <div style={{ display:'flex', gap:3, marginBottom:8, color:'var(--accent)' }}>{[...Array(5)].map((_,i) => <Star key={i} size={14} fill="currentColor" />)}</div>
+            <div style={{ fontWeight:700, fontSize:12, color:'var(--text-main)' }}>Séance 5★</div>
           </div>
         </div>
 
         {/* Hero content */}
         <div style={{ textAlign:'center', zIndex:3, maxWidth:950 }}>
           {/* Badge */}
-          <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(99, 102, 241, 0.1)', border:'1px solid rgba(99, 102, 241, 0.2)', borderRadius:30, padding:'8px 20px', marginBottom:40 }}>
-            <Sparkles size={14} style={{ color: 'var(--primary)' }} />
-            <span style={{ color:'var(--primary)', fontSize:12, fontWeight:600, letterSpacing:'0.3px' }}>Approuvé par 47+ universités mondiales</span>
+          <div className="fade-in-up" style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(34, 197, 94, 0.08)', border:'1px solid rgba(34, 197, 94, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }} className="glass">
+            <Sparkles size={16} style={{ color: 'var(--primary)' }} />
+            <span style={{ color:'var(--primary)', fontSize:13, fontWeight:700, letterSpacing:'0.3px' }}>Approuvé par 47+ universités mondiales</span>
           </div>
 
           {/* Main headline */}
@@ -319,40 +319,40 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ── */}
-      <section id="pricing" style={{ padding:'100px 20px', background:'var(--bg)' }}>
-        <div style={{ maxWidth:1000, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:60 }}>
-            <h2 style={{ marginBottom:16 }}>Tarification pour tous</h2>
-            <p style={{ color:'var(--text-muted)', fontSize:16, fontWeight:500, maxWidth:500, margin:'0 auto' }}>De gratuit à personnalisé. Grandissez à votre rythme, sans payer pour ce que vous n'utilisez pas.</p>
+      <section id="pricing" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(34, 197, 94, 0.03) 100%)' }}>
+        <div style={{ maxWidth:1100, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:100 }}>
+            <h2 style={{ marginBottom:20 }}>Tarification pour tous</h2>
+            <p style={{ color:'var(--text-muted)', fontSize:18, fontWeight:500, maxWidth:550, margin:'0 auto' }}>De gratuit à personnalisé. Grandissez à votre rythme, sans payer pour ce que vous n'utilisez pas.</p>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:24 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(330px,1fr))', gap:32 }}>
             {PLANS.map((plan, i) => (
               <div key={i} className="card" style={{
-                padding:32, position:'relative',
-                transform: plan.popular ? 'scale(1.02)' : 'none',
-                border: plan.popular ? '1px solid var(--primary)' : '1px solid var(--border)',
-                boxShadow: plan.popular ? '0 8px 32px rgba(99, 102, 241, 0.15)' : '0 4px 16px var(--shadow-color)',
-                borderRadius:14,
-                background: plan.popular ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05))' : 'var(--surface)',
+                padding:44, position:'relative',
+                transform: plan.popular ? 'scale(1.05)' : 'none',
+                border: plan.popular ? '2px solid var(--primary)' : '1.5px solid var(--border)',
+                boxShadow: plan.popular ? '0 25px 50px rgba(34, 197, 94, 0.15)' : '0 4px 20px var(--shadow-color)',
+                borderRadius:20,
+                background: plan.popular ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.03), rgba(236, 72, 153, 0.05))' : 'var(--surface)',
               }}>
                 {plan.popular && (
-                  <div style={{ position:'absolute', top:-14, left:'50%', transform:'translateX(-50%)', background:'linear-gradient(135deg, var(--primary), var(--accent))', color:'#fff', fontSize:11, fontWeight:700, padding:'6px 20px', borderRadius:20, whiteSpace:'nowrap', letterSpacing:'0.5px', boxShadow:'0 4px 12px rgba(99, 102, 241, 0.3)' }}>⭐ PLUS POPULAIRE</div>
+                  <div style={{ position:'absolute', top:-16, left:'50%', transform:'translateX(-50%)', background:'linear-gradient(135deg, var(--primary), var(--accent))', color:'#fff', fontSize:12, fontWeight:800, padding:'8px 24px', borderRadius:30, whiteSpace:'nowrap', letterSpacing:'0.8px', boxShadow:'0 12px 24px rgba(34, 197, 94, 0.3)' }}>⭐ PLUS POPULAIRE</div>
                 )}
-                <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:'1px', marginBottom:10 }}>{plan.name}</div>
-                <div style={{ display:'flex', alignItems:'baseline', gap:6, marginBottom:10 }}>
-                  <span style={{ fontSize:40, fontWeight:800, fontFamily:'var(--font-heading)', color:'var(--text-main)' }}>{plan.price}</span>
-                  <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:600 }}>DH/mois</span>
+                <div style={{ color:'var(--text-muted)', fontSize:12, fontWeight:800, textTransform:'uppercase', letterSpacing:'1.5px', marginBottom:12 }}>{plan.name}</div>
+                <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:12 }}>
+                  <span style={{ fontSize:52, fontWeight:900, fontFamily:'var(--font-heading)', color:'var(--text-main)' }}>{plan.price}</span>
+                  <span style={{ color:'var(--text-muted)', fontSize:18, fontWeight:600 }}>DH/mois</span>
                 </div>
-                <div style={{ color:'var(--primary)', fontSize:13, fontWeight:600, marginBottom:28 }}>Jusqu'à {plan.users} utilisateurs</div>
-                <div style={{ borderTop:'1px solid var(--border)', paddingTop:28, marginBottom:32 }}>
+                <div style={{ color:'var(--primary)', fontSize:15, fontWeight:700, marginBottom:36 }}>Jusqu'à {plan.users} utilisateurs</div>
+                <div style={{ borderTop:'1.5px solid var(--border)', paddingTop:36, marginBottom:40 }}>
                   {plan.features.map((f, fi) => (
-                    <div key={fi} style={{ display:'flex', gap:10, marginBottom:14 }}>
-                      <Check size={16} style={{ color:'var(--primary)', flexShrink:0, marginTop:2 }} />
-                      <span style={{ color:'var(--text-muted)', fontSize:13, fontWeight:500 }}>{f}</span>
+                    <div key={fi} style={{ display:'flex', gap:12, marginBottom:18 }}>
+                      <Check size={18} style={{ color:'var(--primary)', flexShrink:0, marginTop:2 }} />
+                      <span style={{ color:'var(--text-muted)', fontSize:15, fontWeight:500 }}>{f}</span>
                     </div>
                   ))}
                 </div>
-                <button onClick={goToDash} className="btn-primary" style={{ width:'100%', padding:'12px 20px', borderRadius:10, fontSize:14, fontWeight:600 }}>
+                <button onClick={goToDash} className="btn-primary" style={{ width:'100%', padding:'16px 24px', borderRadius:14, fontSize:16, fontWeight:700, background: plan.popular ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'rgba(99, 102, 241, 0.1)', border: plan.popular ? 'none' : '2px solid var(--primary)', color: plan.popular ? '#fff' : 'var(--primary)' }}>
                   {plan.price === 0 ? 'Commencer gratuitement' : 'Démarrer l\'essai'}
                 </button>
               </div>
@@ -362,29 +362,29 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', padding:'80px 20px', textAlign:'center', position:'relative', overflow:'hidden' }}>
+      <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', padding:'120px 20px', textAlign:'center', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, opacity:0.15, backgroundImage:'radial-gradient(circle at 20% 50%, #fff 0%, transparent 50%), radial-gradient(circle at 80% 50%, #fff 0%, transparent 50%)' }} />
-        <div style={{ position:'relative', zIndex:2, maxWidth:600 }}>
-          <h2 style={{ color:'#fff', marginBottom:16 }}>Prêt à rejoindre la communauté ?</h2>
-          <p style={{ color:'rgba(255,255,255,0.9)', fontSize:15, marginBottom:32, fontWeight:500, lineHeight:1.6 }}>47+ universités utilisent SKILIO. 28K+ étudiants apprennent et enseignent chaque jour.</p>
-          <button onClick={goToDash} className="btn-primary" style={{ padding:'14px 32px', fontSize:14, background:'#fff', color:'var(--primary)', fontWeight:700, borderRadius:10, boxShadow:'0 8px 20px rgba(0,0,0,0.2)', gap:8 }}>
-            Commencer gratuitement <Rocket size={18} />
+        <div style={{ position:'relative', zIndex:2, maxWidth:700 }}>
+          <h2 style={{ color:'#fff', marginBottom:24 }}>Prêt à rejoindre la communauté ?</h2>
+          <p style={{ color:'rgba(255,255,255,0.9)', fontSize:18, marginBottom:48, fontWeight:500, lineHeight:1.7 }}>47+ universités utilisent SKILIO. 28K+ étudiants apprennent et enseignent chaque jour.</p>
+          <button onClick={goToDash} className="btn-primary" style={{ padding:'18px 48px', fontSize:17, background:'#fff', color:'var(--primary)', fontWeight:800, borderRadius:14, boxShadow:'0 16px 32px rgba(0,0,0,0.25)', gap:10 }}>
+            Commencer gratuitement <Rocket size={20} />
           </button>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ padding:'80px 20px 40px', borderTop:'1px solid var(--border)', background:'var(--bg)' }}>
-        <div style={{ maxWidth:1100, margin:'0 auto' }}>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:48, marginBottom:60 }}>
-            <div style={{ maxWidth:280 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
-                <div style={{ width:36, height:36, borderRadius:10, background:'linear-gradient(135deg, var(--primary), var(--accent))', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:16 }}>
+      <footer style={{ padding:'100px 20px 48px', borderTop:'1.5px solid var(--border)', background:'linear-gradient(180deg, var(--bg) 0%, rgba(34, 197, 94, 0.02) 100%)' }}>
+        <div style={{ maxWidth:1200, margin:'0 auto' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:60, marginBottom:80 }}>
+            <div style={{ maxWidth:300 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
+                <div style={{ width:40, height:40, borderRadius:10, background:'linear-gradient(135deg, var(--primary), var(--accent))', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20 }}>
                   ✨
                 </div>
-                <span style={{ fontWeight:700, fontSize:20, fontFamily:'var(--font-heading)', letterSpacing:'-0.5px', color:'var(--text-main)' }}>SKILIO</span>
+                <span style={{ fontWeight:900, fontSize:22, fontFamily:'var(--font-heading)', letterSpacing:'-0.5px', color:'var(--text-main)' }}>SKILIO</span>
               </div>
-              <p style={{ color:'var(--text-muted)', fontSize:13, lineHeight:1.7, fontWeight:500 }}>Où les passions deviennent expertise, et l'apprentissage devient communauté.</p>
+              <p style={{ color:'var(--text-muted)', fontSize:15, lineHeight:1.8, fontWeight:500 }}>Où les passions deviennent expertise, et l'apprentissage devient communauté.</p>
             </div>
             {[
               ['Produit',  ['Fonctionnalités','Tarifs','Dashboard','Roadmap']],
@@ -392,14 +392,14 @@ export default function LandingPage() {
               ['Support',    ['Aide','Contact','Status','Changelog']],
             ].map(([title, links]) => (
               <div key={title}>
-                <div style={{ fontSize:11, fontWeight:700, marginBottom:16, textTransform:'uppercase', letterSpacing:'1px', color:'var(--text-main)' }}>{title}</div>
-                {links.map(l => <div key={l} style={{ color:'var(--text-muted)', fontSize:13, marginBottom:12, cursor:'pointer', fontWeight:500, transition:'color 0.2s' }} onMouseEnter={e => e.target.style.color = 'var(--primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>{l}</div>)}
+                <div style={{ fontSize:13, fontWeight:800, marginBottom:24, textTransform:'uppercase', letterSpacing:'1.5px', color:'var(--text-main)' }}>{title}</div>
+                {links.map(l => <div key={l} style={{ color:'var(--text-muted)', fontSize:15, marginBottom:14, cursor:'pointer', fontWeight:500, transition:'color 0.2s', '--hover-color': 'var(--primary)' }} onMouseEnter={e => e.target.style.color = 'var(--primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>{l}</div>)}
               </div>
             ))}
           </div>
-          <div style={{ borderTop:'1px solid var(--border)', paddingTop:32, display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:16 }}>
-            <span style={{ color:'var(--text-muted)', fontSize:13, fontWeight:500 }}>© 2026 SKILIO. Tous droits réservés.</span>
-            <span style={{ color:'var(--text-muted)', fontSize:13, fontWeight:600, display:'flex', alignItems:'center', gap:6 }}><Heart size={14} style={{ color:'var(--accent)' }} /> Bâti par des passionnés d'apprentissage</span>
+          <div style={{ borderTop:'1.5px solid var(--border)', paddingTop:40, display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:20 }}>
+            <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:500 }}>© 2026 SKILIO. Tous droits réservés.</span>
+            <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:600, display:'flex', alignItems:'center', gap:8 }}><Heart size={16} style={{ color:'var(--accent)' }} /> Bâti par des passionnés d'apprentissage</span>
           </div>
         </div>
       </footer>

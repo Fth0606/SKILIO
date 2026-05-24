@@ -125,7 +125,7 @@ export default function LandingPage() {
         <FloatingShapes />
 
         {/* Gradient mesh background */}
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(236, 72, 153, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%)', zIndex:0 }} />
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)', zIndex:0 }} />
 
         {/* Floating skill cards */}
         <div className="animate-float" style={{ position:'absolute', top:'15%', left:'5%', zIndex:2, animation:'float-smooth 5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite' }}>
@@ -148,7 +148,7 @@ export default function LandingPage() {
         {/* Hero content */}
         <div style={{ textAlign:'center', zIndex:3, maxWidth:950 }}>
           {/* Badge */}
-          <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(99, 102, 241, 0.1)', border:'1px solid rgba(99, 102, 241, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }} className="glass">
+          <div className="fade-in-up" style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(212, 175, 55, 0.1)', border:'1px solid rgba(212, 175, 55, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }} className="glass">
             <Sparkles size={16} style={{ color: 'var(--primary)' }} />
             <span style={{ color:'var(--primary)', fontSize:13, fontWeight:700, letterSpacing:'0.3px' }}>Approuvé par 47+ universités mondiales</span>
           </div>
@@ -196,7 +196,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', padding:'100px 20px', position:'relative', overflow:'hidden' }}>
+      <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, #C9A227 100%)', padding:'100px 20px', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, opacity:0.1, backgroundImage:'radial-gradient(circle at 30% 60%, #fff 0%, transparent 50%), radial-gradient(circle at 70% 40%, #fff 0%, transparent 50%)' }} />
         <div style={{ maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:32, position:'relative', zIndex:1 }}>
           {STATS.map(s => (
@@ -210,7 +210,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="features" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(99, 102, 241, 0.05) 100%)' }}>
+      <section id="features" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(212, 175, 55, 0.03) 100%)' }}>
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
 
           <div style={{ textAlign:'center', marginBottom:100 }}>

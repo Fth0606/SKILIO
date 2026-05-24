@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root[data-theme="light"] {
-  --bg: #0f0f12;
-  --surface: #18181d;
-  --surface-2: #1f1f26;
-  --border: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 255, 255, 0.12);
+  --bg: #1a1a20;
+  --surface: #222230;
+  --surface-2: #2a2a38;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
   --primary: #6366f1;
   --primary-light: #818cf8;
   --primary-dark: #4f46e5;
@@ -14,21 +14,21 @@
   --text-main: #f4f4f5;
   --text-muted: #a1a1aa;
   --text-subtle: #71717a;
-  --glass-bg: rgba(24, 24, 29, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(34, 34, 48, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --shadow-color: rgba(0, 0, 0, 0.4);
   --success: #22c55e;
   --warning: #f59e0b;
   --danger: #ef4444;
-  --overlay: rgba(0, 0, 0, 0.3);
-  --card-gradient-start: rgba(99, 102, 241, 0.03);
-  --card-gradient-end: rgba(139, 92, 246, 0.03);
+  --overlay: rgba(0, 0, 0, 0.4);
+  --card-gradient-start: rgba(99, 102, 241, 0.05);
+  --card-gradient-end: rgba(139, 92, 246, 0.05);
 }
 
 :root[data-theme="dark"] {
-  --bg: #09090b;
-  --surface: #18181d;
-  --surface-2: #1f1f26;
+  --bg: #0f0f14;
+  --surface: #18181f;
+  --surface-2: #1f1f28;
   --border: rgba(255, 255, 255, 0.06);
   --border-hover: rgba(255, 255, 255, 0.12);
   --primary: #6366f1;
@@ -39,7 +39,7 @@
   --text-main: #f4f4f5;
   --text-muted: #a1a1aa;
   --text-subtle: #71717a;
-  --glass-bg: rgba(24, 24, 29, 0.9);
+  --glass-bg: rgba(24, 24, 31, 0.9);
   --glass-border: rgba(255, 255, 255, 0.08);
   --shadow-color: rgba(0, 0, 0, 0.5);
   --success: #22c55e;
@@ -53,9 +53,9 @@
 :root {
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-heading: 'Syne', system-ui, sans-serif;
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --radius-sm: 12px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
 }
 
 /* Smooth page transitions */

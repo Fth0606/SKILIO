@@ -1,53 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-:root[data-theme="light"] {
-  --bg: #FFFFFF;
-  --surface: #F8F8F8;
-  --border: rgba(34, 197, 94, 0.12);
-  --primary: #16A34A;
-  --primary-light: #86EFAC;
-  --accent: #EC4899;
-  --accent-light: #F9A8D4;
-  --text-main: #111827;
-  --text-muted: #6B7280;
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(34, 197, 94, 0.2);
-  --shadow-color: rgba(22, 163, 74, 0.08);
+:root {
+  /* Dark Blue Color Palette */
+  --primary: #2563EB;
+  --primary-light: #60A5FA;
+  --primary-dark: #1D4ED8;
+  --primary-darker: #1E3A8A;
+  --accent: #F59E0B;
+  --accent-light: #FCD34D;
+  --purple: #8B5CF6;
+  --purple-light: #A78BFA;
   --success: #10B981;
   --warning: #F59E0B;
   --danger: #EF4444;
-  --overlay: rgba(0, 0, 0, 0.05);
-  --card-gradient-start: rgba(34, 197, 94, 0.03);
-  --card-gradient-end: rgba(236, 72, 153, 0.03);
-}
-
-:root[data-theme="dark"] {
-  --bg: #0A0A0A;
-  --surface: #141414;
-  --border: rgba(34, 197, 94, 0.2);
-  --primary: #22C55E;
-  --primary-light: #4ADE80;
-  --accent: #F9A8D4;
-  --accent-light: #FBCFE8;
-  --text-main: #FAFAFA;
-  --text-muted: #A1A1AA;
-  --glass-bg: rgba(20, 20, 20, 0.9);
-  --glass-border: rgba(34, 197, 94, 0.25);
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --success: #22C55E;
-  --warning: #FACC15;
-  --danger: #EF4444;
-  --overlay: rgba(255, 255, 255, 0.03);
-  --card-gradient-start: rgba(34, 197, 94, 0.05);
-  --card-gradient-end: rgba(249, 168, 212, 0.05);
+  
+  /* Dark Theme (Default) */
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-2: #334155;
+  --surface-3: #475569;
+  --border: #334155;
+  --border-light: #475569;
+  --text-main: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --glass-bg: rgba(30, 41, 59, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --overlay: rgba(0, 0, 0, 0.5);
 }
 
 :root {
   --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-heading: 'Syne', system-ui, sans-serif;
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --radius-sm: 12px;
+  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
 }
 
 /* Smooth page transitions */
@@ -339,7 +327,7 @@ p {
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
 }
 
-.badge-green { background: linear-gradient(135deg, #16A34A, #22C55E); box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); color: #fff; }
+.badge-green { background: linear-gradient(135deg, #2563EB, #1D4ED8); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); color: #fff; }
 .badge-red { background: linear-gradient(135deg, #ef4444, #f87171); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); color: #fff; }
 .badge-amber { background: linear-gradient(135deg, #f59e0b, #fbbf24); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); color: #000; }
 .badge-purple { background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); color: #fff; }

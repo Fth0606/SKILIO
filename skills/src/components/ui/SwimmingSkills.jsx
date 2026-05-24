@@ -1,14 +1,14 @@
 import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe } from 'lucide-react'
 
 const SWIMMING_SKILLS = [
-  { name: 'Python', icon: Code, color: '#306998' },
-  { name: 'Français', icon: Languages, color: '#0055A4' },
-  { name: 'AI/ML', icon: Bot, color: '#FF6B6B' },
-  { name: 'Guitare', icon: Music, color: '#E44D26' },
-  { name: 'Calculus', icon: Calculator, color: '#2775CA' },
-  { name: 'Design', icon: Palette, color: '#F7DF1E' },
-  { name: 'Speech', icon: Mic, color: '#9B59B6' },
-  { name: 'Español', icon: Globe, color: '#EAB308' },
+  { name: 'Python', icon: Code, color: '#22C55E' },
+  { name: 'Français', icon: Languages, color: '#EC4899' },
+  { name: 'AI/ML', icon: Bot, color: '#16A34A' },
+  { name: 'Guitare', icon: Music, color: '#F9A8D4' },
+  { name: 'Calculus', icon: Calculator, color: '#22C55E' },
+  { name: 'Design', icon: Palette, color: '#EC4899' },
+  { name: 'Speech', icon: Mic, color: '#16A34A' },
+  { name: 'Español', icon: Globe, color: '#F9A8D4' },
 ]
 
 const generateFloatingSkills = () => Array.from({ length: 12 }, (_, i) => ({

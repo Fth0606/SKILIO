@@ -8,8 +8,8 @@ function AuthLayout({ children, title, sub }) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, position: 'relative', overflow: 'hidden' }}>
       {/* Background orbs */}
-      <div style={{ position: 'absolute', top: '10%', left: '20%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, var(--primary) 0.1, transparent 70%)', opacity: 0.1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, var(--accent) 0.1, transparent 70%)', opacity: 0.1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: '10%', left: '20%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, var(--primary) 0.1, transparent 70%)', opacity: 0.12, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, var(--accent) 0.1, transparent 70%)', opacity: 0.08, pointerEvents: 'none' }} />
 
       <div style={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
         {/* Logo */}

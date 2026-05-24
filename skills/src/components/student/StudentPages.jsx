@@ -38,13 +38,13 @@ function CreditCounter({ value = 0 }) {
   const strokeDashoffset = circumference - progress * circumference
 
   return (
-    <div style={{ position: 'relative', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-      <svg width="140" height="140" style={{ transform: 'rotate(-90deg)' }}>
-        <circle cx="70" cy="70" r={radius} stroke="var(--border)" strokeWidth="8" fill="none" />
+    <div style={{ position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+      <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx="60" cy="60" r={radius} stroke="var(--border)" strokeWidth="6" fill="none" />
         <circle
-          cx="70" cy="70" r={radius}
+          cx="60" cy="60" r={radius}
           stroke="var(--primary)"
-          strokeWidth="8"
+          strokeWidth="6"
           fill="none"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -53,8 +53,8 @@ function CreditCounter({ value = 0 }) {
         />
       </svg>
       <div style={{ position: 'absolute', textAlign: 'center' }}>
-        <div style={{ fontSize: 42, fontWeight: 800, color: 'var(--text-main)', fontFamily: 'var(--font-heading)', lineHeight: 1 }}>{Math.round(displayValue)}</div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Crédits</div>
+        <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--text-main)', fontFamily: 'var(--font-heading)', lineHeight: 1 }}>{Math.round(displayValue)}</div>
+        <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Crédits</div>
       </div>
     </div>
   )
@@ -267,7 +267,7 @@ export function SearchPage() {
       </div>
 
       {/* Filters */}
-      <div className="card glass" style={{ padding: 24, marginBottom: 40, display: 'flex', gap: 16, flexWrap: 'wrap', borderRadius: 24 }}>
+      <div className="card glass" style={{ padding: 24, marginBottom: 40, display: 'flex', gap: 16, flexWrap: 'wrap', borderRadius: 16 }}>
         <input className="input-premium" placeholder="Rechercher des compétences ou des enseignants…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} style={{ flex: 1, minWidth: 250 }} />
         <select className="input-premium" value={category} onChange={e => { setCategory(e.target.value); setPage(1) }} style={{ width: 200 }}>
           <option value="">Toutes les catégories</option>
@@ -304,7 +304,7 @@ export function SearchPage() {
 function TeacherCard({ teacher, onBook }) {
   const initials = teacher.name?.split(' ').map(n => n[0]).join('') || 'T'
   return (
-    <div className="card card-hover glass" style={{ padding: 28, borderRadius: 28 }}>
+    <div className="card card-hover glass" style={{ padding: 28, borderRadius: 14 }}>
       <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
         <Avatar initials={initials} size={60} />
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -476,7 +476,7 @@ export function SessionsPage() {
       </div>
 
       {isLoading ? <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div> : (
-        <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+        <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 16 }}>
           <div style={{ padding: '24px' }}>
             <Table columns={columns} data={data?.data || []} />
           </div>
@@ -853,7 +853,7 @@ export function CreditsPage() {
       <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 40 }}>Crédits</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))', gap: 32, marginBottom: 40, alignItems: 'center' }}>
-        <Card style={{ textAlign: 'center', padding: 32 }}>
+        <Card style={{ textAlign: 'center', padding: 20 }}>
             <CreditCounter value={user?.credits ?? 0} />
             <div style={{ marginTop: 20, color: 'var(--text-muted)', fontWeight: 600 }}>Solde actuel</div>
         </Card>
@@ -863,7 +863,7 @@ export function CreditsPage() {
         </div>
       </div>
 
-      <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 24 }}>
+      <Card style={{ padding: 0, overflow: 'hidden', borderRadius: 16 }}>
         <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border)' }}>
           <h3 style={{ fontSize: 20, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>Historique des transactions</h3>
         </div>
@@ -902,16 +902,16 @@ export function RatingsPage() {
         <StatCard label="Total des avis" value={reviewCount} icon="💬" color="var(--primary-light)" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 20 }}>
         {ratings?.length ? ratings.map((r) => (
-          <Card key={r.id} className="card-hover glass" style={{ borderRadius: 28, padding: 32 }}>
+          <Card key={r.id} style={{ borderRadius: 14, padding: 24 }}>
             <Stars rating={r.rating} />
-            <p style={{ color: 'var(--text-main)', fontSize: 15, lineHeight: 1.7, margin: '20px 0 24px', fontWeight: 500, fontStyle: 'italic' }}>"{r.comment || 'Aucun commentaire'}"</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-              <Avatar initials={r.from?.name?.split(' ').map(n=>n[0]).join('')} size={40} />
+            <p style={{ color: 'var(--text-main)', fontSize: 14, lineHeight: 1.6, margin: '16px 0 20px', fontWeight: 500, fontStyle: 'italic' }}>"{r.comment || 'Aucun commentaire'}"</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
+              <Avatar initials={r.from?.name?.split(' ').map(n=>n[0]).join('')} size={36} />
               <div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-main)' }}>{r.from?.name}</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 600 }}>{r.session?.skill?.name} · {r.created_at}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-main)' }}>{r.from?.name}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 500 }}>{r.session?.skill?.name} · {r.created_at}</div>
               </div>
             </div>
           </Card>

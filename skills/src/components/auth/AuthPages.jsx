@@ -7,27 +7,27 @@ import toast from 'react-hot-toast'
 function AuthLayout({ children, title, sub }) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, position: 'relative', overflow: 'hidden' }}>
-      {/* Background orbs */}
-      <div style={{ position: 'absolute', top: '10%', left: '20%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, var(--primary) 0.1, transparent 70%)', opacity: 0.12, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, var(--accent) 0.1, transparent 70%)', opacity: 0.08, pointerEvents: 'none' }} />
+      {/* Background gradient orbs */}
+      <div style={{ position: 'absolute', top: '15%', left: '10%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)', opacity: 0.08, pointerEvents: 'none', filter: 'blur(60px)' }} />
+      <div style={{ position: 'absolute', bottom: '20%', right: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', opacity: 0.06, pointerEvents: 'none', filter: 'blur(50px)' }} />
 
-      <div style={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: '#fff', boxShadow: '0 10px 20px var(--shadow-color)' }}>⇄</div>
-            <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 28, fontFamily: 'var(--font-heading)', letterSpacing: '-1px' }}>SKILIO</span>
+      <div style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}>
+        {/* Logo & Title */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff', boxShadow: '0 4px 16px rgba(99, 102, 241, 0.3)' }}>⇄</div>
+            <span style={{ color: 'var(--text-main)', fontWeight: 700, fontSize: 24, fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>SKILIO</span>
           </div>
-          <h1 style={{ color: 'var(--text-main)', fontSize: 32, fontWeight: 800, marginBottom: 8, fontFamily: 'var(--font-heading)' }}>{title}</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>{sub}</p>
+          <h1 style={{ color: 'var(--text-main)', fontSize: 24, fontWeight: 700, marginBottom: 8, fontFamily: 'var(--font-heading)' }}>{title}</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 14, fontWeight: 500 }}>{sub}</p>
         </div>
 
-        <div className="card glass" style={{ padding: 40, borderRadius: 32 }}>
+        <div className="card" style={{ padding: 28, borderRadius: 16, border: '1px solid var(--border)' }}>
           {children}
         </div>
 
-        <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 24, fontSize: 14, fontWeight: 500 }}>
-          © 2026 SKILIO Inc. · <Link to="/" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Retour à l'accueil</Link>
+        <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 20, fontSize: 13, fontWeight: 500 }}>
+          © 2026 SKILIO Inc. · <Link to="/" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Retour à l'accueil</Link>
         </p>
       </div>
     </div>
@@ -75,13 +75,13 @@ export function LoginPage() {
           value={form.password}
           onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
         />
-        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontSize: 16, marginTop: 10 }} disabled={loading}>
-          {loading ? <Spinner size={20} /> : 'Se connecter →'}
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 12, borderRadius: 10, fontSize: 14, marginTop: 8 }} disabled={loading}>
+          {loading ? <Spinner size={18} /> : 'Se connecter →'}
         </button>
       </form>
-      <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 32, fontSize: 14, fontWeight: 500 }}>
+      <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 24, fontSize: 13, fontWeight: 500 }}>
         Pas encore de compte ?{' '}
-        <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Inscrivez-vous avec votre email scolaire</Link>
+        <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Inscrivez-vous avec votre email scolaire</Link>
       </p>
     </AuthLayout>
   )
@@ -137,12 +137,12 @@ export function RegisterPage() {
             onChange={set(field.key)}
           />
         ))}
-        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontSize: 16, marginTop: 10 }} disabled={loading}>
-          {loading ? <Spinner size={20} /> : 'Créer un compte →'}
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 12, borderRadius: 10, fontSize: 14, marginTop: 8 }} disabled={loading}>
+          {loading ? <Spinner size={18} /> : 'Créer un compte →'}
         </button>
       </form>
-      <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 32, fontSize: 14, fontWeight: 500 }}>
-        Vous avez déjà un compte ? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Connexion</Link>
+      <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 24, fontSize: 13, fontWeight: 500 }}>
+        Vous avez déjà un compte ? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Connexion</Link>
       </p>
     </AuthLayout>
   )

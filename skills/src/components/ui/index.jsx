@@ -48,6 +48,7 @@ export function Badge({ children, variant = 'gray' }) {
     red: 'badge-red',
     amber: 'badge-amber',
     purple: 'badge-purple',
+    pink: 'badge-pink',
     gray: '',
   }
   return (

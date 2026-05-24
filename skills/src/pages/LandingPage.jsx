@@ -125,7 +125,7 @@ export default function LandingPage() {
         <FloatingShapes />
 
         {/* Gradient mesh background */}
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)', zIndex:0 }} />
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.08) 0%, transparent 50%)', zIndex:0 }} />
 
         {/* Floating skill cards */}
         <div className="animate-float" style={{ position:'absolute', top:'15%', left:'5%', zIndex:2, animation:'float-smooth 5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite' }}>
@@ -148,7 +148,7 @@ export default function LandingPage() {
         {/* Hero content */}
         <div style={{ textAlign:'center', zIndex:3, maxWidth:950 }}>
           {/* Badge */}
-          <div className="fade-in-up" style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(212, 175, 55, 0.1)', border:'1px solid rgba(212, 175, 55, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }} className="glass">
+          <div className="fade-in-up" style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(34, 197, 94, 0.08)', border:'1px solid rgba(34, 197, 94, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }} className="glass">
             <Sparkles size={16} style={{ color: 'var(--primary)' }} />
             <span style={{ color:'var(--primary)', fontSize:13, fontWeight:700, letterSpacing:'0.3px' }}>Approuvé par 47+ universités mondiales</span>
           </div>
@@ -210,7 +210,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="features" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(212, 175, 55, 0.03) 100%)' }}>
+      <section id="features" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(34, 197, 94, 0.03) 100%)' }}>
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
 
           <div style={{ textAlign:'center', marginBottom:100 }}>
@@ -243,7 +243,7 @@ export default function LandingPage() {
                       display:'flex', alignItems:'center', justifyContent:'center',
                       margin:'0 auto 20px',
                       color: i === arr.length-1 ? '#fff' : 'var(--primary)',
-                      boxShadow: i === arr.length-1 ? '0 16px 32px rgba(99, 102, 241, 0.35)' : '0 4px 16px rgba(0,0,0,0.06)',
+                      boxShadow: i === arr.length-1 ? '0 16px 32px rgba(99, 102, 241, 0.35)' : '0 4px 16px var(--shadow-color)',
                       transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
                       cursor: 'pointer'
                     }}
@@ -293,7 +293,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── SKILLS GRID ── */}
-      <section style={{ background:'linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.03) 100%)', padding:'140px 20px', position:'relative' }}>
+      <section style={{ background:'linear-gradient(180deg, rgba(34, 197, 94, 0.03) 0%, rgba(236, 72, 153, 0.03) 100%)', padding:'140px 20px', position:'relative' }}>
         <SwimmingSkills />
         <div style={{ maxWidth:1200, margin:'0 auto', position:'relative', zIndex:1 }}>
           <div style={{ textAlign:'center', marginBottom:80 }}>
@@ -319,7 +319,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ── */}
-      <section id="pricing" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(99, 102, 241, 0.05) 100%)' }}>
+      <section id="pricing" style={{ padding:'140px 20px', background:'linear-gradient(180deg, var(--bg) 0%, rgba(34, 197, 94, 0.03) 100%)' }}>
         <div style={{ maxWidth:1100, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:100 }}>
             <h2 style={{ marginBottom:20 }}>Tarification pour tous</h2>
@@ -331,12 +331,12 @@ export default function LandingPage() {
                 padding:44, position:'relative',
                 transform: plan.popular ? 'scale(1.05)' : 'none',
                 border: plan.popular ? '2px solid var(--primary)' : '1.5px solid var(--border)',
-                boxShadow: plan.popular ? '0 25px 50px rgba(99, 102, 241, 0.25)' : '0 4px 20px rgba(0,0,0,0.06)',
+                boxShadow: plan.popular ? '0 25px 50px rgba(34, 197, 94, 0.15)' : '0 4px 20px var(--shadow-color)',
                 borderRadius:20,
-                background: plan.popular ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(236, 72, 153, 0.05))' : 'var(--surface)',
+                background: plan.popular ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.03), rgba(236, 72, 153, 0.05))' : 'var(--surface)',
               }}>
                 {plan.popular && (
-                  <div style={{ position:'absolute', top:-16, left:'50%', transform:'translateX(-50%)', background:'linear-gradient(135deg, var(--primary), var(--accent))', color:'#fff', fontSize:12, fontWeight:800, padding:'8px 24px', borderRadius:30, whiteSpace:'nowrap', letterSpacing:'0.8px', boxShadow:'0 12px 24px rgba(99, 102, 241, 0.4)' }}>⭐ PLUS POPULAIRE</div>
+                  <div style={{ position:'absolute', top:-16, left:'50%', transform:'translateX(-50%)', background:'linear-gradient(135deg, var(--primary), var(--accent))', color:'#fff', fontSize:12, fontWeight:800, padding:'8px 24px', borderRadius:30, whiteSpace:'nowrap', letterSpacing:'0.8px', boxShadow:'0 12px 24px rgba(34, 197, 94, 0.3)' }}>⭐ PLUS POPULAIRE</div>
                 )}
                 <div style={{ color:'var(--text-muted)', fontSize:12, fontWeight:800, textTransform:'uppercase', letterSpacing:'1.5px', marginBottom:12 }}>{plan.name}</div>
                 <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:12 }}>
@@ -374,7 +374,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ padding:'100px 20px 48px', borderTop:'1.5px solid var(--border)', background:'linear-gradient(180deg, var(--bg) 0%, rgba(99, 102, 241, 0.03) 100%)' }}>
+      <footer style={{ padding:'100px 20px 48px', borderTop:'1.5px solid var(--border)', background:'linear-gradient(180deg, var(--bg) 0%, rgba(34, 197, 94, 0.02) 100%)' }}>
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:60, marginBottom:80 }}>
             <div style={{ maxWidth:300 }}>

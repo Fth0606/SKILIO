@@ -4,8 +4,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
   background-size: 60px 60px;
   opacity: 0.4;
   pointer-events: none;
@@ -28,15 +28,16 @@
   width: 400px;
   height: 400px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, transparent 70%);
   pointer-events: none;
-  animation: float-v2 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  animation: float-new 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
 .auth-orb:nth-child(2) {
   animation-delay: 2s;
   width: 300px;
   height: 300px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
 }
 
 /* Custom list resets */
@@ -46,19 +47,19 @@
   margin: 0;
 }
 
-/* Gold shine effect */
-.gold-shine {
+/* Green shine effect */
+.shine-effect {
   position: relative;
 }
 
-.gold-shine::after {
+.shine-effect::after {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.3), transparent);
   animation: shine-pass 3s infinite;
 }
 

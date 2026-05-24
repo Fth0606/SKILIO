@@ -119,19 +119,7 @@ export function AppShell({ children }) {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Sidebar */}
-      <aside style={{ 
-        width: 280, 
-        background: 'var(--surface)', 
-        borderRight: '1px solid var(--border)', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        flexShrink: 0,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        height: '100vh',
-        overflowY: 'auto'
-      }}>
+      <aside style={{ width: 260, background: 'var(--surface)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }} className="glass">
         {/* Logo */}
         <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
@@ -141,10 +129,10 @@ export function AppShell({ children }) {
 
         {/* Credits (student only) */}
         {user?.role === 'student' && (
-          <div style={{ margin: '20px', background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', borderRadius: 14, padding: 20, textAlign: 'center' }}>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.5px', marginBottom: 4 }}>Crédits</div>
-            <div style={{ color: '#fff', fontSize: 32, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>{user?.credits ?? 0}</div>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 500 }}>disponibles</div>
+          <div style={{ margin: '20px', background: 'var(--shadow-color)', border: '1px solid var(--border)', borderRadius: 20, padding: 20, textAlign: 'center' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '1px', marginBottom: 4 }}>Crédits</div>
+            <div style={{ color: 'var(--primary)', fontSize: 36, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>{user?.credits ?? 0}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 600 }}>disponibles</div>
           </div>
         )}
 
@@ -161,15 +149,14 @@ export function AppShell({ children }) {
                 alignItems: 'center',
                 gap: 12,
                 padding: '12px 16px',
-                borderRadius: 10,
-                color: isActive ? '#fff' : 'var(--text-muted)',
-                background: isActive ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'transparent',
-                fontWeight: isActive ? 600 : 500,
-                fontSize: 14,
+                borderRadius: '12px',
+                color: isActive ? 'var(--primary)' : 'var(--text-muted)',
+                background: isActive ? 'var(--shadow-color)' : 'transparent',
+                fontWeight: isActive ? 700 : 500,
+                fontSize: '14px',
                 textDecoration: 'none',
                 marginBottom: '4px',
                 transition: 'all 0.2s ease',
-                boxShadow: isActive ? '0 4px 16px rgba(99, 102, 241, 0.3)' : 'none',
               })}
             >
               <span style={{ fontSize: 18 }}>{link.icon}</span>
@@ -197,26 +184,20 @@ export function AppShell({ children }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
             <Avatar initials={user?.name?.split(' ').map(n => n[0]).join('') || 'U'} size={40} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ color: 'var(--text-main)', fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.name || 'Utilisateur'}</div>
+              <div style={{ color: 'var(--text-main)', fontSize: 14, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.name || 'Utilisateur'}</div>
               <div style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>{roleLabel}</div>
             </div>
           </div>
-          <button onClick={logout} className="btn-secondary" style={{ width: '100%', padding: '10px', fontSize: 13, color: 'var(--danger)', fontWeight: 600, border: '1px solid var(--border)' }}>Déconnexion</button>
+          <button onClick={logout} className="btn-secondary" style={{ width: '100%', padding: '10px', fontSize: 13, color: 'var(--accent)', fontWeight: 700, border: '1px solid var(--border)' }}>Déconnexion</button>
         </div>
       </aside>
 
       {/* Main */}
-      <main style={{ 
-        flex: 1, 
-        overflowY: 'auto', 
-        padding: '32px', 
-        marginLeft: 280,
-        minHeight: '100vh',
-      }}>
+      <main style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
         {children}
       </main>
 
-      <Modal open={notifOpen} onClose={() => setNotifOpen(false)} title="Notifications" width={420}>
+      <Modal open={notifOpen} onClose={() => setNotifOpen(false)} title="Notifications" width={520}>
         {notifLoading ? (
           <div style={{ padding: 20, textAlign: 'center' }}><Spinner size={24} /></div>
         ) : (
@@ -227,7 +208,7 @@ export function AppShell({ children }) {
               (notifications || []).map((n) => (
                 <div key={n.id} style={{ padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'baseline' }}>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-main)' }}>{n.title}</div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-main)' }}>{n.title}</div>
                     <div style={{ color: 'var(--text-muted)', fontSize: 11, whiteSpace: 'nowrap' }}>{n.created_at}</div>
                   </div>
                   <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 6, lineHeight: 1.5 }}>{n.message}</div>

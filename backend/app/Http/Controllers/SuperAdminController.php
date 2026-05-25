@@ -145,7 +145,7 @@ class SuperAdminController extends Controller
             'name' => $validated['admin_name'],
             'email' => $validated['admin_email'],
             'password' => bcrypt('Password123!'),
-            'role' => 'admin',
+            'role' => 'tenant_admin',
             'tenant_id' => $tenant->id,
         ]);
         

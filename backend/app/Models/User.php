@@ -28,6 +28,8 @@ class User extends Authenticatable
         'total_credits_spent',
         'avatar_url',
         'bio',
+        'verification_token',
+        'email_verified_at',
     ];
 
     protected $appends = ['credits', 'sessions_count', 'skills_taught_count', 'avg_rating', 'ratings_count', 'status'];

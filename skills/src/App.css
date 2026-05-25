@@ -1,17 +1,6 @@
-/* App.css - Component specific styles */
+/* App.css – page-level supplements */
 
-.landing-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
-  background-size: 60px 60px;
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-/* Auth Page specific refinements */
+/* Auth page background */
 .auth-container {
   min-height: 100vh;
   background: var(--bg);
@@ -23,57 +12,23 @@
   overflow: hidden;
 }
 
-.auth-orb {
+/* Landing grid section overlay */
+.landing-grid {
   position: absolute;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, transparent 70%);
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(30, 43, 36, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 43, 36, 0.2) 1px, transparent 1px);
+  background-size: 60px 60px;
   pointer-events: none;
-  animation: float-new 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-.auth-orb:nth-child(2) {
-  animation-delay: 2s;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
-}
-
-/* Custom list resets */
 .no-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* Green shine effect */
-.shine-effect {
-  position: relative;
-}
-
-.shine-effect::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.3), transparent);
-  animation: shine-pass 3s infinite;
-}
-
-@keyframes shine-pass {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-/* Interactive Elements */
 button, a, input, select, textarea {
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
-}
-
-/* Smooth transitions for theme changes */
-* {
-  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  transition: all 0.2s ease;
 }

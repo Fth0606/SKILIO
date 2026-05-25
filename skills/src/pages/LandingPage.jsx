@@ -43,10 +43,73 @@ const PLANS = [
 ]
 
 const STATS = [
-  { value: 47,      label: 'Universités',      suffix: '+', icon: GraduationCap },
-  { value: 28431,   label: 'Étudiants actifs',  suffix: '', icon: Users },
-  { value: 124567,  label: 'Séances complétées', suffix: '', icon: BookOpen },
-  { value: 4.9,     label: 'Note moyenne',       suffix: '', icon: Star, decimal: true },
+  { value: 47,      label: 'Universités',      suffix: '+', icon: GraduationCap, progress: '75%' },
+  { value: 28431,   label: 'Étudiants actifs',  suffix: '', icon: Users, progress: '90%' },
+  { value: 124567,  label: 'Séances complétées', suffix: '', icon: BookOpen, progress: '85%' },
+  { value: 4.9,     label: 'Note moyenne',       suffix: '', icon: Star, decimal: true, progress: '98%' },
+]
+
+const TESTIMONIALS = [
+  {
+    quote: "Grâce à SKILIO, j'ai pu améliorer mon niveau d'anglais tout en partageant ma passion pour la programmation Python. L'échange de crédits est extrêmement fluide et motivant !",
+    author: "Sarah L.",
+    school: "Sorbonne Université",
+    rating: 5,
+    initials: "SL"
+  },
+  {
+    quote: "Enseigner la guitare m'a permis d'accumuler des crédits pour apprendre le Machine Learning. C'est une opportunité unique d'apprendre gratuitement auprès d'autres étudiants passionnés.",
+    author: "Thomas M.",
+    school: "MIT",
+    rating: 5,
+    initials: "TM"
+  },
+  {
+    quote: "La flexibilité de la plateforme est incroyable. J'ai pu planifier mes séances en fonction de mes examens et trouver un tuteur en espagnol fantastique en quelques clics.",
+    author: "Amélie R.",
+    school: "Harvard University",
+    rating: 5,
+    initials: "AR"
+  }
+]
+
+const TEACHERS = [
+  {
+    name: "Alexandre Dubois",
+    subject: "Machine Learning",
+    rating: 4.9,
+    sessions: 124,
+    initials: "AD",
+    badge: "Top Prof",
+    badgeClass: "teacher-badge-top"
+  },
+  {
+    name: "Léa Martin",
+    subject: "Espagnol & Anglais",
+    rating: 5.0,
+    sessions: 89,
+    initials: "LM",
+    badge: "Populaire",
+    badgeClass: "teacher-badge-popular"
+  },
+  {
+    name: "Maxime Leroy",
+    subject: "Développement Web",
+    rating: 4.8,
+    sessions: 156,
+    initials: "ML",
+    badge: "Expert",
+    badgeClass: "teacher-badge-expert"
+  },
+  {
+    name: "Clara Bernard",
+    subject: "Prise de parole",
+    rating: 4.9,
+    sessions: 72,
+    initials: "CB",
+    badge: "Top Prof",
+    badgeClass: "teacher-badge-top"
+  }
 ]
 
 function Counter({ target, suffix, decimal }) {
@@ -70,30 +133,38 @@ function Counter({ target, suffix, decimal }) {
   return <span ref={ref}>{disp}{suffix}</span>
 }
 
-function FloatingShapes() {
+function FloatingShapes({ mouse }) {
+  const tx = mouse.x * 40
+  const ty = mouse.y * 40
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-      <div className="floating-orb" style={{ width: 600, height: 600, top: '-10%', left: '-10%', background: 'var(--primary)', opacity: 0.15 }} />
-      <div className="floating-orb" style={{ width: 500, height: 500, bottom: '10%', right: '-5%', background: 'var(--accent)', opacity: 0.1, animationDelay: '-5s' }} />
-      <div className="floating-orb" style={{ width: 400, height: 400, top: '40%', left: '40%', background: 'var(--primary-light)', opacity: 0.1, animationDelay: '-10s' }} />
-
-      {/* Small stars/dots */}
-      {[...Array(20)].map((_, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          width: Math.random() * 4 + 2,
-          height: Math.random() * 4 + 2,
-          background: i % 2 === 0 ? 'var(--primary)' : 'var(--accent)',
-          borderRadius: '50%',
-          top: `${Math.random() * 100}%`,
-          left: `${Math.random() * 100}%`,
-          opacity: 0.4,
-          animation: `pulse ${Math.random() * 3 + 2}s infinite alternate`
-        }} />
-      ))}
-      <style>{`
-        @keyframes pulse { from { opacity: 0.2; transform: scale(0.8); } to { opacity: 0.6; transform: scale(1.2); } }
-      `}</style>
+      {/* Green orb */}
+      <div className="parallax-orb" style={{
+        width: 560, height: 560,
+        top: '-8%', left: '-6%',
+        background: '#1D9E75',
+        opacity: 0.13,
+        filter: 'blur(110px)',
+        transform: `translate(${tx}px, ${ty}px)`,
+      }} />
+      {/* Violet/purple orb */}
+      <div className="parallax-orb" style={{
+        width: 480, height: 480,
+        bottom: '8%', right: '-4%',
+        background: '#7C3AED',
+        opacity: 0.1,
+        filter: 'blur(100px)',
+        transform: `translate(${-tx * 1.4}px, ${-ty * 1.4}px)`,
+      }} />
+      {/* Orange orb */}
+      <div className="parallax-orb" style={{
+        width: 380, height: 380,
+        top: '38%', left: '42%',
+        background: '#EF9F27',
+        opacity: 0.08,
+        filter: 'blur(90px)',
+        transform: `translate(${tx * 0.7}px, ${-ty * 0.7}px)`,
+      }} />
     </div>
   )
 }
@@ -122,42 +193,74 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <section style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 20px 100px' }}>
-        <FloatingShapes />
+        <FloatingShapes mouse={mouse} />
+        <div className="grid-pattern" />
 
         {/* Gradient mesh background */}
         <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.08) 0%, transparent 50%)', zIndex:0 }} />
 
-        {/* Floating skill cards */}
-        <div className="animate-float" style={{ position:'absolute', top:'15%', left:'5%', zIndex:2, animation:'float-smooth 5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite' }}>
-          <div className="card glass" style={{ padding:'14px 22px', display:'flex', alignItems:'center', gap:12, borderRadius:14, backdropFilter:'blur(20px)' }}>
-            <Code size={26} style={{ color:'var(--primary)' }} />
+        {/* Floating skill cards – 4 cards per spec */}
+        <div className="floating-skill-card" style={{ top:'16%', left:'5%' }}>
+          <div className="card glass" style={{ padding:'12px 20px', display:'flex', alignItems:'center', gap:12, borderRadius:14 }}>
+            <Code size={22} style={{ color:'#1D9E75', flexShrink:0 }} />
             <div>
-              <div style={{ fontWeight:800, fontSize:13, color:'var(--text-main)' }}>Python</div>
-              <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:500 }}>342 séances</div>
+              <div style={{ fontWeight:800, fontSize:13, color:'#fff' }}>Python</div>
+              <div style={{ color:'#5a7a6a', fontSize:11 }}>342 séances</div>
             </div>
           </div>
         </div>
 
-        <div className="animate-float" style={{ position:'absolute', bottom:'20%', right:'7%', zIndex:2, animation:'float-smooth 4.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.5s' }}>
-          <div className="card glass" style={{ padding:'16px 20px', borderRadius:14, backdropFilter:'blur(20px)' }}>
-            <div style={{ display:'flex', gap:3, marginBottom:8, color:'var(--accent)' }}>{[...Array(5)].map((_,i) => <Star key={i} size={14} fill="currentColor" />)}</div>
-            <div style={{ fontWeight:700, fontSize:12, color:'var(--text-main)' }}>Séance 5★</div>
+        <div className="floating-skill-card" style={{ top:'20%', right:'7%' }}>
+          <div className="card glass" style={{ padding:'12px 20px', display:'flex', alignItems:'center', gap:12, borderRadius:14 }}>
+            <Music size={22} style={{ color:'#EF9F27', flexShrink:0 }} />
+            <div>
+              <div style={{ fontWeight:800, fontSize:13, color:'#fff' }}>Guitare</div>
+              <div style={{ color:'#5a7a6a', fontSize:11 }}>156 séances</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="floating-skill-card" style={{ bottom:'26%', left:'7%' }}>
+          <div className="card glass" style={{ padding:'12px 20px', display:'flex', alignItems:'center', gap:12, borderRadius:14 }}>
+            <div style={{
+              width:28, height:28, borderRadius:'50%',
+              background:'rgba(29,158,117,0.2)',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              color:'#1D9E75', fontSize:15, fontWeight:800, flexShrink:0
+            }}>✓</div>
+            <div>
+              <div style={{ fontWeight:800, fontSize:13, color:'#fff' }}>+1 Crédit</div>
+              <div style={{ color:'#5a7a6a', fontSize:11 }}>obtenu</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="floating-skill-card" style={{ bottom:'21%', right:'6%' }}>
+          <div className="card glass" style={{ padding:'12px 20px', display:'flex', alignItems:'center', gap:10, borderRadius:14 }}>
+            <div style={{ display:'flex', gap:1, color:'#EF9F27', fontSize:13, flexShrink:0 }}>
+              {'★★★★★'.split('').map((s,i) => <span key={i}>{s}</span>)}
+            </div>
+            <div>
+              <div style={{ fontWeight:800, fontSize:13, color:'#fff' }}>Séance notée 5.0</div>
+              <div style={{ color:'#5a7a6a', fontSize:11 }}>Session terminée</div>
+            </div>
           </div>
         </div>
 
         {/* Hero content */}
         <div style={{ textAlign:'center', zIndex:3, maxWidth:950 }}>
           {/* Badge */}
-          <div className="fade-in-up" style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(34, 197, 94, 0.08)', border:'1px solid rgba(34, 197, 94, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }} className="glass">
+          <div className="glass fade-in-up" style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(34, 197, 94, 0.08)', border:'1px solid rgba(34, 197, 94, 0.3)', borderRadius:40, padding:'10px 24px', marginBottom:48 }}>
+            <span className="pulse-dot" />
             <Sparkles size={16} style={{ color: 'var(--primary)' }} />
             <span style={{ color:'var(--primary)', fontSize:13, fontWeight:700, letterSpacing:'0.3px' }}>Approuvé par 47+ universités mondiales</span>
           </div>
 
-          {/* Main headline */}
-          <h1 style={{ marginBottom:24, color:'var(--text-main)', fontWeight:900, letterSpacing:'-1.5px', lineHeight:1.15 }}>
-            Apprendre ensemble.<br />
-            <span style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip:'text' }}>Grandir ensemble.</span><br />
-            <span style={{ color:'var(--text-main)' }}>Partager le savoir.</span>
+          {/* Main headline – line1 white · line2 green · line3 orange */}
+          <h1 style={{ marginBottom:24, fontFamily:'Georgia, serif', fontWeight:800, letterSpacing:'-1px', lineHeight:1.2, fontSize:'clamp(2.4rem,7vw,5rem)' }}>
+            <span style={{ color:'#ffffff', display:'block' }}>Apprendre ensemble.</span>
+            <span style={{ color:'#1D9E75', display:'block' }}>Grandir ensemble.</span>
+            <span style={{ color:'#EF9F27', display:'block' }}>Partager le savoir.</span>
           </h1>
 
           {/* Subheading */}
@@ -166,30 +269,63 @@ export default function LandingPage() {
           </p>
 
           {/* CTA Buttons */}
-          <div style={{ display:'flex', gap:16, justifyContent:'center', flexWrap:'wrap', marginBottom:72 }}>
-            <button onClick={goToDash} className="btn-primary" style={{ padding:'18px 40px', fontSize:17, fontWeight:700, gap:8 }}>
-              Commencer <Rocket size={18} />
+          <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap', marginBottom:72 }}>
+            <button
+              onClick={goToDash}
+              style={{
+                background:'linear-gradient(135deg,#1D9E75,#0F6E56)',
+                color:'#fff',
+                padding:'16px 36px',
+                borderRadius:14,
+                fontWeight:700,
+                border:'none',
+                cursor:'pointer',
+                fontSize:16,
+                display:'inline-flex',
+                alignItems:'center',
+                gap:8,
+                fontFamily:'var(--font-sans)',
+                boxShadow:'0 4px 24px rgba(29,158,117,0.45)',
+                transition:'transform 0.2s,box-shadow 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 8px 32px rgba(29,158,117,0.55)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 4px 24px rgba(29,158,117,0.45)' }}
+            >
+              Commencer <Rocket size={17} />
             </button>
-            <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior:'smooth' })} className="btn-secondary" style={{ padding:'18px 40px', fontSize:17, fontWeight:700 }}>
+            <button
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior:'smooth' })}
+              style={{
+                background:'transparent',
+                color:'#fff',
+                padding:'16px 36px',
+                borderRadius:14,
+                fontWeight:600,
+                border:'1px solid rgba(255,255,255,0.25)',
+                cursor:'pointer',
+                fontSize:16,
+                fontFamily:'var(--font-sans)',
+                transition:'border-color 0.2s,background 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.5)'; e.currentTarget.style.background='rgba(255,255,255,0.06)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.25)'; e.currentTarget.style.background='transparent' }}
+            >
               Découvrir
             </button>
           </div>
 
-          {/* University trust badges */}
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:32, flexWrap:'wrap', opacity:0.7, fontSize:13, fontWeight:700, textTransform:'uppercase', letterSpacing:'1px' }}>
-            <div style={{ display:'flex', alignItems:'center', gap:6, color:'var(--text-muted)' }}>
-              <Users size={16} />
-              28K+ étudiants actifs
-            </div>
-            <div style={{ height:20, width:1, background:'var(--border)' }} />
-            <div style={{ display:'flex', alignItems:'center', gap:6, color:'var(--text-muted)' }}>
-              <TrendingUp size={16} />
-              124K+ séances
-            </div>
-            <div style={{ height:20, width:1, background:'var(--border)' }} />
-            <div style={{ display:'flex', alignItems:'center', gap:6, color:'var(--text-muted)' }}>
-              <Star size={16} />
-              4.9 ★ moyenne
+          {/* University trust logos row */}
+          <div style={{ marginTop: 64 }}>
+            <div style={{ color:'var(--text-muted)', fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:'2px', marginBottom:20 }}>Utilisé par des étudiants de</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
+              {SCHOOLS.map(s => (
+                <div key={s.name} className="uni-pill">
+                  <div className="uni-logo" style={{ background: s.color }}>
+                    {s.name[0]}
+                  </div>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-muted)' }}>{s.name}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -197,13 +333,25 @@ export default function LandingPage() {
 
       {/* ── STATS ── */}
       <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, #C9A227 100%)', padding:'100px 20px', position:'relative', overflow:'hidden' }}>
-        <div style={{ position:'absolute', inset:0, opacity:0.1, backgroundImage:'radial-gradient(circle at 30% 60%, #fff 0%, transparent 50%), radial-gradient(circle at 70% 40%, #fff 0%, transparent 50%)' }} />
+        <div style={{ position:'absolute', inset:0, opacity:0.15, backgroundImage:'radial-gradient(circle at 30% 60%, #fff 0%, transparent 50%), radial-gradient(circle at 70% 40%, #fff 0%, transparent 50%)' }} />
         <div style={{ maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:32, position:'relative', zIndex:1 }}>
           {STATS.map(s => (
-            <div key={s.label} className="card" style={{ padding:36, borderRadius:18, background:'rgba(255,255,255,0.95)', backdropFilter:'blur(10px)', textAlign:'center', border:'1px solid rgba(255,255,255,0.5)' }}>
-              <s.icon size={36} style={{ color: 'var(--primary)', marginBottom: 16, margin:'0 auto 16px' }} />
+            <div key={s.label} className="card glass" style={{ padding:36, borderRadius:18, textAlign:'center', border:'1px solid rgba(255,255,255,0.2)' }}>
+              <div style={{ 
+                width: 60, height: 60, borderRadius: '50%', 
+                background: 'rgba(34, 197, 94, 0.1)', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                margin: '0 auto 20px', color: 'var(--primary)' 
+              }}>
+                <s.icon size={26} />
+              </div>
               <div style={{ color:'var(--primary)', fontSize:44, fontWeight:900, letterSpacing:'-1px', fontFamily:'var(--font-heading)' }}><Counter target={s.value} suffix={s.suffix} decimal={s.decimal} /></div>
-              <div style={{ color:'var(--text-muted)', fontSize:13, fontWeight:700, marginTop:12, textTransform:'uppercase', letterSpacing:'1px' }}>{s.label}</div>
+              <div style={{ color:'var(--text-main)', fontSize:13, fontWeight:800, marginTop:12, textTransform:'uppercase', letterSpacing:'1.5px' }}>{s.label}</div>
+              
+              {/* Progress Indicator */}
+              <div style={{ width: '80px', height: '4px', background: 'rgba(34, 197, 94, 0.12)', borderRadius: '2px', margin: '20px auto 0', overflow: 'hidden' }}>
+                <div style={{ width: s.progress, height: '100%', background: 'linear-gradient(90deg, var(--primary), var(--accent))', borderRadius: '2px' }} />
+              </div>
             </div>
           ))}
         </div>
@@ -314,6 +462,89 @@ export default function LandingPage() {
                 </div>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section className="testimonial-section">
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+            <h2 style={{ marginBottom: 16 }}>Ce que disent nos étudiants</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 18, fontWeight: 500, maxWidth: 600, margin: '0 auto' }}>
+              Découvrez les témoignages de ceux qui apprennent et enseignent chaque jour sur SKILIO.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="testimonial-card">
+                <span className="quote-mark">“</span>
+                <div style={{ display: 'flex', gap: 2, marginBottom: 20, color: 'var(--warning)' }}>
+                  {[...Array(t.rating)].map((_, idx) => (
+                    <Star key={idx} size={16} fill="currentColor" />
+                  ))}
+                </div>
+                <p style={{ color: 'var(--text-main)', fontSize: 15, lineHeight: 1.7, marginBottom: 28, fontStyle: 'italic', fontWeight: 500 }}>
+                  "{t.quote}"
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div style={{ 
+                    width: 44, height: 44, borderRadius: '50%', 
+                    background: 'linear-gradient(135deg, var(--primary), var(--accent))', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    color: '#fff', fontWeight: 800, fontSize: 14 
+                  }}>
+                    {t.initials}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-main)' }}>{t.author}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 600 }}>{t.school}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TOP TEACHERS ── */}
+      <section style={{ padding: '140px 20px', background: 'linear-gradient(180deg, var(--bg) 0%, rgba(236, 72, 153, 0.02) 100%)', position: 'relative' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+            <h2 style={{ marginBottom: 16 }}>Nos tuteurs vedettes</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 18, fontWeight: 500, maxWidth: 600, margin: '0 auto' }}>
+              Apprenez auprès de vos pairs les plus qualifiés et expérimentés de la communauté.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 28 }}>
+            {TEACHERS.map((t, i) => (
+              <div key={i} className="teacher-card">
+                <div className="teacher-avatar">
+                  {t.initials}
+                </div>
+                <div style={{ flexGrow: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <span className={`teacher-badge ${t.badgeClass}`}>{t.badge}</span>
+                  </div>
+                  <h4 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-main)', marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {t.name}
+                  </h4>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
+                    {t.subject}
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 13, color: 'var(--text-main)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Star size={14} fill="var(--warning)" style={{ color: 'var(--warning)' }} /> {t.rating}
+                    </span>
+                    <span style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 800, textTransform: 'uppercase' }}>
+                      🎯 {t.sessions} SÉANCES
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

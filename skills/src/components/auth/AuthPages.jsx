@@ -6,28 +6,64 @@ import toast from 'react-hot-toast'
 
 function AuthLayout({ children, title, sub }) {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, position: 'relative', overflow: 'hidden' }}>
-      {/* Background orbs */}
-      <div style={{ position: 'absolute', top: '10%', left: '20%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, var(--primary) 0.1, transparent 70%)', opacity: 0.12, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '10%', right: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, var(--accent) 0.1, transparent 70%)', opacity: 0.08, pointerEvents: 'none' }} />
+    <div style={{
+      minHeight: '100vh',
+      background: '#070c09',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 20,
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Green orb */}
+      <div style={{
+        position: 'absolute', top: '8%', left: '18%',
+        width: 480, height: 480, borderRadius: '50%',
+        background: 'radial-gradient(circle, #1D9E75 0%, transparent 70%)',
+        opacity: 0.1, pointerEvents: 'none', filter: 'blur(40px)',
+      }} />
+      {/* Purple orb */}
+      <div style={{
+        position: 'absolute', bottom: '10%', right: '18%',
+        width: 380, height: 380, borderRadius: '50%',
+        background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)',
+        opacity: 0.08, pointerEvents: 'none', filter: 'blur(40px)',
+      }} />
 
       <div style={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: '#fff', boxShadow: '0 10px 20px var(--shadow-color)' }}>⇄</div>
-            <span style={{ color: 'var(--text-main)', fontWeight: 800, fontSize: 28, fontFamily: 'var(--font-heading)', letterSpacing: '-1px' }}>SKILIO</span>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{
+              width: 42, height: 42, borderRadius: 12,
+              background: 'linear-gradient(135deg, #1D9E75, #EF9F27)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 22, fontWeight: 800, color: '#fff',
+            }}>⇄</div>
+            <span style={{ color: '#fff', fontWeight: 800, fontSize: 26, fontFamily: 'var(--font-sans)', letterSpacing: '-0.5px' }}>SKILIO</span>
+            <span style={{
+              background: 'rgba(29,158,117,0.18)', color: '#1D9E75',
+              fontSize: 10, fontWeight: 800, padding: '2px 8px', borderRadius: 20,
+              border: '1px solid rgba(29,158,117,0.3)', letterSpacing: '0.5px',
+            }}>SaaS</span>
           </div>
-          <h1 style={{ color: 'var(--text-main)', fontSize: 32, fontWeight: 800, marginBottom: 8, fontFamily: 'var(--font-heading)' }}>{title}</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>{sub}</p>
+          <h1 style={{
+            color: '#fff', fontSize: 28, fontWeight: 800, marginBottom: 8,
+            fontFamily: 'Georgia, serif', letterSpacing: '-0.5px',
+          }}>{title}</h1>
+          <p style={{ color: '#5a7a6a', fontSize: 15 }}>{sub}</p>
         </div>
 
-        <div className="card glass" style={{ padding: 40, borderRadius: 32 }}>
+        <div className="card" style={{ padding: 36, borderRadius: 18, border: '1px solid #1e2b24', background: '#111814' }}>
           {children}
         </div>
 
-        <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: 24, fontSize: 14, fontWeight: 500 }}>
-          © 2026 SKILIO Inc. · <Link to="/" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Retour à l'accueil</Link>
+        <p style={{ color: '#5a7a6a', textAlign: 'center', marginTop: 24, fontSize: 13 }}>
+          © 2026 SKILIO Inc. ·{' '}
+          <Link to="/" style={{ color: '#1D9E75', fontWeight: 700, textDecoration: 'none' }}>
+            Retour à l'accueil
+          </Link>
         </p>
       </div>
     </div>
@@ -75,7 +111,7 @@ export function LoginPage() {
           value={form.password}
           onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
         />
-        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontSize: 16, marginTop: 10 }} disabled={loading}>
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px', borderRadius: 14, fontSize: 15, marginTop: 10, background: 'linear-gradient(135deg,#1D9E75,#0F6E56)' }} disabled={loading}>
           {loading ? <Spinner size={20} /> : 'Se connecter →'}
         </button>
       </form>
@@ -137,7 +173,7 @@ export function RegisterPage() {
             onChange={set(field.key)}
           />
         ))}
-        <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontSize: 16, marginTop: 10 }} disabled={loading}>
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px', borderRadius: 14, fontSize: 15, marginTop: 10, background: 'linear-gradient(135deg,#1D9E75,#0F6E56)' }} disabled={loading}>
           {loading ? <Spinner size={20} /> : 'Créer un compte →'}
         </button>
       </form>

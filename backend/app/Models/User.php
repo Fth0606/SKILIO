@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'role',
         'tenant_id',
+        'is_active',
         'credits_balance',
         'total_credits_earned',
         'total_credits_spent',

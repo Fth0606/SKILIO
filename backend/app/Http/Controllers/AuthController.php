@@ -18,16 +18,42 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Resolve tenant from subdomain header, or fall back to the first active tenant
+        // Extract domain from user's email
+        $userEmailParts = explode('@', $request->email);
+        $userDomain = end($userEmailParts);
+
+        // Resolve tenant from subdomain header
         $subdomain = $request->header('X-Tenant');
+        $tenant = null;
+
         if ($subdomain) {
             $tenant = Tenant::where('subdomain', $subdomain)->where('is_active', true)->first();
+
+            if ($tenant) {
+                $tenantEmailParts = explode('@', $tenant->email);
+                $tenantDomain = end($tenantEmailParts);
+
+                if (strtolower($userDomain) !== strtolower($tenantDomain)) {
+                    return response()->json(['message' => "Votre email doit appartenir au domaine {$tenantDomain}."], 422);
+                }
+            }
         }
+
+        // If no tenant matched or no subdomain header, try to find a tenant by email domain
         if (empty($tenant)) {
-            $tenant = Tenant::where('is_active', true)->first();
+            $tenants = Tenant::where('is_active', true)->get();
+            foreach ($tenants as $t) {
+                $tenantEmailParts = explode('@', $t->email);
+                $tDomain = end($tenantEmailParts);
+                if (strtolower($userDomain) === strtolower($tDomain)) {
+                    $tenant = $t;
+                    break;
+                }
+            }
         }
+
         if (!$tenant) {
-            return response()->json(['message' => 'Aucun établissement trouvé. Contactez votre administrateur.'], 422);
+            return response()->json(['message' => 'Votre email n\'est rattaché à aucun établissement autorisé.'], 422);
         }
 
         // Check email uniqueness within this tenant

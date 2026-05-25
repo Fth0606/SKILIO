@@ -27,7 +27,22 @@
 }
 
 /* Both themes use the same SKILIO dark brand identity */
-:root[data-theme="light"],
+:root[data-theme="light"] {
+  --bg:           #f8f9fa;
+  --surface:      #ffffff;
+  --border:       #e9ecef;
+  --primary:      #1D9E75;
+  --primary-dark: #0F6E56;
+  --primary-light:#2DC990;
+  --accent:       #EF9F27;
+  --text-main:    #212529;
+  --text-muted:   #6c757d;
+  --glass-bg:     rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(29, 158, 117, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-green: rgba(29, 158, 117, 0.2);
+}
+
 :root[data-theme="dark"] {
   --bg:           #070c09;
   --surface:      #111814;

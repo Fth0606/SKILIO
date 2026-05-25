@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthController;
 
 Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -23,6 +24,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/users/{id}/activate', [App\Http\Controllers\AdminController::class, 'updateUserStatus']);
     Route::post('/users/{id}/suspend', [App\Http\Controllers\AdminController::class, 'updateUserStatus']);
     Route::get('/billing', [App\Http\Controllers\AdminController::class, 'billing']);
+    Route::post('/billing/upgrade', [App\Http\Controllers\AdminController::class, 'upgradePlan']);
     Route::get('/skills', [App\Http\Controllers\AdminController::class, 'skillsManagement']);
     Route::post('/skills/{id}/approve', [App\Http\Controllers\AdminController::class, 'approveSkill']);
     Route::post('/skills/{id}/hide', [App\Http\Controllers\AdminController::class, 'hideSkill']);

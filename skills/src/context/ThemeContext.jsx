@@ -21,9 +21,11 @@ export function ThemeProvider({ children }) {
     if (primaryColor) {
       document.documentElement.style.setProperty('--primary', primaryColor);
       document.documentElement.style.setProperty('--primary-light', `color-mix(in srgb, ${primaryColor}, white 20%)`);
+      document.documentElement.style.setProperty('--primary-dark', `color-mix(in srgb, ${primaryColor}, black 20%)`);
     } else {
       document.documentElement.style.removeProperty('--primary');
       document.documentElement.style.removeProperty('--primary-light');
+      document.documentElement.style.removeProperty('--primary-dark');
     }
   }, [user?.tenant?.primary_color]);
 

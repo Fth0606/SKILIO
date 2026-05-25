@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('subdomain', 100)->unique()->comment('Tenant subdomain e.g., harvard');
             $table->string('email', 255)->comment('Admin contact email');
             $table->string('logo_url', 500)->nullable()->comment('URL to tenant logo');
-            $table->string('primary_color', 7)->default('#3B82F6')->comment('Primary branding color');
+            $table->string('primary_color', 7)->default('#0F6E56')->comment('Primary branding color');
             $table->string('secondary_color', 7)->default('#10B981')->comment('Secondary branding color');
             $table->text('custom_css')->nullable()->comment('Custom CSS overrides for the tenant');
             $table->integer('max_users')->default(200)->comment('Maximum number of users allowed');

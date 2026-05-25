@@ -14,6 +14,13 @@ export const useSaveBranding = () => {
   })
 }
 export const useBilling = () => useQuery('billing', () => adminAPI.billing().then(res => res.data.data))
+export const useUpgradePlan = () => {
+  const queryClient = useQueryClient()
+  return useMutation(planName => adminAPI.upgradePlan(planName), {
+    onSuccess: () => { toast.success('Forfait mis à jour avec succès !'); queryClient.invalidateQueries('billing') },
+    onError: () => toast.error('Échec de la mise à jour du forfait')
+  })
+}
 
 export const useSuspendUser = () => {
   const queryClient = useQueryClient()

@@ -4,11 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        // Resolve tenant from subdomain header, or fall back to the first active tenant
+        $subdomain = $request->header('X-Tenant');
+        if ($subdomain) {
+            $tenant = Tenant::where('subdomain', $subdomain)->where('is_active', true)->first();
+        }
+        if (empty($tenant)) {
+            $tenant = Tenant::where('is_active', true)->first();
+        }
+        if (!$tenant) {
+            return response()->json(['message' => 'Aucun établissement trouvé. Contactez votre administrateur.'], 422);
+        }
+
+        // Check email uniqueness within this tenant
+        if (User::where('email', $request->email)->where('tenant_id', $tenant->id)->exists()) {
+            return response()->json(['message' => 'Un compte existe déjà avec cet email.'], 422);
+        }
+
+        $user = User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'tenant_id' => $tenant->id,
+            'role'      => 'student',
+            'is_active' => true,
+            'credits_balance' => 3.00,
+        ]);
+
+        $user->load('tenant');
+
+        return response()->json([
+            'token' => 'mock-token-' . $user->id,
+            'user'  => $user,
+        ], 201);
+    }
+
     public function login(Request $request)
     {
         $request->validate([

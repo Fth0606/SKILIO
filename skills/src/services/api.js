@@ -104,7 +104,7 @@ export const adminAPI = {
   analytics: (params) => api.get('/admin/analytics', { params }),
   exportReport: () => api.get('/admin/analytics/export', { responseType: 'blob' }),
   billing: () => api.get('/admin/billing'),
-  upgradePlan: (plan) => api.post('/admin/billing/upgrade', { plan }),
+  upgradePlan: (planName) => api.post('/admin/billing/upgrade', { plan_name: planName }),
   invoices: () => api.get('/admin/billing/invoices'),
 }
 

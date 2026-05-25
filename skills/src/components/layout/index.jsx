@@ -54,9 +54,9 @@ export function Navbar() {
       left: 0,
       right: 0,
       zIndex: 1000,
-      background: scrolled ? 'rgba(8, 14, 10, 0.95)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+      background: scrolled ? 'var(--glass-bg)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
       borderBottom: scrolled ? '1px solid var(--border)' : 'none',
       transition: 'all 0.3s ease',
       padding: '0 2rem',
@@ -82,21 +82,29 @@ export function Navbar() {
           ].map(item => (
             <button
               key={item.label}
-              onClick={() => navigate(`/#${item.hash}`)}
+              onClick={() => {
+                if (window.location.pathname === '/') {
+                  document.getElementById(item.hash)?.scrollIntoView({ behavior: 'smooth' });
+                  // Also update URL to reflect the hash without jumping
+                  window.history.pushState(null, '', `/#${item.hash}`);
+                } else {
+                  navigate(`/#${item.hash}`);
+                }
+              }}
               style={{
                 background: 'transparent',
-                color: 'rgba(255,255,255,0.7)',
+                color: 'var(--text-muted)',
                 border: 'none',
                 padding: '8px 14px',
                 borderRadius: 8,
                 cursor: 'pointer',
                 fontSize: 14,
-                fontWeight: 500,
+                fontWeight: 600,
                 fontFamily: 'var(--font-sans)',
                 transition: 'color 0.2s',
               }}
-              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--text-main)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
             >{item.label}</button>
           ))}
 
@@ -118,7 +126,7 @@ export function Navbar() {
                 onClick={() => navigate('/login')}
                 style={{
                   background: 'transparent',
-                  color: 'rgba(255,255,255,0.7)',
+                  color: 'var(--text-muted)',
                   border: '1px solid var(--border)',
                   padding: '9px 18px',
                   borderRadius: 10,
@@ -129,8 +137,8 @@ export function Navbar() {
                   marginLeft: 8,
                   transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.color = '#fff' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.color = 'var(--primary)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)' }}
               >
                 Connexion
               </button>
@@ -192,10 +200,8 @@ export function AppShell({ children }) {
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
 
       {/* ── Sidebar ─────────────────────────────────────────────────────────── */}
-      <aside style={{
+      <aside className="sidebar" style={{
         width: 256,
-        background: '#111814',
-        borderRight: '1px solid #1e2b24',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
@@ -206,7 +212,7 @@ export function AppShell({ children }) {
       }}>
 
         {/* Logo */}
-        <div style={{ padding: '22px 20px 18px', borderBottom: '1px solid #1e2b24' }}>
+        <div style={{ padding: '22px 20px 18px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
             <Logo size={30} withText />
           </div>
@@ -216,14 +222,14 @@ export function AppShell({ children }) {
         {user?.role === 'student' && (
           <div style={{
             margin: '16px',
-            background: 'rgba(29, 158, 117, 0.08)',
-            border: '1px solid rgba(29, 158, 117, 0.2)',
+            background: 'var(--overlay)',
+            border: '1px solid var(--border)',
             borderRadius: 14,
             padding: '18px 16px',
             textAlign: 'center',
           }}>
             <div style={{
-              color: '#5a7a6a',
+              color: 'var(--text-muted)',
               fontSize: 10,
               textTransform: 'uppercase',
               fontWeight: 700,
@@ -231,13 +237,13 @@ export function AppShell({ children }) {
               marginBottom: 6,
             }}>Crédits</div>
             <div style={{
-              color: '#1D9E75',
+              color: 'var(--primary)',
               fontSize: 42,
               fontWeight: 800,
               fontFamily: 'var(--font-heading)',
               lineHeight: 1,
             }}>{user?.credits ?? 0}</div>
-            <div style={{ color: '#5a7a6a', fontSize: 11, marginTop: 5, fontWeight: 500 }}>disponibles</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: 11, marginTop: 5, fontWeight: 500 }}>disponibles</div>
           </div>
         )}
 
@@ -255,9 +261,9 @@ export function AppShell({ children }) {
                 padding: '10px 14px',
                 borderRadius: 10,
                 marginBottom: 2,
-                color: isActive ? '#fff' : '#5a7a6a',
-                background: isActive ? 'rgba(29, 158, 117, 0.18)' : 'transparent',
-                borderLeft: isActive ? '2px solid #1D9E75' : '2px solid transparent',
+                color: isActive ? 'var(--primary)' : 'var(--text-muted)',
+                background: isActive ? 'rgba(34, 197, 94, 0.12)' : 'transparent',
+                borderLeft: isActive ? '2px solid var(--primary)' : '2px solid transparent',
                 fontWeight: isActive ? 600 : 400,
                 fontSize: 13,
                 textDecoration: 'none',
@@ -265,13 +271,13 @@ export function AppShell({ children }) {
               })}
               onMouseEnter={e => {
                 if (!e.currentTarget.className.includes('active')) {
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.85)'
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                  e.currentTarget.style.color = 'var(--text-main)'
+                  e.currentTarget.style.background = 'var(--overlay)'
                 }
               }}
               onMouseLeave={e => {
                 if (!e.currentTarget.className.includes('active')) {
-                  e.currentTarget.style.color = '#5a7a6a'
+                  e.currentTarget.style.color = 'var(--text-muted)'
                   e.currentTarget.style.background = 'transparent'
                 }
               }}
@@ -283,7 +289,7 @@ export function AppShell({ children }) {
         </nav>
 
         {/* Bottom: notifications + theme + user */}
-        <div style={{ padding: '14px', borderTop: '1px solid #1e2b24' }}>
+        <div style={{ padding: '14px', borderTop: '1px solid var(--border)' }}>
 
           {/* Action buttons */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
@@ -292,10 +298,10 @@ export function AppShell({ children }) {
               style={{
                 flex: 1,
                 padding: '9px 0',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid #1e2b24',
+                background: 'var(--overlay)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
-                color: '#5a7a6a',
+                color: 'var(--text-muted)',
                 cursor: 'pointer',
                 fontSize: 15,
                 display: 'flex',
@@ -305,14 +311,14 @@ export function AppShell({ children }) {
                 fontFamily: 'var(--font-sans)',
                 transition: 'border-color 0.2s',
               }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = '#1D9E75'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = '#1e2b24'}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
               title="Notifications"
             >
               🔔
               {!!unreadCount && (
                 <span style={{
-                  background: '#1D9E75',
+                  background: 'var(--primary)',
                   color: '#fff',
                   fontSize: 10,
                   fontWeight: 800,
@@ -330,14 +336,14 @@ export function AppShell({ children }) {
             <Avatar initials={initials} size={36} />
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{
-                color: '#fff',
+                color: 'var(--text-main)',
                 fontSize: 13,
                 fontWeight: 700,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
               }}>{user?.name || 'Utilisateur'}</div>
-              <div style={{ color: '#5a7a6a', fontSize: 11 }}>{roleLabel}</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>{roleLabel}</div>
             </div>
           </div>
 
@@ -348,9 +354,9 @@ export function AppShell({ children }) {
               width: '100%',
               padding: '9px',
               background: 'transparent',
-              border: '1px solid #1e2b24',
+              border: '1px solid var(--border)',
               borderRadius: 10,
-              color: '#5a7a6a',
+              color: 'var(--text-muted)',
               fontSize: 12,
               fontWeight: 600,
               cursor: 'pointer',
@@ -358,7 +364,7 @@ export function AppShell({ children }) {
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; e.currentTarget.style.color = '#f87171' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#1e2b24'; e.currentTarget.style.color = '#5a7a6a' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)' }}
           >
             Déconnexion
           </button>

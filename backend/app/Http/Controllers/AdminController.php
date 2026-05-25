@@ -402,6 +402,43 @@ class AdminController extends Controller
         ]]);
     }
 
+    public function upgradePlan(Request $request)
+    {
+        $request->validate([
+            'plan_name' => 'required|string'
+        ]);
+
+        $token = $request->bearerToken();
+        $userId = str_replace('mock-token-', '', $token);
+        $admin = User::find($userId);
+
+        if (!$admin || !in_array($admin->role, ['tenant_admin', 'super_admin'])) {
+            return response()->json(['message' => 'Non autorisé'], 401);
+        }
+
+        $tenantId = $admin->tenant_id;
+        $planName = $request->input('plan_name');
+
+        // Look up the plan ID
+        $plan = DB::table('plans')->where('name', $planName)->first();
+        if (!$plan) {
+            return response()->json(['message' => 'Forfait introuvable'], 404);
+        }
+
+        // Update or insert subscription
+        DB::table('subscriptions')->updateOrInsert(
+            ['tenant_id' => $tenantId],
+            [
+                'plan_id' => $plan->id,
+                'stripe_status' => 'active',
+                'ends_at' => Carbon::now()->addMonth(),
+                'updated_at' => now()
+            ]
+        );
+
+        return response()->json(['message' => 'Abonnement mis à jour avec succès', 'data' => ['plan' => $plan]]);
+    }
+
     public function uploadLogo(Request $request)
     {
         $request->validate([

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
 import {
   useAdminAnalytics, useAdminUsers, useAdminSkills,
-  useBranding, useSaveBranding, useBilling,
+  useBranding, useSaveBranding, useBilling, useUpgradePlan,
   useSuspendUser, useActivateUser,
 } from '../../hooks/useApi'
 import { adminAPI as adminApi } from '../../services/api'
@@ -329,6 +329,9 @@ export function AdminBranding() {
 // ─── Billing ──────────────────────────────────────────────────────────────────
 export function AdminBilling() {
   const { data, isLoading } = useBilling()
+  const upgradePlan = useUpgradePlan()
+  
+  const [paymentModal, setPaymentModal] = useState(null) // Holds plan name to upgrade to
 
   if (isLoading) return <div style={{ textAlign: 'center', padding: 80 }}><Spinner size={48} /></div>
 
@@ -372,7 +375,7 @@ export function AdminBilling() {
             </div>
             {data?.plan?.name !== plan.name && (
               <button className="btn-primary" style={{ width: '100%', padding: 14, borderRadius: 16, fontWeight: 800 }}
-                onClick={() => { toast.success(`Mise à jour vers ${plan.name}… (redirection Stripe)`) }}>
+                onClick={() => setPaymentModal(plan.name)}>
                 {plan.price > (data?.plan?.price || 0) ? 'Améliorer' : 'Rétrograder'}
               </button>
             )}
@@ -399,6 +402,79 @@ export function AdminBilling() {
             ) : <EmptyState icon="🧾" title="Aucune facture pour l'instant" desc="Les factures apparaîtront ici après votre premier cycle de facturation" />}
         </div>
       </Card>
+
+      {/* Payment Modal Detailed */}
+      <Modal open={!!paymentModal} onClose={() => setPaymentModal(null)} title={`Mise à niveau vers ${paymentModal}`}>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          upgradePlan.mutate(paymentModal, {
+            onSuccess: () => setPaymentModal(null)
+          })
+        }}>
+          <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 20, paddingBottom: 12, borderBottom: '1px solid var(--border)' }}>Mode de paiement</h3>
+          
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>Nom complet</label>
+            <input required type="text" className="input-premium" defaultValue="" placeholder="Votre nom" />
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>Pays ou région</label>
+            <select className="input-premium">
+              <option>Maroc</option>
+              <option>France</option>
+              <option>Canada</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>Adresse - Ligne 1</label>
+            <input required type="text" className="input-premium" />
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>Numéro de carte</label>
+            <div style={{ position: 'relative' }}>
+              <input required type="text" className="input-premium" placeholder="1234 1234 1234 1234" maxLength="19" />
+              <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: 4 }}>
+                <div style={{ width: 30, height: 20, background: '#ff5f00', borderRadius: 3, position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', width: 16, height: 16, background: '#eb001b', borderRadius: '50%', left: -2, top: 2 }}></div>
+                  <div style={{ position: 'absolute', width: 16, height: 16, background: '#f79e1b', borderRadius: '50%', right: -2, top: 2 }}></div>
+                </div>
+                <div style={{ width: 30, height: 20, background: '#1A1F71', borderRadius: 3, color: '#fff', fontSize: 8, fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>VISA</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>Date d'expiration</label>
+              <input required type="text" className="input-premium" placeholder="MM / AA" maxLength="5" />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>Code de sécurité</label>
+              <input required type="text" className="input-premium" placeholder="CVC" maxLength="4" />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 16 }}>
+            <input type="checkbox" id="diff-name" style={{ marginTop: 4 }} />
+            <label htmlFor="diff-name" style={{ fontSize: 13, color: 'var(--text-main)', cursor: 'pointer' }}>Utiliser un nom différent sur les factures</label>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 32 }}>
+            <input required type="checkbox" id="accept-terms" style={{ marginTop: 4 }} defaultChecked />
+            <label htmlFor="accept-terms" style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, cursor: 'pointer' }}>
+              Vous acceptez que SKILIO débite votre carte du montant indiqué ({plans.find(p => p.name === paymentModal)?.price || 0} DH) maintenant et de manière récurrente jusqu'à ce que vous annuliez conformément à nos conditions. Vous pouvez annuler à tout moment dans les paramètres de votre compte.
+            </label>
+          </div>
+
+          <button type="submit" className="btn-primary" style={{ width: '100%', padding: 16, borderRadius: 12, fontWeight: 800, fontSize: 16 }} disabled={upgradePlan.isLoading}>
+            {upgradePlan.isLoading ? <Spinner size={20} /> : "S'abonner"}
+          </button>
+        </form>
+      </Modal>
     </div>
   )
 }

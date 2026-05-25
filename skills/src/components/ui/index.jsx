@@ -9,36 +9,29 @@ export function Logo({ size = 32, withText = false }) {
       <div style={{
         width: size,
         height: size,
-        borderRadius: Math.round(size * 0.28),
-        background: 'linear-gradient(135deg, #1D9E75, #EF9F27)',
+        borderRadius: Math.round(size * 0.35),
+        background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: Math.round(size * 0.52),
         color: '#fff',
-        fontWeight: 800,
         flexShrink: 0,
-      }}>⇄</div>
+        boxShadow: '0 4px 12px var(--shadow-color)',
+      }}>
+        <svg width={Math.round(size * 0.55)} height={Math.round(size * 0.55)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
+        </svg>
+      </div>
       {withText && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{
-            color: '#ffffff',
-            fontWeight: 800,
-            fontSize: Math.round(size * 0.72),
-            letterSpacing: '-0.5px',
-            fontFamily: 'var(--font-sans)',
-          }}>SKILIO</span>
-          <span style={{
-            background: 'rgba(29, 158, 117, 0.18)',
-            color: '#1D9E75',
-            fontSize: 10,
-            fontWeight: 800,
-            padding: '2px 8px',
-            borderRadius: 20,
-            letterSpacing: '0.5px',
-            border: '1px solid rgba(29, 158, 117, 0.3)',
-          }}>SaaS</span>
-        </div>
+        <span style={{
+          color: 'var(--text-main)',
+          fontWeight: 900,
+          fontSize: Math.round(size * 0.72),
+          letterSpacing: '-1px',
+          fontFamily: 'var(--font-heading)',
+        }}>SKILIO</span>
       )}
     </div>
   )

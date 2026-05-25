@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import SwimmingSkills from '../components/ui/SwimmingSkills'
+import { Logo } from '../components/ui'
 import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2, Search, MessageCircle } from 'lucide-react'
 
 const SCHOOLS = [
@@ -332,7 +333,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, #C9A227 100%)', padding:'100px 20px', position:'relative', overflow:'hidden' }}>
+      <section style={{ background:'linear-gradient(135deg, #0F6E56 0%, #EF9F27 100%)', padding:'100px 20px', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, opacity:0.15, backgroundImage:'radial-gradient(circle at 30% 60%, #fff 0%, transparent 50%), radial-gradient(circle at 70% 40%, #fff 0%, transparent 50%)' }} />
         <div style={{ maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:32, position:'relative', zIndex:1 }}>
           {STATS.map(s => (
@@ -341,16 +342,16 @@ export default function LandingPage() {
                 width: 60, height: 60, borderRadius: '50%', 
                 background: 'rgba(34, 197, 94, 0.1)', 
                 display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                margin: '0 auto 20px', color: 'var(--primary)' 
+                margin: '0 auto 20px', color: '#1D9E75' 
               }}>
                 <s.icon size={26} />
               </div>
-              <div style={{ color:'var(--primary)', fontSize:44, fontWeight:900, letterSpacing:'-1px', fontFamily:'var(--font-heading)' }}><Counter target={s.value} suffix={s.suffix} decimal={s.decimal} /></div>
+              <div style={{ color:'#1D9E75', fontSize:44, fontWeight:900, letterSpacing:'-1px', fontFamily:'var(--font-heading)' }}><Counter target={s.value} suffix={s.suffix} decimal={s.decimal} /></div>
               <div style={{ color:'var(--text-main)', fontSize:13, fontWeight:800, marginTop:12, textTransform:'uppercase', letterSpacing:'1.5px' }}>{s.label}</div>
               
               {/* Progress Indicator */}
               <div style={{ width: '80px', height: '4px', background: 'rgba(34, 197, 94, 0.12)', borderRadius: '2px', margin: '20px auto 0', overflow: 'hidden' }}>
-                <div style={{ width: s.progress, height: '100%', background: 'linear-gradient(90deg, var(--primary), var(--accent))', borderRadius: '2px' }} />
+                <div style={{ width: s.progress, height: '100%', background: 'linear-gradient(90deg, #1D9E75, #EF9F27)', borderRadius: '2px' }} />
               </div>
             </div>
           ))}
@@ -391,7 +392,7 @@ export default function LandingPage() {
                       display:'flex', alignItems:'center', justifyContent:'center',
                       margin:'0 auto 20px',
                       color: i === arr.length-1 ? '#fff' : 'var(--primary)',
-                      boxShadow: i === arr.length-1 ? '0 16px 32px rgba(99, 102, 241, 0.35)' : '0 4px 16px var(--shadow-color)',
+                      boxShadow: i === arr.length-1 ? '0 16px 32px rgba(34, 197, 94, 0.35)' : '0 4px 16px var(--shadow-color)',
                       transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
                       cursor: 'pointer'
                     }}
@@ -429,7 +430,7 @@ export default function LandingPage() {
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:28 }}>
                 {group.items.map((item, i) => (
                   <div key={i} className="card card-hover" style={{ padding:36, borderRadius:18 }}>
-                    <div style={{ fontSize:40, marginBottom:24, background:'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.05))', width:72, height:72, borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--primary)' }}>{item.icon}</div>
+                    <div style={{ fontSize:40, marginBottom:24, background:'linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(236, 72, 153, 0.05))', width:72, height:72, borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--primary)' }}>{item.icon}</div>
                     <h3 style={{ fontSize:18, fontWeight:800, marginBottom:12, color:'var(--text-main)' }}>{item.title}</h3>
                     <p style={{ color:'var(--text-muted)', fontSize:15, lineHeight:1.7, margin:0, fontWeight:500 }}>{item.desc}</p>
                   </div>
@@ -583,8 +584,14 @@ export default function LandingPage() {
                     </div>
                   ))}
                 </div>
-                <button onClick={goToDash} className="btn-primary" style={{ width:'100%', padding:'16px 24px', borderRadius:14, fontSize:16, fontWeight:700, background: plan.popular ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'rgba(99, 102, 241, 0.1)', border: plan.popular ? 'none' : '2px solid var(--primary)', color: plan.popular ? '#fff' : 'var(--primary)' }}>
-                  {plan.price === 0 ? 'Commencer gratuitement' : 'Démarrer l\'essai'}
+                <button onClick={() => {
+                    if (user?.role === 'tenant_admin') {
+                      navigate('/admin/billing');
+                    } else {
+                      goToDash();
+                    }
+                  }} className="btn-primary" style={{ width:'100%', padding:'16px 24px', borderRadius:14, fontSize:16, fontWeight:700, background: plan.popular ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'rgba(34, 197, 94, 0.08)', border: plan.popular ? 'none' : '2px solid var(--primary)', color: plan.popular ? '#fff' : 'var(--primary)' }}>
+                  {user?.role === 'tenant_admin' ? 'Gérer l\'abonnement' : (plan.price === 0 ? 'Commencer gratuitement' : 'Démarrer l\'essai')}
                 </button>
               </div>
             ))}
@@ -595,7 +602,7 @@ export default function LandingPage() {
       {/* ── CTA ── */}
       <section style={{ background:'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', padding:'120px 20px', textAlign:'center', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, opacity:0.15, backgroundImage:'radial-gradient(circle at 20% 50%, #fff 0%, transparent 50%), radial-gradient(circle at 80% 50%, #fff 0%, transparent 50%)' }} />
-        <div style={{ position:'relative', zIndex:2, maxWidth:700 }}>
+        <div style={{ position:'relative', zIndex:2, maxWidth:700, margin:'0 auto' }}>
           <h2 style={{ color:'#fff', marginBottom:24 }}>Prêt à rejoindre la communauté ?</h2>
           <p style={{ color:'rgba(255,255,255,0.9)', fontSize:18, marginBottom:48, fontWeight:500, lineHeight:1.7 }}>47+ universités utilisent SKILIO. 28K+ étudiants apprennent et enseignent chaque jour.</p>
           <button onClick={goToDash} className="btn-primary" style={{ padding:'18px 48px', fontSize:17, background:'#fff', color:'var(--primary)', fontWeight:800, borderRadius:14, boxShadow:'0 16px 32px rgba(0,0,0,0.25)', gap:10 }}>
@@ -609,11 +616,8 @@ export default function LandingPage() {
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:60, marginBottom:80 }}>
             <div style={{ maxWidth:300 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
-                <div style={{ width:40, height:40, borderRadius:10, background:'linear-gradient(135deg, var(--primary), var(--accent))', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20 }}>
-                  ✨
-                </div>
-                <span style={{ fontWeight:900, fontSize:22, fontFamily:'var(--font-heading)', letterSpacing:'-0.5px', color:'var(--text-main)' }}>SKILIO</span>
+              <div style={{ cursor: 'pointer', marginBottom:24 }} onClick={() => navigate('/')}>
+                <Logo size={36} withText />
               </div>
               <p style={{ color:'var(--text-muted)', fontSize:15, lineHeight:1.8, fontWeight:500 }}>Où les passions deviennent expertise, et l'apprentissage devient communauté.</p>
             </div>

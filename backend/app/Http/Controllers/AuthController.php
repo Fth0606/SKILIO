@@ -69,6 +69,7 @@ class AuthController extends Controller
             'role'      => 'student',
             'is_active' => true,
             'credits_balance' => 3.00,
+            'verification_token' => bin2hex(random_bytes(32)),
         ]);
 
         $user->load('tenant');
@@ -123,5 +124,67 @@ class AuthController extends Controller
     public function logout()
     {
         return response()->json(['message' => 'Déconnecté']);
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        $request->validate(['token' => 'required']);
+
+        $user = User::where('verification_token', $request->token)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Jeton de vérification invalide.'], 422);
+        }
+
+        $user->update([
+            'email_verified_at' => now(),
+            'verification_token' => null,
+        ]);
+
+        return response()->json(['message' => 'Email vérifié avec succès']);
+    }
+
+    public function acceptInvitation(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'name' => 'required|string|max:255',
+            'password' => 'required|min:6',
+        ]);
+
+        $invitation = \Illuminate\Support\Facades\DB::table('invitations')
+            ->where('token', $request->token)
+            ->whereNull('accepted_at')
+            ->first();
+
+        if (!$invitation) {
+            return response()->json(['message' => 'Invitation invalide ou déjà acceptée.'], 422);
+        }
+
+        // Check if user already exists
+        if (User::where('email', $invitation->email)->exists()) {
+             return response()->json(['message' => 'Un utilisateur avec cet email existe déjà.'], 422);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $invitation->email,
+            'password' => Hash::make($request->password),
+            'tenant_id' => $invitation->tenant_id,
+            'role' => $invitation->role,
+            'is_active' => true,
+            'email_verified_at' => now(),
+            'credits_balance' => 3.00,
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('invitations')
+            ->where('id', $invitation->id)
+            ->update(['accepted_at' => now()]);
+
+        return response()->json([
+            'token' => 'mock-token-' . $user->id,
+            'user' => $user,
+            'message' => 'Invitation acceptée avec succès'
+        ], 201);
     }
 }

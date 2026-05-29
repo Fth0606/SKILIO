@@ -4,6 +4,9 @@ import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications, useMarkAllNotificationsRead } from '../../hooks/useApi'
 import { Avatar, Modal, Spinner, Badge, Logo } from '../ui'
+import { Footer } from './Footer'
+
+export { Footer }
 
 // ─── Theme Toggle ────────────────────────────────────────────────────────────
 function ThemeToggle() {
@@ -167,6 +170,8 @@ export function AppShell({ children }) {
 
   const unreadCount = (notifications || []).filter(n => !n.is_read).length
 
+  const profileLink = { to: '/profile', icon: '◉', label: 'Mon profil' }
+
   const studentLinks = [
     { to: '/dashboard',          icon: '⊞',  label: 'Tableau de bord' },
     { to: '/dashboard/search',   icon: '⊕',  label: 'Trouver une compétence' },
@@ -174,6 +179,7 @@ export function AppShell({ children }) {
     { to: '/dashboard/teach',    icon: '◈',  label: 'Enseigner' },
     { to: '/dashboard/ratings',  icon: '◇',  label: 'Mes évaluations' },
     { to: '/dashboard/credits',  icon: '◈',  label: 'Crédits' },
+    profileLink,
   ]
 
   const adminLinks = [
@@ -182,6 +188,7 @@ export function AppShell({ children }) {
     { to: '/admin/skills',       icon: '◈',  label: 'Compétences' },
     { to: '/admin/branding',     icon: '◇',  label: 'Marque' },
     { to: '/admin/billing',      icon: '◎',  label: 'Facturation' },
+    profileLink,
   ]
 
   const superLinks = [
@@ -190,6 +197,7 @@ export function AppShell({ children }) {
     { to: '/super/plans',        icon: '◎',  label: 'Forfaits' },
     { to: '/super/revenue',      icon: '◈',  label: 'Revenus' },
     { to: '/super/tickets',      icon: '◷',  label: 'Support' },
+    profileLink,
   ]
 
   const links      = user?.role === 'super_admin' ? superLinks : user?.role === 'tenant_admin' ? adminLinks : studentLinks
@@ -397,5 +405,16 @@ export function AppShell({ children }) {
         )}
       </Modal>
     </div>
+  )
+}
+
+// ─── PublicLayout (landing + public pages) ───────────────────────────────────
+export function PublicLayout({ children }) {
+  return (
+    <>
+      <Navbar />
+      {children}
+      <Footer />
+    </>
   )
 }

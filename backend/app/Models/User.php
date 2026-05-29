@@ -28,6 +28,9 @@ class User extends Authenticatable
         'total_credits_spent',
         'avatar_url',
         'bio',
+        'department',
+        'graduation_year',
+        'is_active',
         'verification_token',
         'email_verified_at',
     ];

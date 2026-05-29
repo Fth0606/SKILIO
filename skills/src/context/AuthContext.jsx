@@ -49,13 +49,25 @@ export function AuthProvider({ children }) {
     setUser(res.data.data)
   }, [])
 
+  const updateProfile = useCallback(async (data) => {
+    const res = await authApi.updateProfile(data)
+    setUser(res.data.data)
+    return res.data
+  }, [])
+
+  const deleteAccount = useCallback(async (data) => {
+    await authApi.deleteAccount(data)
+    localStorage.removeItem('token')
+    setUser(null)
+  }, [])
+
   // Roles: student | tenant_admin | super_admin
   const isStudent    = user?.role === 'student'
   const isTenantAdmin = user?.role === 'tenant_admin'
   const isSuperAdmin = user?.role === 'super_admin'
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser, isStudent, isTenantAdmin, isSuperAdmin }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser, updateProfile, deleteAccount, isStudent, isTenantAdmin, isSuperAdmin }}>
       {children}
     </AuthContext.Provider>
   )

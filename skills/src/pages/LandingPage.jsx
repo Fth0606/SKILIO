@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import SwimmingSkills from '../components/ui/SwimmingSkills'
 import { Logo } from '../components/ui'
-import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Heart, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2, Search, MessageCircle } from 'lucide-react'
+import { Code, Languages, Bot, Music, Calculator, Palette, Mic, Globe, Star, Sparkles, Users, BookOpen, Award, ArrowRight, Check, Zap, Shield, Rocket, ChevronRight, GraduationCap, TrendingUp, Clock, Globe2, Search, MessageCircle } from 'lucide-react'
 
 const SCHOOLS = [
   { name: 'Harvard',   color: '#A51C30' },
@@ -611,33 +611,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ padding:'100px 20px 48px', borderTop:'1.5px solid var(--border)', background:'linear-gradient(180deg, var(--bg) 0%, rgba(34, 197, 94, 0.02) 100%)' }}>
-        <div style={{ maxWidth:1200, margin:'0 auto' }}>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:60, marginBottom:80 }}>
-            <div style={{ maxWidth:300 }}>
-              <div style={{ cursor: 'pointer', marginBottom:24 }} onClick={() => navigate('/')}>
-                <Logo size={36} withText />
-              </div>
-              <p style={{ color:'var(--text-muted)', fontSize:15, lineHeight:1.8, fontWeight:500 }}>Où les passions deviennent expertise, et l'apprentissage devient communauté.</p>
-            </div>
-            {[
-              ['Produit',  ['Fonctionnalités','Tarifs','Dashboard','Roadmap']],
-              ['Entreprise',  ['À propos','Blog','Carrières','Presse']],
-              ['Support',    ['Aide','Contact','Status','Changelog']],
-            ].map(([title, links]) => (
-              <div key={title}>
-                <div style={{ fontSize:13, fontWeight:800, marginBottom:24, textTransform:'uppercase', letterSpacing:'1.5px', color:'var(--text-main)' }}>{title}</div>
-                {links.map(l => <div key={l} style={{ color:'var(--text-muted)', fontSize:15, marginBottom:14, cursor:'pointer', fontWeight:500, transition:'color 0.2s', '--hover-color': 'var(--primary)' }} onMouseEnter={e => e.target.style.color = 'var(--primary)'} onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>{l}</div>)}
-              </div>
-            ))}
-          </div>
-          <div style={{ borderTop:'1.5px solid var(--border)', paddingTop:40, display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:20 }}>
-            <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:500 }}>© 2026 SKILIO. Tous droits réservés.</span>
-            <span style={{ color:'var(--text-muted)', fontSize:14, fontWeight:600, display:'flex', alignItems:'center', gap:8 }}><Heart size={16} style={{ color:'var(--accent)' }} /> Bâti par des passionnés d'apprentissage</span>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

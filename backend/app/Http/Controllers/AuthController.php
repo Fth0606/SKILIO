@@ -126,6 +126,84 @@ class AuthController extends Controller
         return response()->json(['message' => 'Déconnecté']);
     }
 
+    public function updateProfile(Request $request)
+    {
+        $token  = $request->bearerToken();
+        $userId = str_replace('mock-token-', '', $token);
+        $user   = User::find($userId);
+
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
+
+        $request->validate([
+            'name'            => 'required|string|max:255',
+            'bio'             => 'nullable|string|max:1000',
+            'department'      => 'nullable|string|max:100',
+            'graduation_year' => 'nullable|integer|min:2000|max:2040',
+            'avatar_url'      => 'nullable|url|max:500',
+            'current_password'    => 'required_with:new_password',
+            'new_password'        => 'nullable|min:6|confirmed',
+        ]);
+
+        // Password change requested
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json(['errors' => ['current_password' => ['Mot de passe actuel incorrect.']]], 422);
+            }
+            $user->password = Hash::make($request->new_password);
+        }
+
+        $user->name            = $request->name;
+        $user->bio             = $request->bio;
+        $user->department      = $request->department;
+        $user->graduation_year = $request->graduation_year;
+        $user->avatar_url      = $request->avatar_url;
+        $user->save();
+
+        $user->load(['tenant', 'availability']);
+        $user->skills = \Illuminate\Support\Facades\DB::table('skill_user')
+            ->join('skills', 'skill_user.skill_id', '=', 'skills.id')
+            ->where('skill_user.user_id', $user->id)
+            ->select('skills.id', 'skills.name', 'skills.category', 'skill_user.proficiency_level as level')
+            ->get();
+
+        return response()->json(['data' => $user, 'message' => 'Profil mis à jour avec succès']);
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $token  = $request->bearerToken();
+        $userId = str_replace('mock-token-', '', $token);
+        $user   = User::find($userId);
+
+        if (!$user) return response()->json(['message' => 'Non autorisé'], 401);
+
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['errors' => ['password' => ['Mot de passe incorrect.']]], 422);
+        }
+
+        // Anonymise and deactivate — preserves referential integrity for sessions/ratings
+        \Illuminate\Support\Facades\DB::table('skill_user')->where('user_id', $user->id)->delete();
+        \Illuminate\Support\Facades\DB::table('user_availability')->where('user_id', $user->id)->delete();
+        \Illuminate\Support\Facades\DB::table('notifications')->where('user_id', $user->id)->delete();
+
+        $user->update([
+            'name'            => 'Compte supprimé',
+            'email'           => 'deleted-' . $user->id . '@skilio.invalid',
+            'bio'             => null,
+            'avatar_url'      => null,
+            'department'      => null,
+            'graduation_year' => null,
+            'is_active'       => false,
+            'password'        => Hash::make(\Illuminate\Support\Str::random(40)),
+        ]);
+
+        return response()->json(['message' => 'Compte supprimé avec succès']);
+    }
+
     public function verifyEmail(Request $request)
     {
         $request->validate(['token' => 'required']);
